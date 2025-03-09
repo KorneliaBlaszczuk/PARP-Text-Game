@@ -26,24 +26,85 @@ dodaj(Kwota) :-
     retract(stan(pieniadze, ObecnePieniadze)), % Usuwamy stary stan
     assertz(stan(pieniadze, NowyStan)), % Dodajemy nowy stan
     write("Twoje fundusze to: "), % Wyświetlamy komunikat
-    write(NowyStan), nl. % Wyświetlamy nowy stan portfela
+    write(NowyStan), % Wyświetlamy nowy stan portfela
+    write(" zł"), nl.
 
-% Opis początkowy gry
-start :-
-    write("Budzisz się na tarasie PKiN. Okropnie boli cię głowa, szczególnie, kiedy na twoje powieki padają pierwsze promienie nowego dnia."), nl,
-    write("Nagle czujesz dziabnięcie. To gołąb, który zdecydowanie nie jest zadowolony z twojej obecności na jego terytorium. Co zrobić?"), nl,
-    zmien_lokalizacje(taras_pkin).
+odejmij(Kwota) :-
+    stan(pieniadze, ObecnePieniadze), % Pobieramy obecny stan pieniędzy
+    NowyStan is ObecnePieniadze - Kwota, % odejmujemy x zł od obecnego stanu
+    retract(stan(pieniadze, ObecnePieniadze)), % Usuwamy stary stan
+    assertz(stan(pieniadze, NowyStan)), % Dodajemy nowy stan
+    write("Twoje fundusze to: "), % Wyświetlamy komunikat
+    write(NowyStan), % Wyświetlamy nowy stan portfela
+    write(" zł"), nl.
 
 % Uproszczone wywołanie akcji
 dzialanie(Akcja) :-
     lokalizacja(Lokalizacja),
     dzialanie(Lokalizacja, Akcja).
 
+% Funkcja zmieniająca lokalizację i wypisująca dostępne akcje
+zmien_lokalizacje(NowaLokalizacja) :-
+    retract(lokalizacja(_)),
+    assertz(lokalizacja(NowaLokalizacja)),
+    akcje(NowaLokalizacja, Akcje),
+    opis(NowaLokalizacja), % Wyświetlamy krótki opis lokalizacji
+    write("Dostępne akcje w tej lokalizacji: "), nl,
+    wypisz_akcje(Akcje).
+
+% Funkcja wypisująca akcje
+wypisz_akcje([]).
+wypisz_akcje([Akcja|Reszta]) :-
+    write("- "), write(Akcja), nl,
+    wypisz_akcje(Reszta).
+
+% Funkcja wyświetlająca opis dla każdej lokalizacji
+opis(taras_pkin) :-
+    write("Budzisz się na tarasie PKiN. Okropnie boli cię głowa, szczególnie, kiedy na twoje powieki padają pierwsze promienie nowego dnia."), nl,
+    write("Nagle czujesz dziabnięcie. To gołąb, który zdecydowanie nie jest zadowolony z twojej obecności na jego terytorium. Co zrobić?"), nl.
+
+opis(schody_pkin) :-
+    write("Schodząc w dół robisz krótka przerwę, strasznie boli Cię głowa. Patrząc w dół zauważasz leżące na podłodze 10 zł."), nl.
+
+opis(hol_pkin) :-
+    write("Głowa nadal boli cię nieubłaganie. Wokół cicho, tylko portier siedzi za ladą. Może warto go zapytać o wczoraj?"), nl.
+
+opis(przed_pkin) :-
+    write("Jesteś przed PKiN. Widok na miasto jest zapierający, możesz ruszyć w różne strony."), nl.
+
+opis(taksowka) :-
+    write("Wsiadłeś do taksówki. Kierowca czeka na dalsze instrukcje."), nl.
+
+opis(wilcza_30) :-
+    write("Stoisz przed drzwiami mieszkania na Wilczej 30. Ktoś czeka na twoje przybycie."), nl.
+
+opis(hala_koszyki) :-
+    write("Jesteś w Hali Koszyki. Panuje tu przyjemna atmosfera, a wokół ludzi w różnym wieku."), nl.
+
+opis(chinczyk) :-
+    write("Jesteś w chińskiej restauracji. Zaczynasz rozglądać się za miejscem do siedzenia."), nl.
+
+opis(eiti) :-
+    write("Jesteś na Wydziale EITI. Laboratoria i studenci dookoła."), nl.
+
+opis(gg_pw) :-
+    write("Jesteś w Gmachu Głównym Politechniki Warszawskiej. Wszędzie pełno studentów i nauczycieli."), nl.
+
+opis(glowna_sala) :-
+    write("Jesteś w głównej sali. Czas na końcową decyzję i oddanie pracy semestralnej."), nl.
+
+% W przypadku, gdy brak opisu dla lokalizacji
+opis(_) :-
+    write("Nie ma opisanego miejsca."), nl.
+
+% Opis początkowy gry
+start :-
+    zmien_lokalizacje(taras_pkin).
+
 % Akcje dostępne na tarasie PKiN
 dzialanie(taras_pkin, zajrzyj_do_kieszeni) :-
     write("Sięgasz do kieszeni i znajdujesz 20 zł oraz notatkę."), nl,
-    retract(stan(pieniadze, _)),
-    assertz(stan(pieniadze, 20)),
+    dodaj(20),
     retract(stan(notatki, Lista)),
     assertz(stan(notatki, [1 | Lista])).
 
@@ -152,19 +213,8 @@ dobre_zakonczenie :-
     length(Lista, 5),
     write("Gratulacje! Oddałeś pracę semestralną i zdałeś przedmiot!"), nl.
 
-% Funkcja zmieniająca lokalizację i wypisująca dostępne akcje
-zmien_lokalizacje(NowaLokalizacja) :-
-    retract(lokalizacja(_)),
-    assertz(lokalizacja(NowaLokalizacja)),
-    akcje(NowaLokalizacja, Akcje),
-    write("Dostępne akcje w tej lokalizacji: "), nl,
-    wypisz_akcje(Akcje).
-
-% Funkcja wypisująca akcje
-wypisz_akcje([]).
-wypisz_akcje([Akcja|Reszta]) :-
-    write("- "), write(Akcja), nl,
-    wypisz_akcje(Reszta).
-
 % Uruchomienie gry
 :- start.
+
+% TODO po przejściach pojawia się opis i akcje ale nie robi sie true. coś jest do poprawy
+% zgodne z fabulą do zejścia do holu pkin, dalej tzreba dokonczyć
