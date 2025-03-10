@@ -9,6 +9,7 @@ stan(notatki, []).
 stan(numerek, nie).
 stan(wilcza, nie).
 stan(hala_koszyki, nie).
+stan(park, nie).
 
 % Definicja dostępnych akcji dla każdej lokalizacji
 akcje(taras_pkin, [zajrzyj_do_kieszeni, rozejrzyj_sie, podejdz_do_krawedzi, zejdz_po_schodach, uzyj_windy]).
@@ -185,8 +186,13 @@ dzialanie(szatnia_pkin, przeszukaj_plaszcz) :-
 
 % Przed PKiN
 dzialanie(przed_pkin, idz_w_strone_parku) :-
+    stan(park, nie), % Sprawdzenie, czy nie było jeszcze gracza w parku
     write("Idziesz w stronę parku..."), nl,
     zmien_lokalizacje(park).
+
+dzialanie(przed_pkin, idz_w_strone_parku) :-
+    stan(park, tak), % Sprawdzenie, czy nie było jeszcze gracza w parku
+    write("Odwiedziłeś już park, nie masz ochoty znowu tam wracać..."), nl.
 
 dzialanie(przed_pkin, idz_w_strone_taksowki) :-
     write("Wsiadasz do taksówki."), nl,
@@ -219,6 +225,8 @@ dzialanie(park, porozmawiaj_z_nieznajomym) :-
 
 dzialanie(park, idz_przed_pkin) :-
     write("Wracasz przed PKiN"),
+    retract(stan(park, nie)), % Usuwamy stary stan
+    assertz(stan(park, tak)), % Ustawiamy nowy stan
     zmien_lokalizacje(przed_pkin).
 
 % Taksówka
