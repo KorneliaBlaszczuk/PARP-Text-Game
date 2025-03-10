@@ -7,6 +7,7 @@ lokalizacja(start).
 stan(pieniadze, 0).
 stan(notatki, []).
 stan(numerek, nie).
+stan(wilcza, nie).
 
 % Definicja dostępnych akcji dla każdej lokalizacji
 akcje(taras_pkin, [zajrzyj_do_kieszeni, rozejrzyj_sie, podejdz_do_krawedzi, zejdz_po_schodach, uzyj_windy]).
@@ -14,6 +15,7 @@ akcje(schody_pkin, [podnies_pieniadze, idz_dalej]).
 akcje(hol_pkin, [porozmawiaj_z_portierem, wyjdz_na_zewnatrz, udaj_sie_do_szatni]).
 akcje(szatnia_pkin, [wyjdz_na_zewnatrz, przeszukaj_kieszenie, przeszukaj_plaszcz]).
 akcje(przed_pkin, [idz_w_strone_parku, idz_w_strone_taksowki, spojrz_na_ulotke]).
+akcje(park, [usiadz_na_lawce, karm_golebie, obejrzyj_fontanne, porozmawiaj_z_nieznajomym]).
 akcje(taksowka, [pojedz_do_hali_koszyki, pojedz_na_wilcza_30, porozmawiaj]).
 akcje(wilcza_30, [zapukaj_do_drzwi]).
 akcje(hala_koszyki, [podejdz_do_baru, porozmawiaj_z_gosciem, wyjdz_w_strone_chinczyka]).
@@ -77,6 +79,9 @@ opis(szatnia_pkin) :-
 
 opis(przed_pkin) :-
     write("Jesteś przed PKiN. Widok na miasto jest zapierający, możesz ruszyć w różne strony."), nl.
+
+opis(park) :-
+    write("Wchodzisz do Parku Świętokrzyskiego. Powietrze jest rześkie, a pierwsze promienie słońca oświetlają puste alejki. W oddali słyszysz szum miasta, ale tutaj panuje dziwny spokój. Na jednej z ławek siedzi mężczyzna owinięty w gruby płaszcz, z brodą gęstą jak historia tego miasta. Kiedy przechodzisz obok, unosi wzrok i uśmiecha się lekko. Obok widzisz budkę, gdzie możesz kupić nasiona dla gołębi (-5zł)."), nl.
 
 opis(taksowka) :-
     write("Wsiadłeś do taksówki. Kierowca czeka na dalsze instrukcje."), nl.
@@ -176,7 +181,29 @@ dzialanie(przed_pkin, idz_w_strone_taksowki) :-
     zmien_lokalizacje(taksowka).
 
 dzialanie(przed_pkin, spojrz_na_ulotke) :-
-    write("Na ulotce napisano: 'Czy pamiętasz, co miałeś zrobić?'"), nl.
+    write("Znajdujesz ulotkę z baru w Hali Koszyki z reklamą Happy Hours. Może warto się dam udać?"), nl.
+
+% Park
+dzialanie(park, usiadz_na_lawce) :-
+    write("Siadasz na zimnej, metalowej ławce. Chłód poranka powoli przenika przez materiał twojego ubrania. Przymykasz oczy na chwilę i wsłuchujesz się w dźwięki miasta. Czujesz chwilowy spokój. Może nawet zbyt wielki. Jakby świat na moment się zatrzymał, pozwalając ci złapać oddech przed kolejnym krokiem."), nl.
+
+dzialanie(park, karm_golebie) :-
+    stan(pieniadze, ObecnePieniadze),
+    ObecnePieniadze >= 5, % Sprawdzamy, czy gracz ma pieniądze, aby kupić nasiona
+    write("Kupujesz nasiona i karmisz gołębie. Jeden z nich wygląda znajomo... To ten, który dziabnął cię na tarasie!"), nl,
+    odejmij(5). % Odejmujemy 5 zł
+
+dzialanie(park, karm_golebie) :-
+    write("Nie masz wystarczająco pieniędzy, aby kupić chleb dla gołębi."), nl.
+
+dzialanie(park, obejrzyj_fontanne) :-
+    write("Oglądasz fontanne. Patrzysz na spokojną taflę. Znajdujesz 5 zł."), nl,
+    dodaj(5).
+
+dzialanie(park, porozmawiaj_z_nieznajomym) :-
+    retract(stan(wilcza, nie)), % Usuwamy stary stan
+    assertz(stan(wilcza, tak)), % Ustawiamy nowy stan
+    write("Wilcza 30. To tam znajdziesz odpowiedzi. Ale uważaj… nie każda prawda przynosi ulgę."), nl.
 
 % Taksówka
 dzialanie(taksowka, pojedz_do_hali_koszyki) :-
