@@ -190,15 +190,15 @@ dzialanie(park, usiadz_na_lawce) :-
 dzialanie(park, karm_golebie) :-
     stan(pieniadze, ObecnePieniadze),
     ObecnePieniadze >= 5, % Sprawdzamy, czy gracz ma pieniądze, aby kupić nasiona
-    odejmij(5), % Odejmujemy 5 zł
-    write("Kupujesz nasiona i karmisz gołębie. Jeden z nich wygląda znajomo... To ten, który dziabnął cię na tarasie!"), nl.
+    write("Kupujesz nasiona i karmisz gołębie. Jeden z nich wygląda znajomo... To ten, który dziabnął cię na tarasie!"), nl,
+    odejmij(5). % Odejmujemy 5 zł
 
 dzialanie(park, karm_golebie) :-
     write("Nie masz wystarczająco pieniędzy, aby kupić chleb dla gołębi."), nl.
 
 dzialanie(park, obejrzyj_fontanne) :-
-    dodaj(5),
-    write("Oglądasz fontanne. Patrzysz na spokojną taflę. Znajdujesz 5 zł."), nl.
+    write("Oglądasz fontanne. Patrzysz na spokojną taflę. Znajdujesz 5 zł."), nl,
+    dodaj(5).
 
 dzialanie(park, porozmawiaj_z_nieznajomym) :-
     retract(stan(wilcza, nie)), % Usuwamy stary stan
