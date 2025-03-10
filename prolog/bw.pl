@@ -8,6 +8,7 @@ stan(pieniadze, 0).
 stan(notatki, []).
 stan(numerek, nie).
 stan(wilcza, nie).
+stan(hala_koszyki, nie).
 
 % Definicja dostępnych akcji dla każdej lokalizacji
 akcje(taras_pkin, [zajrzyj_do_kieszeni, rozejrzyj_sie, podejdz_do_krawedzi, zejdz_po_schodach, uzyj_windy]).
@@ -15,14 +16,20 @@ akcje(schody_pkin, [podnies_pieniadze, idz_dalej]).
 akcje(hol_pkin, [porozmawiaj_z_portierem, wyjdz_na_zewnatrz, udaj_sie_do_szatni]).
 akcje(szatnia_pkin, [wyjdz_na_zewnatrz, przeszukaj_kieszenie, przeszukaj_plaszcz]).
 akcje(przed_pkin, [idz_w_strone_parku, idz_w_strone_taksowki, spojrz_na_ulotke]).
-akcje(park, [usiadz_na_lawce, karm_golebie, obejrzyj_fontanne, porozmawiaj_z_nieznajomym]).
-akcje(taksowka, [pojedz_do_hali_koszyki, pojedz_na_wilcza_30, porozmawiaj]).
+akcje(park, [usiadz_na_lawce, karm_golebie, obejrzyj_fontanne, porozmawiaj_z_nieznajomym, idz_przed_pkin]).
+% akcje(taksowka, [pojedz_do_hali_koszyki, pojedz_na_wilcza_30, porozmawiaj]).
+akcje(taksowka, Akcje) :-
+    findall(Akcja, dostepna_taksowka(Akcja), Akcje).
 akcje(wilcza_30, [zapukaj_do_drzwi]).
 akcje(hala_koszyki, [podejdz_do_baru, porozmawiaj_z_gosciem, wyjdz_w_strone_chinczyka]).
 akcje(chinczyk, [porozmawiaj_z_wlascicielem, usiadz_przy_stoliku]).
 akcje(eiti, [zajrzyj_do_laboratorium, idz_do_gg_pw]).
 akcje(gg_pw, [przeszukaj_teren, sprawdz_tablice_ogloszen]).
 akcje(glowna_sala, [odczytaj_koperte]).
+
+dostepna_taksowka(porozmawiaj).
+dostepna_taksowka(pojedz_do_hali_koszyki) :- stan(hala_koszyki, tak).
+dostepna_taksowka(pojedz_na_wilcza_30) :- stan(wilcza, tak).
 
 % Zmiana stanu pieniędzy
 dodaj(Kwota) :-
@@ -52,14 +59,17 @@ dzialanie(Akcja) :-
 zmien_lokalizacje(NowaLokalizacja) :-
     retract(lokalizacja(_)),
     assertz(lokalizacja(NowaLokalizacja)),
-    akcje(NowaLokalizacja, Akcje),
-    opis(NowaLokalizacja), % Wyświetlamy krótki opis lokalizacji
-    write("Dostępne akcje w tej lokalizacji: "), nl,
+    write("Jesteś teraz w: "), write(NowaLokalizacja), nl,
+    opis(NowaLokalizacja),
+    wypisz_dostepne_akcje(NowaLokalizacja).
+
+wypisz_dostepne_akcje(Lokalizacja) :-
+    akcje(Lokalizacja, Akcje),
+    write("Dostępne akcje: "), nl,
     wypisz_akcje(Akcje).
 
-% Funkcja wypisująca akcje
 wypisz_akcje([]).
-wypisz_akcje([Akcja|Reszta]) :-
+wypisz_akcje([Akcja | Reszta]) :-
     write("- "), write(Akcja), nl,
     wypisz_akcje(Reszta).
 
@@ -169,6 +179,8 @@ dzialanie(szatnia_pkin, przeszukaj_plaszcz) :-
 
 dzialanie(szatnia_pkin, przeszukaj_plaszcz) :-
     stan(numerek, tak), % Jeśli numerek został znaleziony
+    retract(stan(hala_koszyki, nie)), % Usuwamy stary stan
+    assertz(stan(hala_koszyki, tak)), % Ustawiamy nowy stan
     write("Znajdujesz ulotkę z ofertą Happy Hours z baru w Hali Koszyki."), nl.
 
 % Przed PKiN
@@ -204,6 +216,10 @@ dzialanie(park, porozmawiaj_z_nieznajomym) :-
     retract(stan(wilcza, nie)), % Usuwamy stary stan
     assertz(stan(wilcza, tak)), % Ustawiamy nowy stan
     write("Wilcza 30. To tam znajdziesz odpowiedzi. Ale uważaj… nie każda prawda przynosi ulgę."), nl.
+
+dzialanie(park, idz_przed_pkin) :-
+    write("Wracasz przed PKiN"),
+    zmien_lokalizacje(przed_pkin).
 
 % Taksówka
 dzialanie(taksowka, pojedz_do_hali_koszyki) :-
