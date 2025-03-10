@@ -158,7 +158,7 @@ dzialanie(hol_pkin, porozmawiaj_z_portierem) :-
 
 dzialanie(hol_pkin, wyjdz_na_zewnatrz) :-
     write("Wychodzisz na zewnątrz, przed PKiN."), nl,
-    write("Wychodząc zaczepia cię dziwny chłopak, który mówi: 'O hej brachu, pamiętasz co się działo wczoraj w Hali Koszyki?'"),
+    write("Wychodząc zaczepia cię dziwny chłopak, który mówi: 'O hej brachu, pamiętasz co się działo wczoraj w Hali Koszyki?'"), nl,
     retract(stan(hala_koszyki, nie)), % Usuwamy stary stan
     assertz(stan(hala_koszyki, tak)), % Ustawiamy nowy stan
     zmien_lokalizacje(przed_pkin).
@@ -170,13 +170,13 @@ dzialanie(hol_pkin, udaj_sie_do_szatni) :-
 % Akcje dostępne w szatni PKiN
 dzialanie(szatnia_pkin, wyjdz_na_zewnatrz) :-
     write("Wychodzisz z PKiN."), nl,
-    write("Wychodząc zaczepia cię dziwny chłopak, który mówi: 'O hej brachu, pamiętasz co się działo wczoraj w Hali Koszyki?'"),
+    write("Wychodząc zaczepia cię dziwny chłopak, który mówi: 'O hej brachu, pamiętasz co się działo wczoraj w Hali Koszyki?'"), nl,
     retract(stan(hala_koszyki, nie)), % Usuwamy stary stan
     assertz(stan(hala_koszyki, tak)), % Ustawiamy nowy stan
     zmien_lokalizacje(przed_pkin).
 
 dzialanie(szatnia_pkin, przeszukaj_kieszenie) :-
-    write("Warto było przeszukać kieszenie jeszce raz. Znajdujesz numerek."),
+    write("Warto było przeszukać kieszenie jeszce raz. Znajdujesz numerek."), nl,
     retract(stan(numerek, nie)), % Usuwamy stary stan
     assertz(stan(numerek, tak)). % Ustawiamy nowy stan
 
