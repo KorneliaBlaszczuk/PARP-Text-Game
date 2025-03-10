@@ -16,7 +16,9 @@ akcje(taras_pkin, [zajrzyj_do_kieszeni, rozejrzyj_sie, podejdz_do_krawedzi, zejd
 akcje(schody_pkin, [podnies_pieniadze, idz_dalej]).
 akcje(hol_pkin, [porozmawiaj_z_portierem, wyjdz_na_zewnatrz, udaj_sie_do_szatni]).
 akcje(szatnia_pkin, [wyjdz_na_zewnatrz, przeszukaj_kieszenie, przeszukaj_plaszcz]).
-akcje(przed_pkin, [idz_w_strone_parku, idz_w_strone_taksowki, spojrz_na_ulotke]).
+% akcje(przed_pkin, [idz_w_strone_parku, idz_w_strone_taksowki, spojrz_na_ulotke]).
+akcje(przed_pkin, Akcje) :-
+    findall(Akcja, dostępny_pkin(Akcja), Akcje).
 akcje(park, [usiadz_na_lawce, karm_golebie, obejrzyj_fontanne, porozmawiaj_z_nieznajomym, idz_przed_pkin]).
 % akcje(taksowka, [pojedz_do_hali_koszyki, pojedz_na_wilcza_30, porozmawiaj]).
 akcje(taksowka, Akcje) :-
@@ -32,6 +34,12 @@ akcje(glowna_sala, [odczytaj_koperte]).
 dostepna_taksowka(porozmawiaj).
 dostepna_taksowka(pojedz_do_hali_koszyki) :- stan(hala_koszyki, tak).
 dostepna_taksowka(pojedz_na_wilcza_30) :- stan(wilcza, tak).
+
+dostępny_pkin(idz_w_strone_parku).
+dostępny_pkin(idz_w_strone_taksowki).
+dostępny_pkin(spojrz_na_ulotke).
+dostępny_pkin(idz_do_hali_koszyki) :- stan(hala_koszyki, tak).
+dostępny_pkin(idz_na_wilcza_30) :- stan(wilcza, tak).
 
 % Zmiana stanu pieniędzy
 dodaj(Kwota) :-
@@ -216,6 +224,14 @@ dzialanie(przed_pkin, idz_w_strone_taksowki) :-
 
 dzialanie(przed_pkin, spojrz_na_ulotke) :-
     write("Znajdujesz ulotkę z baru w Hali Koszyki z reklamą Happy Hours. Może warto się dam udać?"), nl.
+
+dzialanie(przed_pkin, idz_do_hali_koszyki) :-
+    write("Postanawiasz pójść do Hali Koszyki spacerując, aby móc podziwiać budzącą się Warszawę."), nl,
+    zmien_lokalizacje(hala_koszyki).
+
+dzialanie(przed_pkin, idz_na_wilcza_30) :-
+    write("Postanawiasz pójść na Wilczą 30 spacerując, aby móc podziwiać budzącą się Warszawę."), nl,
+    zmien_lokalizacje(wilcza_30).
 
 % Park
 dzialanie(park, usiadz_na_lawce) :-
