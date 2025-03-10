@@ -21,7 +21,8 @@ akcje(park, [usiadz_na_lawce, karm_golebie, obejrzyj_fontanne, porozmawiaj_z_nie
 % akcje(taksowka, [pojedz_do_hali_koszyki, pojedz_na_wilcza_30, porozmawiaj]).
 akcje(taksowka, Akcje) :-
     findall(Akcja, dostepna_taksowka(Akcja), Akcje).
-akcje(wilcza_30, [zapukaj_do_drzwi]).
+akcje(wilcza_30, [zapukaj_do_drzwi, rozejrzyj_sie]).
+akcje(dom_wilcza, [wykup_notatke, opusc_dom]).
 akcje(hala_koszyki, [podejdz_do_baru, porozmawiaj_z_gosciem, wyjdz_w_strone_chinczyka]).
 akcje(chinczyk, [porozmawiaj_z_wlascicielem, usiadz_przy_stoliku]).
 akcje(eiti, [zajrzyj_do_laboratorium, idz_do_gg_pw]).
@@ -99,6 +100,10 @@ opis(taksowka) :-
 
 opis(wilcza_30) :-
     write("Stoisz przed drzwiami mieszkania na Wilczej 30. Ktoś czeka na twoje przybycie."), nl.
+
+opis(dom_wilcza) :-
+    write("Wchodzisz do środka, w pokoju unosi się zapach papierosów i starego drewna. Mężczyzna wskazuje na krzesło, każąc ci usiąść."), nl,
+    write("Nagle bierze jakąś kartkę ze stołu. Mówi: 'Potrzebujesz tego, ale za darmo ci tego nie oddam (-10 zł)."), nl.
 
 opis(hala_koszyki) :-
     write("Jesteś w Hali Koszyki. Panuje tu przyjemna atmosfera, a wokół ludzi w różnym wieku."), nl.
@@ -257,6 +262,27 @@ dzialanie(taksowka, porozmawiaj) :-
 % Wilcza 30
 dzialanie(wilcza_30, zapukaj_do_drzwi) :-
     write("Otwiera ci nieznana osoba. 'Czekałem na ciebie.'"), nl.
+
+dzialanie(wilcza_30, rozejrzyj_sie) :-
+    write("Wilcza 30. Stara kamienica z odrapanym numerem nad wejściem."), nl,
+    write("Drzwi noszą ślady zużycia, jakby ktoś niedawno próbował je sforsować."), nl,
+    write("W środku czuć wilgoć, kurz i zapach tanich papierosów."), nl,
+    write("Na skrzynkach pocztowych nazwiska lokatorów, ale jedno miejsce jest puste."), nl.
+
+% Dom Wilcza
+dzialanie(dom_wilcza, wykup_notatke) :-
+    stan(pieniadze, ObecnePieniadze),
+    ObecnePieniadze >= 10,
+    write("Ciekawość wzieła górę i wykupiłeś ten kawałek papieru."), nl,
+    odejmij(10),
+    zmien_lokalizacje(wilcza_30).
+
+dzialanie(dom_wilcza, wykup_notatke) :-
+    write("Kwota, o którą prosi cię mężczyzna jest zdecydowanie za wysoka. Może jeszcze tu wrócę..."), nl.
+
+dzialanie(dom_wilcza, opusc_dom) :-
+    write("Postanowiłeś opuścić dom mężczyzny. Co jeszcze cię czeka?"), nl,
+    zmien_lokalizacje(wilcza_30).
 
 % Hala Koszyki
 dzialanie(hala_koszyki, podejdz_do_baru) :-
