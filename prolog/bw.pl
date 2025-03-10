@@ -1,15 +1,18 @@
 % Początkowy stan gracza
 :- dynamic lokalizacja/1.
 :- dynamic stan/2.
+:- dynamic dzialanie/2.
 
 lokalizacja(start).
 stan(pieniadze, 0).
 stan(notatki, []).
+stan(numerek, nie).
 
 % Definicja dostępnych akcji dla każdej lokalizacji
 akcje(taras_pkin, [zajrzyj_do_kieszeni, rozejrzyj_sie, podejdz_do_krawedzi, zejdz_po_schodach, uzyj_windy]).
 akcje(schody_pkin, [podnies_pieniadze, idz_dalej]).
 akcje(hol_pkin, [porozmawiaj_z_portierem, wyjdz_na_zewnatrz, udaj_sie_do_szatni]).
+akcje(szatnia_pkin, [wyjdz_na_zewnatrz, przeszukaj_kieszenie, przeszukaj_plaszcz]).
 akcje(przed_pkin, [idz_w_strone_parku, idz_w_strone_taksowki, spojrz_na_ulotke]).
 akcje(taksowka, [pojedz_do_hali_koszyki, pojedz_na_wilcza_30, porozmawiaj]).
 akcje(wilcza_30, [zapukaj_do_drzwi]).
@@ -69,6 +72,9 @@ opis(schody_pkin) :-
 opis(hol_pkin) :-
     write("Głowa nadal boli cię nieubłaganie. Wokół cicho, tylko portier siedzi za ladą. Może warto go zapytać o wczoraj?"), nl.
 
+opis(szatnia_pkin) :-
+    write("Wygląda na to, że kilka osób zapomniało wziąć płaszcz wychodząc. Może być trudno zgadnąć, który jest mój."), nl.
+
 opis(przed_pkin) :-
     write("Jesteś przed PKiN. Widok na miasto jest zapierający, możesz ruszyć w różne strony."), nl.
 
@@ -112,7 +118,7 @@ dzialanie(taras_pkin, rozejrzyj_sie) :-
     write("Widzisz panoramę miasta. Słońce wschodzi nad Warszawą."), nl.
 
 dzialanie(taras_pkin, uzyj_windy) :-
-    write("Zjeżdzasz windą prosto na dół do holu PKiN."), nl.
+    write("Zjeżdzasz windą prosto na dół do holu PKiN."), nl,
     zmien_lokalizacje(hol_pkin).
 
 dzialanie(taras_pkin, podejdz_do_krawedzi) :-
@@ -140,7 +146,25 @@ dzialanie(hol_pkin, wyjdz_na_zewnatrz) :-
 
 dzialanie(hol_pkin, udaj_sie_do_szatni) :-
     write("Idziesz do szatni."), nl,
-    zmien_lokalizacje(szatnia).
+    zmien_lokalizacje(szatnia_pkin).
+
+% Akcje dostępne w szatni PKiN
+dzialanie(szatnia_pkin, wyjdz_na_zewnatrz) :-
+    write("Wychodzisz z PKiN."), nl,
+    zmien_lokalizacje(przed_pkin).
+
+dzialanie(szatnia_pkin, przeszukaj_kieszenie) :-
+    write("Warto było przeszukać kieszenie jeszce raz. Znajdujesz numerek."),
+    retract(stan(numerek, nie)), % Usuwamy stary stan
+    assertz(stan(numerek, tak)). % Ustawiamy nowy stan
+
+dzialanie(szatnia_pkin, przeszukaj_plaszcz) :-
+    stan(numerek, nie), % Jeśli numerek nie został znaleziony
+    write("Nie masz numerka, więc nie wiesz, który płaszcz należy do ciebie."), nl.
+
+dzialanie(szatnia_pkin, przeszukaj_plaszcz) :-
+    stan(numerek, tak), % Jeśli numerek został znaleziony
+    write("Znajdujesz ulotkę z ofertą Happy Hours z baru w Hali Koszyki."), nl.
 
 % Przed PKiN
 dzialanie(przed_pkin, idz_w_strone_parku) :-
