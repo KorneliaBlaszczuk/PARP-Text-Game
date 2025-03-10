@@ -16,7 +16,7 @@ akcje(taras_pkin, [zajrzyj_do_kieszeni, rozejrzyj_sie, podejdz_do_krawedzi, zejd
 akcje(schody_pkin, [podnies_pieniadze, idz_dalej]).
 akcje(hol_pkin, [porozmawiaj_z_portierem, wyjdz_na_zewnatrz, udaj_sie_do_szatni]).
 akcje(szatnia_pkin, [wyjdz_na_zewnatrz, przeszukaj_kieszenie, przeszukaj_plaszcz]).
-akcje(przed_pkin, [idz_w_strone_parku, idz_w_strone_taksowki, spojrz_na_ulotke]).
+akcje(przed_pkin, [idz_w_strone_parku, idz_w_strone_taksowki, spojrz_na_ulotke, porozmawiaj_z_taksowkarzem]).
 akcje(park, [usiadz_na_lawce, karm_golebie, obejrzyj_fontanne, porozmawiaj_z_nieznajomym, idz_przed_pkin]).
 % akcje(taksowka, [pojedz_do_hali_koszyki, pojedz_na_wilcza_30, porozmawiaj]).
 akcje(taksowka, Akcje) :-
@@ -195,11 +195,21 @@ dzialanie(przed_pkin, idz_w_strone_parku) :-
     write("Odwiedziłeś już park, nie masz ochoty znowu tam wracać..."), nl.
 
 dzialanie(przed_pkin, idz_w_strone_taksowki) :-
+    stan(pieniadze, ObecnePieniadze),
+    ObecnePieniadze >= 20,
     write("Wsiadasz do taksówki."), nl,
     zmien_lokalizacje(taksowka).
 
+dzialanie(przed_pkin, idz_w_strone_taksowki) :-
+    write("Nie masz wystarczającej ilości pieniędzy, aby skorzystać z taksówki."), nl.
+
 dzialanie(przed_pkin, spojrz_na_ulotke) :-
     write("Znajdujesz ulotkę z baru w Hali Koszyki z reklamą Happy Hours. Może warto się dam udać?"), nl.
+
+dzialanie(przed_pkin, porozmawiaj_z_taksowkarzem) :-
+    retract(stan(hala_koszyki, nie)), % Usuwamy stary stan
+    assertz(stan(hala_koszyki, tak)), % Ustawiamy nowy stan
+    write("Kierowca mówi: Wyglądasz jakoś tak wczorajszo. Może warto udać się do Hali Koszyki."), nl.
 
 % Park
 dzialanie(park, usiadz_na_lawce) :-
@@ -232,14 +242,16 @@ dzialanie(park, idz_przed_pkin) :-
 % Taksówka
 dzialanie(taksowka, pojedz_do_hali_koszyki) :-
     write("Jedziesz do Hali Koszyki."), nl,
+    odejmij(20),
     zmien_lokalizacje(hala_koszyki).
 
 dzialanie(taksowka, pojedz_na_wilcza_30) :-
     write("Jedziesz na Wilczą 30."), nl,
+    odejmij(20),
     zmien_lokalizacje(wilcza_30).
 
 dzialanie(taksowka, porozmawiaj) :-
-    write("Kierowca mówi: 'Ciężka noc, co?'"), nl.
+    write("Kierowca mówi: 'Ciężka noc, co?'."), nl.
 
 % Wilcza 30
 dzialanie(wilcza_30, zapukaj_do_drzwi) :-
