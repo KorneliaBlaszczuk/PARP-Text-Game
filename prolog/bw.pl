@@ -99,7 +99,7 @@ opis(taksowka) :-
     write("Wsiadłeś do taksówki. Kierowca czeka na dalsze instrukcje."), nl.
 
 opis(wilcza_30) :-
-    write("Stoisz przed drzwiami mieszkania na Wilczej 30. Ktoś czeka na twoje przybycie."), nl.
+    write("Stoisz przed drzwiami mieszkania na Wilczej 30. "), nl.
 
 opis(dom_wilcza) :-
     write("Wchodzisz do środka, w pokoju unosi się zapach papierosów i starego drewna. Mężczyzna wskazuje na krzesło, każąc ci usiąść."), nl,
@@ -261,7 +261,8 @@ dzialanie(taksowka, porozmawiaj) :-
 
 % Wilcza 30
 dzialanie(wilcza_30, zapukaj_do_drzwi) :-
-    write("Otwiera ci nieznana osoba. 'Czekałem na ciebie.'"), nl.
+    write("Otwiera ci nieznana osoba. 'Czekałem na ciebie.'"), nl,
+    zmien_lokalizacje(dom_wilcza), nl.
 
 dzialanie(wilcza_30, rozejrzyj_sie) :-
     write("Wilcza 30. Stara kamienica z odrapanym numerem nad wejściem."), nl,
