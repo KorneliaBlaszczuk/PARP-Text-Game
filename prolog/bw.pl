@@ -16,7 +16,7 @@ akcje(taras_pkin, [zajrzyj_do_kieszeni, rozejrzyj_sie, podejdz_do_krawedzi, zejd
 akcje(schody_pkin, [podnies_pieniadze, idz_dalej]).
 akcje(hol_pkin, [porozmawiaj_z_portierem, wyjdz_na_zewnatrz, udaj_sie_do_szatni]).
 akcje(szatnia_pkin, [wyjdz_na_zewnatrz, przeszukaj_kieszenie, przeszukaj_plaszcz]).
-akcje(przed_pkin, [idz_w_strone_parku, idz_w_strone_taksowki, spojrz_na_ulotke, porozmawiaj_z_taksowkarzem]).
+akcje(przed_pkin, [idz_w_strone_parku, idz_w_strone_taksowki, spojrz_na_ulotke]).
 akcje(park, [usiadz_na_lawce, karm_golebie, obejrzyj_fontanne, porozmawiaj_z_nieznajomym, idz_przed_pkin]).
 % akcje(taksowka, [pojedz_do_hali_koszyki, pojedz_na_wilcza_30, porozmawiaj]).
 akcje(taksowka, Akcje) :-
@@ -158,6 +158,9 @@ dzialanie(hol_pkin, porozmawiaj_z_portierem) :-
 
 dzialanie(hol_pkin, wyjdz_na_zewnatrz) :-
     write("Wychodzisz na zewnątrz, przed PKiN."), nl,
+    write("Wychodząc zaczepia cię dziwny chłopak, który mówi: 'O hej brachu, pamiętasz co się działo wczoraj w Hali Koszyki?'"),
+    retract(stan(hala_koszyki, nie)), % Usuwamy stary stan
+    assertz(stan(hala_koszyki, tak)), % Ustawiamy nowy stan
     zmien_lokalizacje(przed_pkin).
 
 dzialanie(hol_pkin, udaj_sie_do_szatni) :-
@@ -167,6 +170,9 @@ dzialanie(hol_pkin, udaj_sie_do_szatni) :-
 % Akcje dostępne w szatni PKiN
 dzialanie(szatnia_pkin, wyjdz_na_zewnatrz) :-
     write("Wychodzisz z PKiN."), nl,
+    write("Wychodząc zaczepia cię dziwny chłopak, który mówi: 'O hej brachu, pamiętasz co się działo wczoraj w Hali Koszyki?'"),
+    retract(stan(hala_koszyki, nie)), % Usuwamy stary stan
+    assertz(stan(hala_koszyki, tak)), % Ustawiamy nowy stan
     zmien_lokalizacje(przed_pkin).
 
 dzialanie(szatnia_pkin, przeszukaj_kieszenie) :-
@@ -205,11 +211,6 @@ dzialanie(przed_pkin, idz_w_strone_taksowki) :-
 
 dzialanie(przed_pkin, spojrz_na_ulotke) :-
     write("Znajdujesz ulotkę z baru w Hali Koszyki z reklamą Happy Hours. Może warto się dam udać?"), nl.
-
-dzialanie(przed_pkin, porozmawiaj_z_taksowkarzem) :-
-    retract(stan(hala_koszyki, nie)), % Usuwamy stary stan
-    assertz(stan(hala_koszyki, tak)), % Ustawiamy nowy stan
-    write("Kierowca mówi: Wyglądasz jakoś tak wczorajszo. Może warto udać się do Hali Koszyki."), nl.
 
 % Park
 dzialanie(park, usiadz_na_lawce) :-
@@ -251,7 +252,7 @@ dzialanie(taksowka, pojedz_na_wilcza_30) :-
     zmien_lokalizacje(wilcza_30).
 
 dzialanie(taksowka, porozmawiaj) :-
-    write("Kierowca mówi: 'Ciężka noc, co?'."), nl.
+    write("Kierowca mówi: 'Ciężka noc, co? Wyglądasz jakoś tak wczorajszo. Zdecydowanie wczoraj poimprezowałeś.'"), nl.
 
 % Wilcza 30
 dzialanie(wilcza_30, zapukaj_do_drzwi) :-
