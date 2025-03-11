@@ -10,6 +10,7 @@ stan(numerek, nie).
 stan(wilcza, nie).
 stan(hala_koszyki, nie).
 stan(park, nie).
+stan(rozmowa, nie).
 stan(eiti, nie).
 
 % Definicja dostępnych akcji dla każdej lokalizacji
@@ -24,10 +25,10 @@ akcje(park, [usiadz_na_lawce, karm_golebie, obejrzyj_fontanne, porozmawiaj_z_nie
 % akcje(taksowka, [pojedz_do_hali_koszyki, pojedz_na_wilcza_30, porozmawiaj]).
 akcje(taksowka, Akcje) :-
     findall(Akcja, dostepna_taksowka(Akcja), Akcje).
-akcje(wilcza_30, [zapukaj_do_drzwi, rozejrzyj_sie]).
+akcje(wilcza_30, [zapukaj_do_drzwi, rozejrzyj_sie, idz_do_hali_koszyki]).
 akcje(dom_wilcza, [wykup_notatke, opusc_dom]).
 akcje(hala_koszyki, [podejdz_do_baru, porozmawiaj_z_gosciem, wyjdz_w_strone_chinczyka]).
-akcje(chinczyk, [porozmawiaj_z_wlascicielem, usiadz_przy_stoliku]).
+akcje(chinczyk, [porozmawiaj_z_wlascicielem, kup_cos, idz_do_gg_pw]).
 akcje(eiti, [zajrzyj_do_laboratorium, idz_do_gg_pw]).
 akcje(gg_pw, [przeszukaj_teren, sprawdz_tablice_ogloszen]).
 akcje(glowna_sala, [odczytaj_koperte]).
@@ -129,10 +130,6 @@ opis(gg_pw) :-
 
 opis(glowna_sala) :-
     write("Jesteś w głównej sali. Czas na końcową decyzję i oddanie pracy semestralnej."), nl.
-
-% W przypadku, gdy brak opisu dla lokalizacji
-opis(_) :-
-    write("Nie ma opisanego miejsca."), nl.
 
 % Opis początkowy gry
 start :-
@@ -330,9 +327,15 @@ dzialanie(hala_koszyki, wyjdz_w_strone_chinczyka) :-
 % Chińczyk
 dzialanie(chinczyk, porozmawiaj_z_wlascicielem) :-
     write("Pamięta cię! Wspomina, że wczoraj zostawiłeś coś przy stoliku."), nl,
-    write("Wskaże ci go jedynie, jeśli kupisz coś (10 zł), przecież za darmo nie możesz siedzieć w lokalu!"), nl.
+    write("Wskaże ci go jedynie, jeśli kupisz coś (10 zł), przecież za darmo nie możesz siedzieć w lokalu!"), nl,
+    assertz(stan(rozmowa, tak)).
 
 dzialanie(chinczyk, kup_cos) :-
+    stan(rozmowa, nie),  % Sprawdzamy, czy najpierw rozmawialiśmy z właścicielem
+    write("Najpierw porozmawiaj z właścicielem."), nl.
+
+dzialanie(chinczyk, kup_cos) :-
+    stan(rozmowa, tak),
     stan(pieniadze, ObecnePieniadze),
     ObecnePieniadze >= 10,  % Sprawdzamy, czy mamy wystarczająco pieniędzy
     stan(eiti, nie),         % Sprawdzamy, czy nie kupiliśmy wcześniej
@@ -343,13 +346,10 @@ dzialanie(chinczyk, kup_cos) :-
     write("Znajdziesz tam tajemniczą wiadomość „EITI” napisaną na odwrocie serwetki."), nl.
 
 dzialanie(chinczyk, kup_cos) :-
+    stan(rozmowa, tak),
     stan(pieniadze, ObecnePieniadze),
     ObecnePieniadze < 10,  % Sprawdzamy, czy mamy wystarczająco pieniędzy
     write("Nie masz tyle forsy! Musisz mieć 10 zł, aby kupić coś."), nl.
-
-dzialanie(chinczyk, kup_cos) :-
-    stan(eiti, nie),  % Sprawdzamy, czy najpierw rozmawialiśmy z właścicielem
-    write("Najpierw porozmawiaj z właścicielem, aby odblokować opcję 'Kup coś'."), nl.
 
 dzialanie(chinczyk, idz_do_gg_pw) :-
     write("Idziesz do Gmachu Głównego PW."), nl,
