@@ -152,6 +152,7 @@ interakcja_ggpw() :-
 
 podnies_klucz() :-
     \+ posiada_klucz,
+    write("Znajdujesz klucz! Wygląda dość staro, ale może będzie pasować."), nl,
     assertz(posiada_klucz).
 
 podnies_klucz() :-
@@ -496,21 +497,34 @@ dzialanie(eiti, idz_do_gg_pw) :-
 
 % GG PW
 dzialanie(gg_pw, przeszukaj_teren) :-
-    write("Szukasz wskazówek..."), nl.
+    \+ wie_o_brakujacym_kluczu,
+    write("Przeszukujesz teren dookoła kompletnie bez pomysłu. Nic nie znajdujesz."), nl.
+
+dzialanie(gg_pw, przeszukaj_teren) :-
+    wie_o_brakujacym_kluczu,
+    write("Przeszukujesz teren... musisz jakoś otworzyć te drzwi do sali głównej."), nl,
+    % tu chcę coś bardziej skomplikowanego, ale póki co po prostu znajdujesz klucz
+    podnies_klucz().
 
 dzialanie(gg_pw, sprawdz_tablice_ogloszen) :-
-    write("Na tablicy ogłoszeń widzisz informację o terminie oddania pracy."), nl.
+    write("Na tablicy ogłoszeń widzisz informację o terminie oddania pracy. Oprócz tego, widzisz nowo powieszony napis 'Zgubiono klucz do sali ...'"), nl,
+    (\+ wie_o_brakujacym_kluczu -> write("Więc chodzi o klucz... no tak."), nl, assertz(wie_o_brakujacym_kluczu)
+    ;
+    write("Wiesz o tym... "),
+    (posiada_klucz -> write("Patrzysz na klucz leżący w twojej dłoni."); true)).
 
 dzialanie(gg_pw, otworz_sale_glowna) :-
     \+ posiada_klucz,
-    write("Chwytasz za klamkę, i próbujesz otworzyć drzwi, aczkolwiek nic z tego - drzwi są zamknięte."), nl.
+    write("Chwytasz za klamkę, i próbujesz otworzyć drzwi, aczkolwiek nic z tego - drzwi są zamknięte."), nl,
+    (\+ wie_o_brakujacym_kluczu -> assertz(wie_o_brakujacym_kluczu), true).
 
 dzialanie(gg_pw, otworz_sale_glowna) :-
     posiada_klucz,
-    write("Klucz pasuje do zamka. Przekręcasz go, a drzwi, może i powoli, ale otwierają się przed tobą."), nl.
+    write("Klucz pasuje do zamka. Przekręcasz go, a drzwi, może i powoli, ale otwierają się przed tobą."), nl,
+    zmien_lokalizacje(glowna_sala).
 
 dzialanie(gg_pw, zaczep_kogos) :-
-    interakcja_ggpw()
+    interakcja_ggpw().
 
 % Główna sala
 dzialanie(glowna_sala, odczytaj_koperte) :-
