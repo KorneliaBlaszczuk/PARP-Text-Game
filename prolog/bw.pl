@@ -10,6 +10,7 @@ stan(numerek, nie).
 stan(wilcza, nie).
 stan(hala_koszyki, nie).
 stan(park, nie).
+stan(eiti, nie).
 
 % Definicja dostępnych akcji dla każdej lokalizacji
 akcje(taras_pkin, [zajrzyj_do_kieszeni, rozejrzyj_sie, podejdz_do_krawedzi, zejdz_po_schodach, uzyj_windy]).
@@ -69,7 +70,6 @@ dzialanie(Akcja) :-
 zmien_lokalizacje(NowaLokalizacja) :-
     retract(lokalizacja(_)),
     assertz(lokalizacja(NowaLokalizacja)),
-    write("Jesteś teraz w: "), write(NowaLokalizacja), nl,
     opis(NowaLokalizacja),
     wypisz_dostepne_akcje(NowaLokalizacja).
 
@@ -114,10 +114,12 @@ opis(dom_wilcza) :-
     write("Nagle bierze jakąś kartkę ze stołu. Mówi: 'Potrzebujesz tego, ale za darmo ci tego nie oddam (-10 zł)."), nl.
 
 opis(hala_koszyki) :-
-    write("Jesteś w Hali Koszyki. Panuje tu przyjemna atmosfera, a wokół ludzi w różnym wieku."), nl.
+    write("Hala Koszyki tętni życiem nawet o tej godzinie. Zapach kawy i świeżego pieczywa unosi się w powietrzu, a ludzie śmieją się przy stolikach."), nl,
+    write("Czujesz, że byłeś tu wczoraj, ale wciąż nie pamiętasz, co się stało."), nl.
 
 opis(chinczyk) :-
-    write("Jesteś w chińskiej restauracji. Zaczynasz rozglądać się za miejscem do siedzenia."), nl.
+    write("Lokal jest niewielki, ale przytulny."), nl,
+    write("Na ścianach wiszą chińskie lampiony, a w tle cicho gra azjatycka muzyka. Właściciel patrzy na ciebie z zainteresowaniem, jakby cię już widział."), nl.
 
 opis(eiti) :-
     write("Jesteś na Wydziale EITI. Laboratoria i studenci dookoła."), nl.
@@ -184,7 +186,7 @@ dzialanie(hol_pkin, udaj_sie_do_szatni) :-
 dzialanie(szatnia_pkin, wyjdz_na_zewnatrz) :-
     write("Wychodzisz z PKiN."), nl,
     write("Wychodząc zaczepia cię dziwny chłopak, który mówi: 'O hej brachu, pamiętasz co się działo wczoraj w Hali Koszyki?'"), nl,
-    retract(stan(hala_koszyki, nie)), % Usuwamy stary stan
+    % retract(stan(hala_koszyki, nie)), % Usuwamy stary stan
     assertz(stan(hala_koszyki, tak)), % Ustawiamy nowy stan
     zmien_lokalizacje(przed_pkin).
 
@@ -286,12 +288,20 @@ dzialanie(wilcza_30, rozejrzyj_sie) :-
     write("W środku czuć wilgoć, kurz i zapach tanich papierosów."), nl,
     write("Na skrzynkach pocztowych nazwiska lokatorów, ale jedno miejsce jest puste."), nl.
 
+dzialanie(wilcza_30, idz_do_hali_koszyki) :-
+    write("Opuszczasz Wilczą 30 i idziesz w strone Hali Koszyki."), nl,
+    zmien_lokalizacje(hala_koszyki).
+
 % Dom Wilcza
 dzialanie(dom_wilcza, wykup_notatke) :-
     stan(pieniadze, ObecnePieniadze),
     ObecnePieniadze >= 10,
     write("Ciekawość wzieła górę i wykupiłeś ten kawałek papieru."), nl,
     odejmij(10),
+    retract(stan(notatki, Lista)),  % Pobieramy obecną listę notatek
+    length(Lista, N),               % Sprawdzamy, ile jest notatek
+    NowaNotatka is N + 1,           % Nowa notatka dostaje numer N+1
+    assertz(stan(notatki, [NowaNotatka | Lista])), % Aktualizujemy stan
     zmien_lokalizacje(wilcza_30).
 
 dzialanie(dom_wilcza, wykup_notatke) :-
@@ -303,10 +313,15 @@ dzialanie(dom_wilcza, opusc_dom) :-
 
 % Hala Koszyki
 dzialanie(hala_koszyki, podejdz_do_baru) :-
-    write("Podchodzisz do baru i zamawiasz kawę."), nl.
+    write("Barman rozpoznaje cię i mówi, że wczoraj zostawiłeś coś ważnego."), nl,
+    write("Wręcza ci kolejną część notatki i wspomina o chińskiej restauracji, do której się wybierałeś."), nl,
+    retract(stan(notatki, Lista)),  % Pobieramy obecną listę notatek
+    length(Lista, N),               % Sprawdzamy, ile jest notatek
+    NowaNotatka is N + 1,           % Nowa notatka dostaje numer N+1
+    assertz(stan(notatki, [NowaNotatka | Lista])). % Aktualizujemy stan
 
 dzialanie(hala_koszyki, porozmawiaj_z_gosciem) :-
-    write("Gość mówi: 'Masz już wszystko, czego potrzebujesz?'"), nl.
+    write("Tajemniczy rozmówca wspomina o dziwnym incydencie, którego był świadkiem - ktoś potrącił cię szybko wychodząc."), nl.
 
 dzialanie(hala_koszyki, wyjdz_w_strone_chinczyka) :-
     write("Idziesz do chińskiej restauracji."), nl,
@@ -314,10 +329,35 @@ dzialanie(hala_koszyki, wyjdz_w_strone_chinczyka) :-
 
 % Chińczyk
 dzialanie(chinczyk, porozmawiaj_z_wlascicielem) :-
-    write("Właściciel mówi: 'Zjadłbyś coś?'"), nl.
+    write("Pamięta cię! Wspomina, że wczoraj zostawiłeś coś przy stoliku."), nl,
+    write("Wskaże ci go jedynie, jeśli kupisz coś (10 zł), przecież za darmo nie możesz siedzieć w lokalu!"), nl.
 
-dzialanie(chinczyk, usiadz_przy_stoliku) :-
-    write("Siadasz przy stoliku i zamawiasz danie dnia."), nl.
+dzialanie(chinczyk, kup_cos) :-
+    stan(pieniadze, ObecnePieniadze),
+    ObecnePieniadze >= 10,  % Sprawdzamy, czy mamy wystarczająco pieniędzy
+    stan(eiti, nie),         % Sprawdzamy, czy nie kupiliśmy wcześniej
+    retract(stan(pieniadze, ObecnePieniadze)),  % Usuwamy stary stan pieniędzy
+    NowePieniadze is ObecnePieniadze - 10,      % Zmniejszamy o 10 zł
+    assertz(stan(pieniadze, NowePieniadze)),     % Ustawiamy nowy stan pieniędzy
+    assertz(stan(eiti, tak)),   % Ustawiamy stan eiti na 'tak'
+    write("Znajdziesz tam tajemniczą wiadomość „EITI” napisaną na odwrocie serwetki."), nl.
+
+dzialanie(chinczyk, kup_cos) :-
+    stan(pieniadze, ObecnePieniadze),
+    ObecnePieniadze < 10,  % Sprawdzamy, czy mamy wystarczająco pieniędzy
+    write("Nie masz tyle forsy! Musisz mieć 10 zł, aby kupić coś."), nl.
+
+dzialanie(chinczyk, kup_cos) :-
+    stan(eiti, nie),  % Sprawdzamy, czy najpierw rozmawialiśmy z właścicielem
+    write("Najpierw porozmawiaj z właścicielem, aby odblokować opcję 'Kup coś'."), nl.
+
+dzialanie(chinczyk, idz_do_gg_pw) :-
+    write("Idziesz do Gmachu Głównego PW."), nl,
+    zmien_lokalizacje(gg_pw).
+
+dzialanie(chinczyk, idz_na_weiti) :-
+    write("Idziesz na wydział EITI."), nl,
+    zmien_lokalizacje(eiti).
 
 % EITI
 dzialanie(eiti, zajrzyj_do_laboratorium) :-
@@ -344,8 +384,12 @@ dobre_zakonczenie :-
     length(Lista, 5),
     write("Gratulacje! Oddałeś pracę semestralną i zdałeś przedmiot!"), nl.
 
+sprawdz(stan_notatek) :-
+    stan(notatki, Lista),
+    length(Lista, N),   % Liczymy liczbę notatek
+    write("Aktualnie masz " ),
+    write(N),
+    write(" notatek."), nl.
+
 % Uruchomienie gry
 :- start.
-
-% TODO po przejściach pojawia się opis i akcje ale nie robi sie true. coś jest do poprawy
-% zgodne z fabulą do zejścia do holu pkin, dalej tzreba dokonczyć
