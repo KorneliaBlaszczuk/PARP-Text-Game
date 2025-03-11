@@ -4,6 +4,9 @@
 :- dynamic dzialanie/2.
 :- dynamic zajrzano_do_kieszeni/0.
 :- dynamic licznik_interakcji/1.
+:- dynamic wie_o_brakujacym_kluczu/0.
+:- dynamic posiada_klucz/0.
+:- dynamic licznik_rozmow/1.
 
 lokalizacja(start).
 stan(pieniadze, 0).
@@ -31,7 +34,7 @@ akcje(dom_wilcza, [wykup_notatke, opusc_dom]).
 akcje(hala_koszyki, [podejdz_do_baru, porozmawiaj_z_gosciem, wyjdz_w_strone_chinczyka]).
 akcje(chinczyk, [porozmawiaj_z_wlascicielem, usiadz_przy_stoliku]).
 akcje(eiti, [zajrzyj_do_laboratorium, idz_do_gg_pw]).
-akcje(gg_pw, [przeszukaj_teren, sprawdz_tablice_ogloszen]).
+akcje(gg_pw, [przeszukaj_teren, sprawdz_tablice_ogloszen, sprawdz_portiernie, zaczep_kogos, otworz_sale_glowna]).
 akcje(glowna_sala, [odczytaj_koperte]).
 
 dostepna_taksowka(porozmawiaj).
@@ -46,8 +49,8 @@ dostępny_pkin(idz_na_wilcza_30) :- stan(wilcza, tak).
 
 % Funkcje do licznika interakcji
 
-licznik_interakcji(0).
-assertz(licznik_interakcji(0)).
+inicjuj_licznik() :-
+    assertz(licznik_interakcji(0)).
 
 inkrementuj_licznik() :-
     licznik_interakcji(Wartosc),
@@ -67,6 +70,96 @@ ustal_wartosc_licznika(NowaWartosc) :-
     licznik_interakcji(Wartosc),
     retract(licznik_interakcji(Wartosc)),
     assertz(licznik_interakcji(NowaWartosc)).
+
+% Funkcje rozmowy w gmachu głównym
+
+interakcja_ggpw() :-
+    \+ licznik_rozmow(_),
+    assertz(licznik_rozmow(0)),
+    write("Zauważasz jakiegoś profesora, i podchodzisz do niego."), nl,
+    (\+ wie_o_brakujacym_kluczu ->
+        write("Mówisz do profesora dzień dobry. Profesor z uśmiechem wita się z tobą. Nic więcej nie mówisz."), nl
+    ;
+        write("Witasz się z profesorem. Pytasz go też, czy wie jak otworzyć salę główną."), nl,
+        write("'Nie jest otwarta? Hm. Niech Pan sprawdzi może w portierni - tam powinni Panu pomóc.'"), nl
+    ).
+
+interakcja_ggpw() :-
+    licznik_rozmow(X),
+    X = 0,
+    write("Zaczepiasz jakiegoś studenta. Student uśmiecha się do ciebie."), nl,
+    write("'Hej, co tam?'"), nl,
+    write("Patrzysz się ze zdziwieniem. Student przypomina tobie, że jest z tobą na roku. Nadal nic ci to nie mówi."), nl,
+    (\+ wie_o_brakujacym_kluczu ->
+        write("Nie wiedząc co powiedzieć, jak najszybciej znikasz z miejsca zdarzenia."), nl
+    ;
+        write("Nieważne. Pytasz go, czy wie jak dostać się do sali głównej."), nl,
+        write("'Czytałeś może tablicę ogłoszeń? Napisali że klucza nie ma - zginął gdzieś. Ciekawe gdzie go zgubili...'"), nl,
+        write("Nie pomogło tobie to za bardzo. Odchodzisz."), nl
+    ),
+    retract(licznik_rozmow(X)),
+    assertz(licznik_rozmow(1)).
+
+interakcja_ggpw() :-
+    licznik_rozmow(X),
+    X = 1,
+    write("Próbujesz pogadać z Panią woźną."), nl,
+    (\+ wie_o_brakujacym_kluczu ->
+        write("W sumie uznajesz, że nie chcesz jej przeszkadzać. Odchodzisz."), nl
+    ;
+        write("Pytasz Panią, czy może wie na temat zamknięcia sali głównej."), nl,
+        write("'Oj nie wiem, słyszałam tylko że zginął niedawno. Tak dokładnie nie szukaliśmy go jeszcze.'"), nl
+    ),
+    retract(licznik_rozmow(X)),
+    assertz(licznik_rozmow(2)).
+
+
+interakcja_ggpw() :-
+    licznik_rozmow(X),
+    X = 2,
+    write("Podchodzisz do studentki. Witasz się. "),
+    (\+ wie_o_brakujacym_kluczu ->
+        write("Pytasz jak idzie w tym semestrze. Studentka krótko odpowiada że, idzie jej nieźle."), nl
+    ;
+        write("Pytasz, czy może wie dlaczego sala główna jest zamknięta."), nl,
+        write("'Hm, też próbujesz oddać pracę semestralną, nie?'"), nl,
+        stan(notatki, Lista),
+        length(Lista, N),
+        (N = 0 -> write("Zaraz... "); true),
+        (N = 5 ->
+            write("Odpowiadasz, że tak - na tym tobie teraz zależy"), nl,
+            write("'Podobno klucz gdzieś się zgubił, i teraz profesor czeka w środku aż ktoś mu otworzy'"), nl,
+            write("Żegnasz się, i powoli odwracasz się w stro-"), nl,
+            write("'Tak jak coś, kolega mi mówił że zaczął odpytywać ostatnio.'"),
+            write("'Podobno mówi coś w stylu 'no i jak twoja wiedza', i jak mu odpowiesz, to można wyższą ocenę dostać.'"), nl,
+            write("Pytasz, czy może wie, z czego odpytywał."), nl,
+            write("'Chyba wszystkich pytał o to samo...'"), nl,
+            write("Przez kolejną minutę rozmawiasz, i słuchasz o pytaniach. To się może przydać!"), nl,
+            inkrementuj_licznik()
+        ;
+            write("Aha, faktycznie. Odchodzisz.")
+        )
+    ),
+    retract(licznik_rozmow(X)),
+    assertz(licznik_rozmow(3)).
+
+interakcja_ggpw() :-
+    licznik_rozmow(X),
+    X = 3,
+    (\+ wie_o_brakujacym_kluczu -> write("Nie chcesz już próbować.") ; write("Chciałbyś zagadać jeszcze raz, ale nie widzisz już nikogo, z kim rozmawiałeś.")),
+    nl.
+% Funkcje do klucza sali głównej
+
+podnies_klucz() :-
+    \+ posiada_klucz,
+    assertz(posiada_klucz).
+
+podnies_klucz() :-
+    posiada_klucz,
+    write("Schylasz się po klucz i... nic nie podnosisz. Klucz trzymasz przecież w ręku. Niezręcznie..."), nl.
+
+czy_ma_klucz() :-
+    posiada_klucz.
 
 % Zmiana stanu pieniędzy
 dodaj(Kwota) :-
@@ -151,7 +244,8 @@ opis(eiti) :-
     write("Jesteś na Wydziale EITI. Laboratoria i studenci dookoła."), nl.
 
 opis(gg_pw) :-
-    write("Jesteś w Gmachu Głównym Politechniki Warszawskiej. Wszędzie pełno studentów i nauczycieli."), nl.
+    write("Jesteś w Gmachu Głównym Politechniki Warszawskiej. Wszędzie pełno studentów i nauczycieli."), nl,
+    write("Znajdujesz swoim wzrokiem salę główną. Czas zdaje się biec coraz szybciej."), nl.
 
 opis(glowna_sala) :-
     write("Jesteś w głównej sali. Czas na końcową decyzję i oddanie pracy semestralnej."), nl.
@@ -162,6 +256,7 @@ opis(_) :-
 
 % Opis początkowy gry
 start :-
+    inicjuj_licznik(),
     zmien_lokalizacje(taras_pkin).
 
 % Akcje dostępne na tarasie PKiN
@@ -405,6 +500,17 @@ dzialanie(gg_pw, przeszukaj_teren) :-
 
 dzialanie(gg_pw, sprawdz_tablice_ogloszen) :-
     write("Na tablicy ogłoszeń widzisz informację o terminie oddania pracy."), nl.
+
+dzialanie(gg_pw, otworz_sale_glowna) :-
+    \+ posiada_klucz,
+    write("Chwytasz za klamkę, i próbujesz otworzyć drzwi, aczkolwiek nic z tego - drzwi są zamknięte."), nl.
+
+dzialanie(gg_pw, otworz_sale_glowna) :-
+    posiada_klucz,
+    write("Klucz pasuje do zamka. Przekręcasz go, a drzwi, może i powoli, ale otwierają się przed tobą."), nl.
+
+dzialanie(gg_pw, zaczep_kogos) :-
+    interakcja_ggpw()
 
 % Główna sala
 dzialanie(glowna_sala, odczytaj_koperte) :-
