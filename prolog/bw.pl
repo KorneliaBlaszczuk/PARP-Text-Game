@@ -2,6 +2,7 @@
 :- dynamic lokalizacja/1.
 :- dynamic stan/2.
 :- dynamic dzialanie/2.
+:- dynamic zajrzano_do_kieszeni/0.
 
 lokalizacja(start).
 stan(pieniadze, 0).
@@ -111,7 +112,7 @@ opis(wilcza_30) :-
 
 opis(dom_wilcza) :-
     write("Wchodzisz do środka, w pokoju unosi się zapach papierosów i starego drewna. Mężczyzna wskazuje na krzesło, każąc ci usiąść."), nl,
-    write("Nagle bierze jakąś kartkę ze stołu. Mówi: 'Potrzebujesz tego, ale za darmo ci tego nie oddam (-10 zł)."), nl.
+    write("Nagle bierze jakąś kartkę ze stołu. Mówi: 'Potrzebujesz tego, ale za darmo ci tego nie oddam (-10 zł).'"), nl.
 
 opis(hala_koszyki) :-
     write("Hala Koszyki tętni życiem nawet o tej godzinie. Zapach kawy i świeżego pieczywa unosi się w powietrzu, a ludzie śmieją się przy stolikach."), nl,
@@ -140,10 +141,16 @@ start :-
 
 % Akcje dostępne na tarasie PKiN
 dzialanie(taras_pkin, zajrzyj_do_kieszeni) :-
+    \+ zajrzano_do_kieszeni,
+    assertz(zajrzano_do_kieszeni),
     write("Sięgasz do kieszeni i znajdujesz 20 zł oraz notatkę."), nl,
     dodaj(20),
     retract(stan(notatki, Lista)),
     assertz(stan(notatki, [1 | Lista])).
+
+dzialanie(taras_pkin, zajrzyj_do_kieszeni) :-
+    zajrzano_do_kieszeni,
+    write("Już zajrzałeś do kieszeni, nic tam więcej nie ma.").
 
 dzialanie(taras_pkin, rozejrzyj_sie) :-
     write("Widzisz panoramę miasta. Słońce wschodzi nad Warszawą."), nl.
