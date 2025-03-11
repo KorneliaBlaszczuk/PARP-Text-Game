@@ -3,6 +3,7 @@
 :- dynamic stan/2.
 :- dynamic dzialanie/2.
 :- dynamic zajrzano_do_kieszeni/0.
+:- dynamic licznik_interakcji/1.
 
 lokalizacja(start).
 stan(pieniadze, 0).
@@ -42,6 +43,30 @@ dostępny_pkin(idz_w_strone_taksowki).
 dostępny_pkin(spojrz_na_ulotke).
 dostępny_pkin(idz_do_hali_koszyki) :- stan(hala_koszyki, tak).
 dostępny_pkin(idz_na_wilcza_30) :- stan(wilcza, tak).
+
+% Funkcje do licznika interakcji
+
+licznik_interakcji(0).
+assertz(licznik_interakcji(0)).
+
+inkrementuj_licznik() :-
+    licznik_interakcji(Wartosc),
+    NowaWartosc is Wartosc + 1,
+    retract(licznik_interakcji(Wartosc)),
+    assertz(licznik_interakcji(NowaWartosc)).
+
+sprawdz_licznik() :-
+    licznik_interakcji(Wartosc),
+    write("Aktualna wartość licznika: "), write(Wartosc), nl.
+
+czy_licznik_wiekszy_od(Liczba) :-
+    licznik_interakcji(Wartosc),
+    Wartosc > Liczba.
+
+ustal_wartosc_licznika(NowaWartosc) :-
+    licznik_interakcji(Wartosc),
+    retract(licznik_interakcji(Wartosc)),
+    assertz(licznik_interakcji(NowaWartosc)).
 
 % Zmiana stanu pieniędzy
 dodaj(Kwota) :-
