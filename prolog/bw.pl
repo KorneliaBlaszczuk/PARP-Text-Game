@@ -283,7 +283,8 @@ przeszukaj_miejsce(4) :-
     dzialanie(gg_pw, przeszukaj_teren).
 
 przeszukaj_miejsce(5) :-
-    true.
+    true,
+    wypisz_dostepne_akcje(gg_pw).
 
 % Funkcje do klucza sali głównej
 
@@ -334,8 +335,7 @@ wypisz_dostepne_akcje(Lokalizacja) :-
 dzialanie(Akcja) :-
     shell('clear'),
     lokalizacja(Lokalizacja),
-    dzialanie(Lokalizacja, Akcja),
-    wypisz_dostepne_akcje(Lokalizacja).
+    dzialanie(Lokalizacja, Akcja).
 
 wypisz_akcje([]).
 wypisz_akcje([Akcja | Reszta]) :-
@@ -652,7 +652,8 @@ dzialanie(gg_pw, sprawdz_tablice_ogloszen) :-
     (\+ wie_o_brakujacym_kluczu -> write("Więc chodzi o klucz... no tak."), nl, assertz(wie_o_brakujacym_kluczu)
     ;
     write("Wiesz o tym... "),
-    (posiada_klucz -> write("Patrzysz na klucz leżący w twojej dłoni."); true)).
+    (posiada_klucz -> write("Patrzysz na klucz leżący w twojej dłoni."); true)),
+    wypisz_dostepne_akcje(gg_pw).
 
 dzialanie(gg_pw, sprawdz_portiernie) :-
     write("Podchodzisz do pustej portierni. Zauważasz kubek z kawą, taśmę, i kilka innych przedmiotów."), nl,
@@ -663,12 +664,14 @@ dzialanie(gg_pw, sprawdz_portiernie) :-
             assertz(posiada_klucz_do_sekretnej_sali) ; true
         )
         ; write("Odchodzisz."), nl
-    ).
+    ),
+    wypisz_dostepne_akcje(gg_pw).
 
 dzialanie(gg_pw, otworz_sale_glowna) :-
     \+ posiada_klucz,
     write("Chwytasz za klamkę, i próbujesz otworzyć drzwi, aczkolwiek nic z tego - drzwi są zamknięte."), nl,
-    (\+ wie_o_brakujacym_kluczu -> assertz(wie_o_brakujacym_kluczu); true).
+    (\+ wie_o_brakujacym_kluczu -> assertz(wie_o_brakujacym_kluczu); true),
+    wypisz_dostepne_akcje(gg_pw).
 
 dzialanie(gg_pw, otworz_sale_glowna) :-
     posiada_klucz,
@@ -677,7 +680,8 @@ dzialanie(gg_pw, otworz_sale_glowna) :-
     zmien_lokalizacje(glowna_sala).
 
 dzialanie(gg_pw, pogadaj_z_kims) :-
-    interakcja_ggpw().
+    interakcja_ggpw(),
+    wypisz_dostepne_akcje(gg_pw).
 
 % Główna sala
 dzialanie(glowna_sala, odczytaj_koperte) :-
