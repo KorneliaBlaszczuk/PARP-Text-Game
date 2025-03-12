@@ -140,7 +140,7 @@ interakcja_ggpw() :-
             write("Przez kolejną minutę rozmawiasz, i słuchasz o pytaniach. To się może przydać!"), nl,
             inkrementuj_licznik() % interakcja : +0.5 do oceny końcowej
         ;
-            write("Aha, faktycznie. Odchodzisz.")
+            write("Aha, faktycznie. Odchodzisz."), nl
         )
     ),
     retract(licznik_rozmow(X)),
@@ -276,6 +276,7 @@ przeszukaj_miejsce(3) :-
     ).
 
 przeszukaj_miejsce(4) :-
+    shell('clear'),
     write("Idziesz sprawdzić najbliższą klatkę schodową. Przechodzisz się po niej w górę, i wracasz. Nic nie zauważasz."), nl,
     podnies_klucz(),
     write("Wracasz do punktu, z którego zacząłeś przeszukiwanie."), nl,
@@ -667,10 +668,11 @@ dzialanie(gg_pw, sprawdz_portiernie) :-
 dzialanie(gg_pw, otworz_sale_glowna) :-
     \+ posiada_klucz,
     write("Chwytasz za klamkę, i próbujesz otworzyć drzwi, aczkolwiek nic z tego - drzwi są zamknięte."), nl,
-    (\+ wie_o_brakujacym_kluczu -> assertz(wie_o_brakujacym_kluczu), true).
+    (\+ wie_o_brakujacym_kluczu -> assertz(wie_o_brakujacym_kluczu); true).
 
 dzialanie(gg_pw, otworz_sale_glowna) :-
     posiada_klucz,
+    (posiada_klucz_do_sekretnej_sali -> write("Naprawiony klucz nie pasuje, ale..."), nl; true),
     write("Klucz pasuje do zamka. Przekręcasz go, a drzwi, może i powoli, ale otwierają się przed tobą."), nl,
     zmien_lokalizacje(glowna_sala).
 
