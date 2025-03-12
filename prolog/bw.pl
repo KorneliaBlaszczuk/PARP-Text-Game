@@ -138,7 +138,7 @@ interakcja_ggpw() :-
             write("Pytasz, czy może wie, z czego odpytywał."), nl,
             write("'Chyba wszystkich pytał o to samo...'"), nl,
             write("Przez kolejną minutę rozmawiasz, i słuchasz o pytaniach. To się może przydać!"), nl,
-            inkrementuj_licznik()
+            inkrementuj_licznik() % interakcja : +0.5 do oceny końcowej
         ;
             write("Aha, faktycznie. Odchodzisz.")
         )
@@ -176,7 +176,7 @@ przeszukaj_miejsce(1) :-
             assertz(posiada_1_czesc_wylamanego_klucza),
             fail
             ;
-            write("Pod drzwiami nic więcej nie ma."), nl
+            write("Pod drzwiami jest jeszcze kawałek kartki. Zostawiasz go."), nl
         )
         ;
         true
@@ -235,7 +235,7 @@ przeszukaj_miejsce(3) :-
         write("Próbujesz otworzyć salę 121."), nl,
         write("Sala jest zamknięta."), nl,
         (posiada_klucz_do_sekretnej_sali -> write("Twój naprawiony klucz nie pasuje do zamka."); true),
-        (posiada_klucz -> write("Klucz który znalazłeś, nie pasuje do zamka."); true),
+        (posiada_klucz -> write("Klucz który znalazłeś, nie pasuje do zamka."), nl; true),
         fail ; true
     ),
     (Wybor = 2 ->
@@ -249,7 +249,7 @@ przeszukaj_miejsce(3) :-
         shell('clear'),
         write("Próbujesz otworzyć salę 133"), nl,
         write("Sala jest zamknięta. "),
-        (posiada_klucz -> write("Klucz który znalazłeś, nie pasuje do zamka."); true),
+        (posiada_klucz -> write("Klucz który znalazłeś, nie pasuje do zamka. "); true),
         (posiada_klucz_do_sekretnej_sali ->
             write("Klucz który naprawiłeś, pasuje do zamka. Otwierasz drzwi do sali 133, i wchodzisz do środka."), nl,
             write("Wszystko wygląda normalnie. Zauważasz zostawione przez jakiegoś studenta notatki. Są z przedmiotu, który przecież kojarzysz."), nl,
@@ -280,6 +280,9 @@ przeszukaj_miejsce(4) :-
     podnies_klucz(),
     write("Wracasz do punktu, z którego zacząłeś przeszukiwanie."), nl,
     dzialanie(gg_pw, przeszukaj_teren).
+
+przeszukaj_miejsce(5) :-
+    true.
 
 % Funkcje do klucza sali głównej
 
@@ -649,6 +652,17 @@ dzialanie(gg_pw, sprawdz_tablice_ogloszen) :-
     ;
     write("Wiesz o tym... "),
     (posiada_klucz -> write("Patrzysz na klucz leżący w twojej dłoni."); true)).
+
+dzialanie(gg_pw, sprawdz_portiernie) :-
+    write("Podchodzisz do pustej portierni. Zauważasz kubek z kawą, taśmę, i kilka innych przedmiotów."), nl,
+    (posiada_1_czesc_wylamanego_klucza, posiada_2_czesc_wylamanego_klucza ->
+        (\+ posiada_klucz_do_sekretnej_sali ->
+            write("Masz dwie części klucza, które mniej więcej pasują do siebie. Bierzesz z biurka taśmę, i łączysz umiejętnie dwie części klucza."), nl,
+            write("Hmmm. Ciekawe do czego ten klucz pasuje."), nl,
+            assertz(posiada_klucz_do_sekretnej_sali) ; true
+        )
+        ; write("Odchodzisz."), nl
+    ).
 
 dzialanie(gg_pw, otworz_sale_glowna) :-
     \+ posiada_klucz,
