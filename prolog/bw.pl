@@ -7,6 +7,9 @@
 :- dynamic wie_o_brakujacym_kluczu/0.
 :- dynamic posiada_klucz/0.
 :- dynamic licznik_rozmow/1.
+:- dynamic posiada_1_czesc_wylamanego_klucza/0.
+:- dynamic posiada_2_czesc_wylamanego_klucza/0.
+:- dynamic posiada_klucz_do_sekretnej_sali/0.
 
 lokalizacja(start).
 stan(pieniadze, 0).
@@ -34,7 +37,7 @@ akcje(dom_wilcza, [wykup_notatke, opusc_dom]).
 akcje(hala_koszyki, [podejdz_do_baru, porozmawiaj_z_gosciem, wyjdz_w_strone_chinczyka]).
 akcje(chinczyk, [porozmawiaj_z_wlascicielem, usiadz_przy_stoliku]).
 akcje(eiti, [zajrzyj_do_laboratorium, idz_do_gg_pw]).
-akcje(gg_pw, [przeszukaj_teren, sprawdz_tablice_ogloszen, sprawdz_portiernie, zaczep_kogos, otworz_sale_glowna]).
+akcje(gg_pw, [pogadaj_z_kims, sprawdz_tablice_ogloszen, sprawdz_portiernie, przeszukaj_teren, otworz_sale_glowna]).
 akcje(glowna_sala, [odczytaj_koperte]).
 
 dostepna_taksowka(porozmawiaj).
@@ -148,11 +151,141 @@ interakcja_ggpw() :-
     X = 3,
     (\+ wie_o_brakujacym_kluczu -> write("Nie chcesz już próbować.") ; write("Chciałbyś zagadać jeszcze raz, ale nie widzisz już nikogo, z kim rozmawiałeś.")),
     nl.
+
+% Funkcje do przeszukiwania terenu w gmachu głównym
+
+przeszukaj_miejsce(1) :-
+    repeat,
+    write("Dziekanat wydaje się być zamknięty. Spod drzwi wystaje kawałek jakiegoś przedmiotu"), nl,
+    write("Wybierz [1] Spróbuj otworzyć drzwi do dziekanatu [2] Podnieś przedmiot [3] Wróć do miejsca startowego"), nl,
+    read(Wybor),
+    (Wybor = 1 ->
+        shell('clear'),
+        write("Drzwi dalej się nie otwierają. Próbujesz na siłę, ale bez skutku. Jedyne co wywołujesz, to dziwne spojrzenie od przechodzącej Pani magister."), nl, nl,
+        fail
+        ;
+        true
+    ),
+    (Wybor = 2 ->
+        shell('clear'),
+        (\+ posiada_1_czesc_wylamanego_klucza ->
+            write("Schylasz się po przedmiot, i wysuwasz go spod drzwi. Dobra informacja: jest to klucz!"), nl,
+            write("Gorsza informacja: część tego klucza wydaje się wyłamana. Może się przyda, kto wie"), nl,
+            (posiada_2_czesc_wylamanego_klucza -> write("Ten kawałek co podniosłeś wcześniej wydaje się dopełniać wyłamany klucz"), nl,
+                write("Gdyby tylko dało się go jakoś naprawić..."); true),
+            assertz(posiada_1_czesc_wylamanego_klucza),
+            fail
+            ;
+            write("Pod drzwiami nic więcej nie ma."), nl
+        )
+        ;
+        true
+    ),
+    (Wybor = 3 ->
+        shell('clear'),
+        dzialanie(gg_pw, przeszukaj_teren)
+        ;
+        fail
+    ).
+
+przeszukaj_miejsce(2) :-
+    repeat,
+    write("Jest tutaj co sprawdzać. Ale od czego zacząć?"), nl, nl,
+    write("Co sprawdzisz? [1] Pójdź w lewo [2] Pójdź w prawo [3] Pójdź na wprost [4] Wróć do miejsca startowego"), nl,
+    read(Wybor),
+    (Wybor = 1 ->
+        shell('clear'),
+        write("Przechodzisz po lewym korytarzu i sprawdzasz każdy kąt."), nl,
+        write("Nic ciekawego nie zauważasz. Wracasz do rozwidlenia."), nl,
+        fail
+        ;
+        true
+    ),
+    (Wybor = 2 ->
+        shell('clear'),
+        write("Sprawdzasz korytarz po prawej. Sprawdzasz dosłownie wszystko co się da."), nl,
+        (\+ posiada_2_czesc_wylamanego_klucza ->
+            write("Zauważasz dwuzłotówkę, oraz dziwny kawałek... czegoś. Patrzysz czy nikt nie idzie, i podnosisz oba przedmioty"), nl,
+            assertz(posiada_2_czesc_wylamanego_klucza),
+            (posiada_1_czesc_wylamanego_klucza ->
+            write("Ten kawałek w sumie pasuje do wyłamanego klucza. Gdyby go jakoś naprawić..."), nl; true),
+            dodaj(2),
+            fail
+            ;
+            write("Nic nie zauważasz"), nl
+        )
+        ; true
+    ),
+    (Wybor = 3 -> shell('clear'), write("Idziesz na wprost. Natrafiasz na ścianę."), nl,
+        fail ; true),
+    (Wybor = 4 ->
+        shell('clear'),
+        dzialanie(gg_pw, przeszukaj_teren)
+        ;
+        fail
+    ).
+
+przeszukaj_miejsce(3) :-
+    repeat,
+    write("Idziesz na pierwsze piętro, i wchodzisz do losowego korytarza. Za cel obierasz sobie losowe sale."), nl, nl,
+    write("Co robisz? [1] Wejdź do sali 121 [2] Wejdź do sali 113 [3] Wejdź do sali 133 [4] Wróć do miejsca startowego"), nl,
+    read(Wybor),
+    (Wybor = 1 ->
+        shell('clear'),
+        write("Próbujesz otworzyć salę 121."), nl,
+        write("Sala jest zamknięta."), nl,
+        (posiada_klucz_do_sekretnej_sali -> write("Twój naprawiony klucz nie pasuje do zamka."); true),
+        (posiada_klucz -> write("Klucz który znalazłeś, nie pasuje do zamka."); true),
+        fail ; true
+    ),
+    (Wybor = 2 ->
+        shell('clear'),
+        write("Próbujesz otworzyć salę 113"), nl,
+        write("Sala jest otwarta. Wchodzisz do środka: nikogo tutaj nie ma."), nl,
+        write("Przeszukujesz salę, i wszystko wydaje się normalne. Podchodzisz do biurka nauczyciela, lecz wszystkie szafki są pozamykane."), nl,
+        write("Nic nie znajdujesz."), nl, fail ; true
+    ),
+    (Wybor = 3 ->
+        shell('clear'),
+        write("Próbujesz otworzyć salę 133"), nl,
+        write("Sala jest zamknięta. "),
+        (posiada_klucz -> write("Klucz który znalazłeś, nie pasuje do zamka."); true),
+        (posiada_klucz_do_sekretnej_sali ->
+            write("Klucz który naprawiłeś, pasuje do zamka. Otwierasz drzwi do sali 133, i wchodzisz do środka."), nl,
+            write("Wszystko wygląda normalnie. Zauważasz zostawione przez jakiegoś studenta notatki. Są z przedmiotu, który przecież kojarzysz."), nl,
+            write("Szybko czytasz notatki. "),
+            stan(notatki, Lista),
+            length(Lista, N),
+            (N < 5 ->
+                write("W sumie mało się dowiadujesz"), nl;
+                write("To może się przydać do twoich notatek! Bierzesz czystą kartkę z biurka nauczyciela, i przepisujesz najważniejsze rzeczy."),
+                inkrementuj_licznik(), nl % interakcja : +0.5 do oceny końcowej
+            ),
+            true
+            ;
+            write("Odchodzisz od drzwi."), nl,
+            true
+        ),
+        fail ; true
+    ),
+    (Wybor = 4 ->
+        shell('clear'),
+        dzialanie(gg_pw, przeszukaj_teren)
+        ;
+        fail
+    ).
+
+przeszukaj_miejsce(4) :-
+    write("Idziesz sprawdzić najbliższą klatkę schodową. Przechodzisz się po niej w górę, i wracasz. Nic nie zauważasz."), nl,
+    podnies_klucz(),
+    write("Wracasz do punktu, z którego zacząłeś przeszukiwanie."), nl,
+    dzialanie(gg_pw, przeszukaj_teren).
+
 % Funkcje do klucza sali głównej
 
 podnies_klucz() :-
     \+ posiada_klucz,
-    write("Znajdujesz klucz! Wygląda dość staro, ale może będzie pasować."), nl,
+    write("Znajdujesz klucz! Wygląda dość staro, ale może będzie gdzieś pasować."), nl,
     assertz(posiada_klucz).
 
 podnies_klucz() :-
@@ -181,11 +314,6 @@ odejmij(Kwota) :-
     write(NowyStan), % Wyświetlamy nowy stan portfela
     write(" zł"), nl.
 
-% Uproszczone wywołanie akcji
-dzialanie(Akcja) :-
-    lokalizacja(Lokalizacja),
-    dzialanie(Lokalizacja, Akcja).
-
 % Funkcja zmieniająca lokalizację i wypisująca dostępne akcje
 zmien_lokalizacje(NowaLokalizacja) :-
     retract(lokalizacja(_)),
@@ -197,6 +325,13 @@ wypisz_dostepne_akcje(Lokalizacja) :-
     akcje(Lokalizacja, Akcje),
     write("Dostępne akcje: "), nl,
     wypisz_akcje(Akcje).
+
+% Uproszczone wywołanie akcji
+dzialanie(Akcja) :-
+    shell('clear'),
+    lokalizacja(Lokalizacja),
+    dzialanie(Lokalizacja, Akcja),
+    wypisz_dostepne_akcje(Lokalizacja).
 
 wypisz_akcje([]).
 wypisz_akcje([Akcja | Reszta]) :-
@@ -502,12 +637,14 @@ dzialanie(gg_pw, przeszukaj_teren) :-
 
 dzialanie(gg_pw, przeszukaj_teren) :-
     wie_o_brakujacym_kluczu,
-    write("Przeszukujesz teren... musisz jakoś otworzyć te drzwi do sali głównej."), nl,
-    % tu chcę coś bardziej skomplikowanego, ale póki co po prostu znajdujesz klucz
-    podnies_klucz().
+    write("Przeszukujesz teren... musisz jakoś otworzyć te drzwi do sali głównej."), nl, nl,
+    write("Chodzisz dookoła z myślą że coś znajdziesz, ale bez skutku... Może trzeba do tego podejść na spokojnie?"), nl,
+    write("Co robisz? Wybierz [1] Idź do dziekanatu [2] Przeszukaj korytarze [3] Sprawdź różne sale, [4] Sprawdź klatkę schodową [5] Skończ szukać"), nl,
+    read(Wybor),
+    przeszukaj_miejsce(Wybor).
 
 dzialanie(gg_pw, sprawdz_tablice_ogloszen) :-
-    write("Na tablicy ogłoszeń widzisz informację o terminie oddania pracy. Oprócz tego, widzisz nowo powieszony napis 'Zgubiono klucz do sali ...'"), nl,
+    write("Na tablicy ogłoszeń widzisz informację o terminie oddania pracy. Oprócz tego, widzisz nowo powieszoną kartkę z napisem 'Zgubiono klucz do sali ...'"), nl,
     (\+ wie_o_brakujacym_kluczu -> write("Więc chodzi o klucz... no tak."), nl, assertz(wie_o_brakujacym_kluczu)
     ;
     write("Wiesz o tym... "),
@@ -523,7 +660,7 @@ dzialanie(gg_pw, otworz_sale_glowna) :-
     write("Klucz pasuje do zamka. Przekręcasz go, a drzwi, może i powoli, ale otwierają się przed tobą."), nl,
     zmien_lokalizacje(glowna_sala).
 
-dzialanie(gg_pw, zaczep_kogos) :-
+dzialanie(gg_pw, pogadaj_z_kims) :-
     interakcja_ggpw().
 
 % Główna sala
