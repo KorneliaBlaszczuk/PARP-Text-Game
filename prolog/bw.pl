@@ -334,7 +334,7 @@ wypisz_dostepne_akcje(Lokalizacja) :-
 
 % Uproszczone wywołanie akcji
 dzialanie(Akcja) :-
-    shell('clear'),
+    % shell('clear'),
     lokalizacja(Lokalizacja),
     dzialanie(Lokalizacja, Akcja).
 
@@ -593,24 +593,44 @@ dzialanie(hala_koszyki, wyjdz_w_strone_chinczyka) :-
 
 % Chińczyk
 dzialanie(chinczyk, porozmawiaj_z_wlascicielem) :-
+    stan(rozmowa, nie),
     write("Pamięta cię! Wspomina, że wczoraj zostawiłeś coś przy stoliku."), nl,
     write("Wskaże ci go jedynie, jeśli kupisz coś (10 zł), przecież za darmo nie możesz siedzieć w lokalu!"), nl,
+    retract(stan(rozmowa, nie)),
     assertz(stan(rozmowa, tak)).
+
+dzialanie(chinczyk, porozmawiaj_z_wlascicielem) :-
+    stan(rozmowa, tak),
+    write("Podchodzisz do właściciela jeszcze raz. Dalej cie pamięta."), nl,
+    (stan(eiti, tak) -> write("Nic tobie nie wskazuje. Zaczynasz się zastanawiać co właściwie chcesz od właściciela."), nl;
+                        write("Przypomina tobie o czymś przy stoliku. Jak coś kupisz (10 zł), to wskaże tobie ten tajemniczy przedmiot."), nl).
 
 dzialanie(chinczyk, kup_cos) :-
     stan(rozmowa, nie),  % Sprawdzamy, czy najpierw rozmawialiśmy z właścicielem
     write("Najpierw porozmawiaj z właścicielem."), nl.
 
 dzialanie(chinczyk, kup_cos) :-
+
     stan(rozmowa, tak),
     stan(pieniadze, ObecnePieniadze),
     ObecnePieniadze >= 10,  % Sprawdzamy, czy mamy wystarczająco pieniędzy
     stan(eiti, nie),         % Sprawdzamy, czy nie kupiliśmy wcześniej
+
     retract(stan(pieniadze, ObecnePieniadze)),  % Usuwamy stary stan pieniędzy
     NowePieniadze is ObecnePieniadze - 10,      % Zmniejszamy o 10 zł
     assertz(stan(pieniadze, NowePieniadze)),     % Ustawiamy nowy stan pieniędzy
+
+    retract(stan(eiti, nie)),
     assertz(stan(eiti, tak)),   % Ustawiamy stan eiti na 'tak'
-    write("Znajdziesz tam tajemniczą wiadomość „EITI” napisaną na odwrocie serwetki."), nl.
+    write("Znajdujesz tajemniczą wiadomość „EITI” napisaną na odwrocie serwetki."), nl.
+
+dzialanie(chinczyk, kup_cos) :-
+    stan(rozmowa, tak),
+    stan(pieniadze, ObecnePieniadze),
+    ObecnePieniadze >= 10,
+    stan(eiti, tak),
+    write("Właściciel nie ma tobie nic ciekawego do sprzedania... no w sumie oprócz jedzenia.").
+
 
 dzialanie(chinczyk, kup_cos) :-
     stan(rozmowa, tak),
