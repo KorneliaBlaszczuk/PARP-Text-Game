@@ -3,6 +3,7 @@
 :- dynamic stan/2.
 :- dynamic dzialanie/2.
 :- dynamic zajrzano_do_kieszeni/0.
+:- dynamic podniesiono_przedmioty/0.
 :- dynamic licznik_interakcji/1.
 :- dynamic wie_o_brakujacym_kluczu/0.
 :- dynamic posiada_klucz/0.
@@ -425,7 +426,7 @@ dzialanie(taras_pkin, zejdz_po_schodach) :-
 
 % Akcje dostępne na schodach PKiN
 dzialanie(schody_pkin, podnies_pieniadze) :-
-    dodaj(10).
+    (\+ podniesiono_przedmioty -> dodaj(10), assert(podniesiono_przedmioty); write("Nic tutaj już nie ma."), nl).
 
 dzialanie(schody_pkin, idz_dalej) :-
     write("Schodzisz schodami do holu PKiN."), nl,
@@ -644,11 +645,22 @@ dzialanie(chinczyk, idz_do_gg_pw) :-
 
 dzialanie(chinczyk, idz_na_weiti) :-
     write("Idziesz na wydział EITI."), nl,
+    (podniesiono_przedmioty -> retract(podniesiono_przedmioty); true),
     zmien_lokalizacje(eiti).
 
 % EITI
 dzialanie(eiti, zajrzyj_do_laboratorium) :-
-    write("Wchodzisz do laboratorium i widzisz profesorów."), nl.
+    (\+ podniesiono_przedmioty ->
+        write("Wchodzisz do laboratorium i widzisz profesorów."), nl,
+        write("Witasz się i powoli wchodzisz do środka. Studentów tu jeszcze nie ma, ale zapewne będą tu niedługo jakieś zajęcia."), nl,
+        write("'Szuka Pan czegoś?' - pyta profesor. Odpowiadasz że tak, coś zostawiłeś (dobrze wiesz że to nieprawda)"), nl,
+        write("Chociaż... ha, ciekawe. Widzisz kawałek jakiejś notatki. Bierzesz ją - może się tobie przydać."), nl,
+        assert(podniesiono_przedmioty)
+        % tutaj logika podnoszenia notatki
+    ;
+        write("Wchodzisz do laboratorium i... nie, nie wchodzisz do laboratorium."), nl
+    ).
+
 
 dzialanie(eiti, idz_do_gg_pw) :-
     write("Idziesz do Gmachu Głównego PW."), nl,
