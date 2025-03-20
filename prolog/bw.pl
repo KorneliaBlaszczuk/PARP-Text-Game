@@ -13,6 +13,7 @@
 :- dynamic posiada_klucz_do_sekretnej_sali/0.
 :- dynamic sprawdzil_szatnie/0.
 :- dynamic wie_o_pracy_semestralnej/0.
+:- dynamic sprawdzil_kieszenie_sala_glowna/0.
 
 lokalizacja(start).
 stan(pieniadze, 0).
@@ -735,16 +736,17 @@ dzialanie(glowna_sala, wyjdz_z_sali) :-
     write("Próbujesz wyjść z sali... ale drzwi się zamknęły, i nie chcą się otworzyć"), nl.
 
 dzialanie(glowna_sala, sprawdz_kieszenie) :-
+    \+ sprawdzil_kieszenie_sala_glowna,
     stan(notatki, Lista),
     length(Lista, N),
     stan(pieniadze, X),
-    Y = 4 - X,
-    (N = 0 ->
+    Y = 5 - X,
+    (N = 1 ->
         write("Sprawdzasz swoje kieszenie... znajdujesz "), write(X), write(" złotych."), nl,
         write("Ale fajnie :D... żadna inna myśl nie przychodzi tobie do głowy."), nl
         ;
         write("Sprawdzasz swoje kieszenie... znajdujesz "), write(N), write(" części notatek, oraz "), write(X), write(" złotych."), nl,
-        (N < 4 ->
+        (N < 5 ->
             write("Zaraz... o nie..."), nl,
             write("W panice składasz części twojej pracy które wcześniej zebrałeś."), nl,
             write("Praca... nie jest kompletna. Brzuch zaczyna cię boleć. Wygląda na to, że brakuje tobie "), write(Y), write(" części notatek."), nl
@@ -752,17 +754,72 @@ dzialanie(glowna_sala, sprawdz_kieszenie) :-
             write("Teraz jesteś pewien - trzymasz części twojej pracy semestralnej."), nl,
             write("W panice składasz części twojej pracy semestralnej... jest pełna..."), nl,
             write("30 sekund emocjonalnego rollercoastera kończy się ogromną ulgą... uśmiechasz się!"), nl
-        )
-    ).
+        ),
+        assertz(wie_o_pracy_semestralnej)
+    ),
+    assertz(sprawdzil_kieszenie_sala_glowna).
+
+dzialanie(glowna_sala, sprawdz_kieszenie) :-
+    sprawdzil_kieszenie_sala_glowna,
+    write("Już sprawdziłeś kieszenie. Nic innego tam nie ma."), nl.
 
 dzialanie(glowna_sala, podejdz_do_profesora) :-
-    true.
+    write("Podchodzisz do profesora siedzącego na wprost ciebie. Czeka na ciebie, i rozpoznaje cię. Witasz się."), nl,
+    write("'I kto to przyszedł? Dzień dobry Panu.'- mówi profesor w nieco onieśmielającym tonie."),
+    stan(notatki, Lista),
+    length(Lista, X),
+    (\+ wie_o_pracy_semestralnej ->
+        write("'Będzie Pan tak tu stać? Czegoś Pan potrzebuje?'"), nl, nl,
+        (X = 0 ->
+            write("Nie wiesz co ciebie tu przyprowadziło, ale przez cały czas miałeś wrażenie, że musisz tu być."), nl,
+            write("Odlatujesz myślami... gdzieś, ale nie wiesz gdzie. W tle słychać profesora coraz głośniej, ale nie wiesz o czym mówi."), nl,
+            write("Powoli wracasz na Ziemię: widzisz profesora jak wstaje i wskazuje na drzwi. Każe tobie wyjść."), nl,
+            write("Jesteś rozkojarzony. Twoje myśli błądzą w nieskończonej nicości. Próbujesz się uspokoić."), nl
+        ;
+            write("Nie wiesz w sumie co tu robisz."), nl,
+            write("'To Pan wchodzi do mnie bez pojęcia co Pan w ogóle chce?'"), nl,
+            write("No dokładnie!"), nl,
+            write("'To mogę Panu powiedzieć, że ja na pewno chcę Pańskiej pracy semestralnej'"), nl,
+            write("Naprawdę?"), nl
+        )
+        ;
+        write("'Będzie Pan tak tu stać? Czegoś Pan potrzebuje?'"), nl, nl,
+        write("Mówisz, że chcesz oddać pracę semestralną"), nl
+    ),
+    (X < 5 -> zle_zakonczenie(); dobre_zakonczenie()).
+
+
 
 % Sprawdzenie zakończenia gry
-dobre_zakonczenie :-
+dobre_zakonczenie() :-
+    write("Bierzesz swoje notatki z kieszenie, i składasz je w jedną część. Profesor patrzy się na ciebie z lekkim zdziwieniem."), nl,
+    write("Twoim oczom ukazuje się... twoja praca semstralna w pełnej postaci."), nl,
+    write("'Wow... doceniam Pana determinację. Powiedziałbym że jest to niedorzeczne oddawać pracę w takim stanie, ale wygląda Pan na zmęczonego...'"), nl,
+    write("Więc jest szansa?! Opłaciło się zbierać te notatki? Nie wiesz co myśleć, ale czekasz aż profesor skończy czytać pracę."), nl,
+    read(_),
+    shell(clear),
+    write("Profesor wygląda raz na zażenowanego, raz na zaskoczonego, a nawet na zadowolonego."), nl,
+    write("'Muszę Panu przyznać, że może praca idealna nie jest... ale zaliczyć, to Pan zaliczy.'"), nl,
+    write("'A swoją drogą... no i jak Pańska wiedza? Powalczy Pan o lepszą ocenę?'"), nl,
+    write("Starasz sobie przypomnieć co się dowiedziałeś... mówisz co wiesz, trochę też zmyślaśz, ale..."), nl,
+    read(_),
+    shell(clear),
+    licznik_interakcji(L),
+    Ocena is 3.0 + 0.5 * L,
+    write("ZALICZASZ przedmiot z oceną "), write(Ocena).
+
+zle_zakonczenie() :-
+    write("Bierzesz swoje notatki z kieszeni, i składasz je w jedną czę-"), nl,
+    write("O nie..."), nl,
+    write("'I co ja mam z taką pracą zrobić? Nie czytam tego proszę Pana.'"), nl,
+    write("Ale..."), nl,
+    write("'Niestety nie ma żadnych 'ale' proszę Pana. Jak ja mam ocenić niepełną pracę? Miał Pan tyle czasu na oddanie.'"), nl,
+    read(_),
+    shell('clear'),
+    write("NIE ZALICZASZ przedmiotu. Ocena końcowa: 2.0. Profesor wydaje się być na ciebie zdenerwowany."), nl,
     stan(notatki, Lista),
-    length(Lista, 5),
-    write("Gratulacje! Oddałeś pracę semestralną i zdałeś przedmiot!"), nl.
+    length(Lista, N),
+    write("Zebrałeś "), write(N), write("/5 notatek. Nie udało ci się skompletować pracy semestralnej.").
 
 sprawdz(stan_notatek) :-
     stan(notatki, Lista),
