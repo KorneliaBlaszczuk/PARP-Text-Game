@@ -14,6 +14,7 @@
 :- dynamic sprawdzil_szatnie/0.
 :- dynamic wie_o_pracy_semestralnej/0.
 :- dynamic sprawdzil_kieszenie_sala_glowna/0.
+:- dynamic przywital_sie_z_nikim/0.
 
 lokalizacja(start).
 stan(pieniadze, 0).
@@ -521,9 +522,21 @@ dzialanie(park, obejrzyj_fontanne) :-
     dodaj(5).
 
 dzialanie(park, porozmawiaj_z_nieznajomym) :-
+    stan(wilcza, nie),
     retract(stan(wilcza, nie)), % Usuwamy stary stan
     assertz(stan(wilcza, tak)), % Ustawiamy nowy stan
-    write("Wilcza 30. To tam znajdziesz odpowiedzi. Ale uważaj… nie każda prawda przynosi ulgę."), nl.
+    write("Witasz się z nieznajomym."), nl,
+    write("'Dzień dobry! Co u Pana słychać?' - pyta się ciebie nieznajomy z entuzjazmem"), nl,
+    write("Równo entuzjastycznie odpowiadasz, że 'dobrze'... nawet jeśli pytanie nie brzmiało 'jak się czujesz', ale kto by się przejmował."), nl,
+    write("Zaczynasz rozmowę z nieznajomym, aż... tracisz czucie czasu. Ile rozmawialiście? Nie wiesz."), nl,
+    write("'Ja muszę proszę Pana jeszcze na autobus zdążyć, ale miło się z Panem rozmawiało!' - nieznajomy żegna się z tobą: znowu entuzjastycznie!"), nl, nl,
+    write("Masz wrażenie, że coś wyniosłeś z tej konwersacji, aczkolwiek nie wiesz do końca co."), nl,
+    inkrementuj_licznik(). % interakcja - +0.5 do oceny końcowej
+
+dzialanie(park, porozmawiaj_z_nieznajomym) :-
+    write("Witasz się z nieznajomym. Entuzjastycznie machasz do niego."), nl,
+    (\+ przywital_sie_z_nikim -> true, assertz(przywital_sie_z_nikim); write("Czy wszystko dobrze?"), nl).
+
 
 dzialanie(park, idz_przed_pkin) :-
     write("Wracasz przed PKiN"),
@@ -657,9 +670,12 @@ dzialanie(eiti, zajrzyj_do_laboratorium) :-
         write("Wchodzisz do laboratorium i widzisz profesorów."), nl,
         write("Witasz się i powoli wchodzisz do środka. Studentów tu jeszcze nie ma, ale zapewne będą tu niedługo jakieś zajęcia."), nl,
         write("'Szuka Pan czegoś?' - pyta profesor. Odpowiadasz że tak, coś zostawiłeś (dobrze wiesz że to nieprawda)"), nl,
-        write("Chociaż... ha, ciekawe. Widzisz kawałek jakiejś notatki. Bierzesz ją - może się tobie przydać."), nl,
-        assert(podniesiono_przedmioty)
-        % tutaj logika podnoszenia notatki
+        write("Chociaż... ha, ciekawe. Widzisz kawałek notatki. Bierzesz ją - może się tobie przydać."), nl,
+        assert(podniesiono_przedmioty),
+        retract(stan(notatki, Lista)),
+        length(Lista, N),
+        NowaNotatka is N + 1,
+        assertz(stan(notatki, [NowaNotatka | Lista]))
     ;
         write("Wchodzisz do laboratorium i... nie, nie wchodzisz do laboratorium."), nl
     ).
@@ -677,7 +693,6 @@ dzialanie(eiti, zajrzyj_do_szatni) :-
     ;
     write("Patrzysz jeszcze raz na szatnię, i nic nietypowego nie zauważasz. Prędko odchodzisz"), nl
     ).
-
 
 dzialanie(eiti, idz_do_gg_pw) :-
     write("Idziesz do Gmachu Głównego PW."), nl,
@@ -740,13 +755,13 @@ dzialanie(glowna_sala, sprawdz_kieszenie) :-
     stan(notatki, Lista),
     length(Lista, N),
     stan(pieniadze, X),
-    Y = 5 - X,
-    (N = 1 ->
+    Y = 4 - X,
+    (N = 0 ->
         write("Sprawdzasz swoje kieszenie... znajdujesz "), write(X), write(" złotych."), nl,
         write("Ale fajnie :D... żadna inna myśl nie przychodzi tobie do głowy."), nl
         ;
         write("Sprawdzasz swoje kieszenie... znajdujesz "), write(N), write(" części notatek, oraz "), write(X), write(" złotych."), nl,
-        (N < 5 ->
+        (N < 4 ->
             write("Zaraz... o nie..."), nl,
             write("W panice składasz części twojej pracy które wcześniej zebrałeś."), nl,
             write("Praca... nie jest kompletna. Brzuch zaczyna cię boleć. Wygląda na to, że brakuje tobie "), write(Y), write(" części notatek."), nl
@@ -786,9 +801,7 @@ dzialanie(glowna_sala, podejdz_do_profesora) :-
         write("'Będzie Pan tak tu stać? Czegoś Pan potrzebuje?'"), nl, nl,
         write("Mówisz, że chcesz oddać pracę semestralną"), nl
     ),
-    (X < 5 -> zle_zakonczenie(); dobre_zakonczenie()).
-
-
+    (X < 4 -> zle_zakonczenie(); dobre_zakonczenie()).
 
 % Sprawdzenie zakończenia gry
 dobre_zakonczenie() :-
@@ -819,7 +832,7 @@ zle_zakonczenie() :-
     write("NIE ZALICZASZ przedmiotu. Ocena końcowa: 2.0. Profesor wydaje się być na ciebie zdenerwowany."), nl,
     stan(notatki, Lista),
     length(Lista, N),
-    write("Zebrałeś "), write(N), write("/5 notatek. Nie udało ci się skompletować pracy semestralnej.").
+    write("Zebrałeś "), write(N), write("/4 notatek. Nie udało ci się skompletować pracy semestralnej.").
 
 sprawdz(stan_notatek) :-
     stan(notatki, Lista),
