@@ -11,6 +11,8 @@
 :- dynamic posiada_1_czesc_wylamanego_klucza/0.
 :- dynamic posiada_2_czesc_wylamanego_klucza/0.
 :- dynamic posiada_klucz_do_sekretnej_sali/0.
+:- dynamic sprawdzil_szatnie/0.
+:- dynamic wie_o_pracy_semestralnej/0.
 
 lokalizacja(start).
 stan(pieniadze, 0).
@@ -38,9 +40,9 @@ akcje(wilcza_30, [zapukaj_do_drzwi, rozejrzyj_sie, idz_do_hali_koszyki]).
 akcje(dom_wilcza, [wykup_notatke, opusc_dom]).
 akcje(hala_koszyki, [podejdz_do_baru, porozmawiaj_z_gosciem, wyjdz_w_strone_chinczyka]).
 akcje(chinczyk, [porozmawiaj_z_wlascicielem, kup_cos, idz_do_gg_pw]).
-akcje(eiti, [zajrzyj_do_laboratorium, idz_do_gg_pw]).
+akcje(eiti, [zajrzyj_do_laboratorium, zajrzyj_do_szatni, idz_do_gg_pw]).
 akcje(gg_pw, [pogadaj_z_kims, sprawdz_tablice_ogloszen, sprawdz_portiernie, przeszukaj_teren, otworz_sale_glowna]).
-akcje(glowna_sala, [odczytaj_koperte]).
+akcje(glowna_sala, [sprawdz_kieszenie, wyjdz_z_sali, podejdz_do_profesora]).
 
 dostepna_taksowka(porozmawiaj).
 dostepna_taksowka(pojedz_do_hali_koszyki) :- stan(hala_koszyki, tak).
@@ -661,6 +663,20 @@ dzialanie(eiti, zajrzyj_do_laboratorium) :-
         write("Wchodzisz do laboratorium i... nie, nie wchodzisz do laboratorium."), nl
     ).
 
+dzialanie(eiti, zajrzyj_do_szatni) :-
+    (\+ sprawdzil_szatnie ->
+    write("Podchodzisz, a Pan z szatni wyjmuje już numerek, i chce go tobie wręczyć. Nie bierzesz numerka, ale rozglądasz się wokół"), nl,
+    write("'Czy w czymś Panu pomóc???' - zapytany odpowiadasz, że po prostu patrzysz czy czegoś nie zapomniałeś"), nl,
+    write("'Coś... ostatnio wydawał się Pan jakiś rozkojarzony, o ile mnie pamięć nie myli...'"), nl,
+    write("'hmmmm...' - Pan rozgląda się chwilę, patrzy pod swoje biurko, i mówi:"), nl,
+    write("'Chyba to może być Pana. Niech Pan sprawdzi - leży tu od jakiegoś czasu.'"), nl,
+    write("Dostajesz ładnie uciętą ściągę. Spoglądasz na zawartość, i rzeczywiście: coś kojarzysz. Może to się przydać..."), nl,
+    inkrementuj_licznik(), % interakcja, + 0.5 do oceny
+    assertz(sprawdzil_szatnie)
+    ;
+    write("Patrzysz jeszcze raz na szatnię, i nic nietypowego nie zauważasz. Prędko odchodzisz"), nl
+    ).
+
 
 dzialanie(eiti, idz_do_gg_pw) :-
     write("Idziesz do Gmachu Głównego PW."), nl,
@@ -715,9 +731,32 @@ dzialanie(gg_pw, pogadaj_z_kims) :-
     interakcja_ggpw(),
     wypisz_dostepne_akcje(gg_pw).
 
-% Główna sala
-dzialanie(glowna_sala, odczytaj_koperte) :-
-    write("Otwierasz kopertę i znajdujesz ostateczną wskazówkę."), nl.
+dzialanie(glowna_sala, wyjdz_z_sali) :-
+    write("Próbujesz wyjść z sali... ale drzwi się zamknęły, i nie chcą się otworzyć"), nl.
+
+dzialanie(glowna_sala, sprawdz_kieszenie) :-
+    stan(notatki, Lista),
+    length(Lista, N),
+    stan(pieniadze, X),
+    Y = 4 - X,
+    (N = 0 ->
+        write("Sprawdzasz swoje kieszenie... znajdujesz "), write(X), write(" złotych."), nl,
+        write("Ale fajnie :D... żadna inna myśl nie przychodzi tobie do głowy."), nl
+        ;
+        write("Sprawdzasz swoje kieszenie... znajdujesz "), write(N), write(" części notatek, oraz "), write(X), write(" złotych."), nl,
+        (N < 4 ->
+            write("Zaraz... o nie..."), nl,
+            write("W panice składasz części twojej pracy które wcześniej zebrałeś."), nl,
+            write("Praca... nie jest kompletna. Brzuch zaczyna cię boleć. Wygląda na to, że brakuje tobie "), write(Y), write(" części notatek."), nl
+            ;
+            write("Teraz jesteś pewien - trzymasz części twojej pracy semestralnej."), nl,
+            write("W panice składasz części twojej pracy semestralnej... jest pełna..."), nl,
+            write("30 sekund emocjonalnego rollercoastera kończy się ogromną ulgą... uśmiechasz się!"), nl
+        )
+    ).
+
+dzialanie(glowna_sala, podejdz_do_profesora) :-
+    true.
 
 % Sprawdzenie zakończenia gry
 dobre_zakonczenie :-
