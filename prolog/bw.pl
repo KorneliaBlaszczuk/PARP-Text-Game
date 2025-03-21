@@ -17,6 +17,7 @@
 :- dynamic przywital_sie_z_nikim/0.
 :- dynamic podszedl_do_baru/0.
 :- dynamic kupil_notatke_na_wilczej/0.
+:- dynamic obejrzano_fontanne/0.
 
 lokalizacja(start).
 stan(pieniadze, 0).
@@ -520,7 +521,12 @@ dzialanie(park, karm_golebie) :-
     write("Nie masz wystarczająco pieniędzy, aby kupić chleb dla gołębi."), nl.
 
 dzialanie(park, obejrzyj_fontanne) :-
+    obejrzano_fontanne,
+    write("Oglądasz fontanne. Nic więcej tam nie ma."), nl.
+
+dzialanie(park, obejrzyj_fontanne) :-
     write("Oglądasz fontanne. Patrzysz na spokojną taflę. Znajdujesz 5 zł."), nl,
+    assertz(obejrzano_fontanne),
     dodaj(5).
 
 dzialanie(park, porozmawiaj_z_nieznajomym) :-
