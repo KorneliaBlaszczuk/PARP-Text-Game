@@ -15,6 +15,8 @@
 :- dynamic wie_o_pracy_semestralnej/0.
 :- dynamic sprawdzil_kieszenie_sala_glowna/0.
 :- dynamic przywital_sie_z_nikim/0.
+:- dynamic podszedl_do_baru/0.
+:- dynamic kupil_notatke_na_wilczej/0.
 
 lokalizacja(start).
 stan(pieniadze, 0).
@@ -41,7 +43,7 @@ akcje(taksowka, Akcje) :-
 akcje(wilcza_30, [zapukaj_do_drzwi, rozejrzyj_sie, idz_do_hali_koszyki]).
 akcje(dom_wilcza, [wykup_notatke, opusc_dom]).
 akcje(hala_koszyki, [podejdz_do_baru, porozmawiaj_z_gosciem, wyjdz_w_strone_chinczyka]).
-akcje(chinczyk, [porozmawiaj_z_wlascicielem, kup_cos, idz_do_gg_pw]).
+akcje(chinczyk, [porozmawiaj_z_wlascicielem, kup_cos, idz_do_gg_pw, idz_na_weiti]).
 akcje(eiti, [zajrzyj_do_laboratorium, zajrzyj_do_szatni, idz_do_gg_pw]).
 akcje(gg_pw, [pogadaj_z_kims, sprawdz_tablice_ogloszen, sprawdz_portiernie, przeszukaj_teren, otworz_sale_glowna]).
 akcje(glowna_sala, [sprawdz_kieszenie, wyjdz_z_sali, podejdz_do_profesora]).
@@ -135,7 +137,7 @@ interakcja_ggpw() :-
         stan(notatki, Lista),
         length(Lista, N),
         (N = 0 -> write("Zaraz... "); true),
-        (N = 5 ->
+        (N = 4 ->
             write("Odpowiadasz, że tak - na tym tobie teraz zależy"), nl,
             write("'Podobno klucz gdzieś się zgubił, i teraz profesor czeka w środku aż ktoś mu otworzy'"), nl,
             write("Żegnasz się, i powoli odwracasz się w stro-"), nl,
@@ -530,6 +532,8 @@ dzialanie(park, porozmawiaj_z_nieznajomym) :-
     write("Równo entuzjastycznie odpowiadasz, że 'dobrze'... nawet jeśli pytanie nie brzmiało 'jak się czujesz', ale kto by się przejmował."), nl,
     write("Zaczynasz rozmowę z nieznajomym, aż... tracisz czucie czasu. Ile rozmawialiście? Nie wiesz."), nl,
     write("'Ja muszę proszę Pana jeszcze na autobus zdążyć, ale miło się z Panem rozmawiało!' - nieznajomy żegna się z tobą: znowu entuzjastycznie!"), nl, nl,
+    write("'I niech Pan pamięta o Wilczej 30! Warto tam zajrzeć!'"), nl,
+    write("??? Może o czymś wspomniałeś podczas rozmowy, co by skutkowały w takiej prośbie, ale tego nie pamiętasz"), nl,
     write("Masz wrażenie, że coś wyniosłeś z tej konwersacji, aczkolwiek nie wiesz do końca co."), nl,
     inkrementuj_licznik(). % interakcja - +0.5 do oceny końcowej
 
@@ -575,9 +579,11 @@ dzialanie(wilcza_30, idz_do_hali_koszyki) :-
 
 % Dom Wilcza
 dzialanie(dom_wilcza, wykup_notatke) :-
+    (\+ kupil_notatke_na_wilczej -> true; false),
     stan(pieniadze, ObecnePieniadze),
     ObecnePieniadze >= 10,
     write("Ciekawość wzieła górę i wykupiłeś ten kawałek papieru."), nl,
+    assertz(kupil_notatke_na_wilczej),
     odejmij(10),
     retract(stan(notatki, Lista)),  % Pobieramy obecną listę notatek
     length(Lista, N),               % Sprawdzamy, ile jest notatek
@@ -586,7 +592,10 @@ dzialanie(dom_wilcza, wykup_notatke) :-
     zmien_lokalizacje(wilcza_30).
 
 dzialanie(dom_wilcza, wykup_notatke) :-
-    write("Kwota, o którą prosi cię mężczyzna jest zdecydowanie za wysoka. Może jeszcze tu wrócę..."), nl.
+    (kupil_notatke_na_wilczej -> write("Osoba nie ma nic więcej do sprzedania tobie. Po co mówiła tobie że coś ma?"), nl
+    ;
+    write("Kwota, o którą prosi cię mężczyzna jest zdecydowanie za wysoka. Może jeszcze tu wrócę..."), nl).
+
 
 dzialanie(dom_wilcza, opusc_dom) :-
     write("Postanowiłeś opuścić dom mężczyzny. Co jeszcze cię czeka?"), nl,
@@ -594,12 +603,17 @@ dzialanie(dom_wilcza, opusc_dom) :-
 
 % Hala Koszyki
 dzialanie(hala_koszyki, podejdz_do_baru) :-
+    \+ podszedl_do_baru,
+    assertz(podszedl_do_baru),
     write("Barman rozpoznaje cię i mówi, że wczoraj zostawiłeś coś ważnego."), nl,
     write("Wręcza ci kolejną część notatki i wspomina o chińskiej restauracji, do której się wybierałeś."), nl,
     retract(stan(notatki, Lista)),  % Pobieramy obecną listę notatek
     length(Lista, N),               % Sprawdzamy, ile jest notatek
     NowaNotatka is N + 1,           % Nowa notatka dostaje numer N+1
     assertz(stan(notatki, [NowaNotatka | Lista])). % Aktualizujemy stan
+
+dzialanie(hala_koszyki, podejdz_do_baru) :-
+    write("Barman nie ma nic do wręczenia. Odchodzisz"), nl.
 
 dzialanie(hala_koszyki, porozmawiaj_z_gosciem) :-
     write("Tajemniczy rozmówca wspomina o dziwnym incydencie, którego był świadkiem - ktoś potrącił cię szybko wychodząc."), nl.
