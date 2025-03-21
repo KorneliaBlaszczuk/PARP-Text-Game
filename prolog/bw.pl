@@ -264,7 +264,7 @@ przeszukaj_miejsce(3) :-
             write("Szybko czytasz notatki. "),
             stan(notatki, Lista),
             length(Lista, N),
-            (N < 5 ->
+            (N < 4 ->
                 write("W sumie mało się dowiadujesz"), nl;
                 write("To może się przydać do twoich notatek! Bierzesz czystą kartkę z biurka nauczyciela, i przepisujesz najważniejsze rzeczy."),
                 inkrementuj_licznik(), nl % interakcja : +0.5 do oceny końcowej
