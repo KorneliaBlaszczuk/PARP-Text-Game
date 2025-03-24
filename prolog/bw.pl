@@ -357,7 +357,7 @@ opis(taras_pkin) :-
     write("Nagle czujesz dziabnięcie. To gołąb, który zdecydowanie nie jest zadowolony z twojej obecności na jego terytorium. Co zrobić?"), nl.
 
 opis(schody_pkin) :-
-    write("Schodząc w dół robisz krótka przerwę, strasznie boli Cię głowa. Patrząc w dół zauważasz leżące na podłodze 10 zł."), nl.
+    write("Schodząc w dół robisz krótka przerwę, strasznie boli Cię głowa. Patrząc w dół zauważasz leżące na podłodze pieniądze."), nl.
 
 opis(hol_pkin) :-
     write("Głowa nadal boli cię nieubłaganie. Wokół cicho, tylko portier siedzi za ladą. Może warto go zapytać o wczoraj?"), nl.
@@ -433,7 +433,8 @@ dzialanie(taras_pkin, zejdz_po_schodach) :-
 
 % Akcje dostępne na schodach PKiN
 dzialanie(schody_pkin, podnies_pieniadze) :-
-    (\+ podniesiono_przedmioty -> dodaj(10), assert(podniesiono_przedmioty); write("Nic tutaj już nie ma."), nl).
+    random(5, 16, LosowaLiczba),
+    dodaj(LosowaLiczba).
 
 dzialanie(schody_pkin, idz_dalej) :-
     write("Schodzisz schodami do holu PKiN."), nl,
@@ -521,13 +522,9 @@ dzialanie(park, karm_golebie) :-
     write("Nie masz wystarczająco pieniędzy, aby kupić chleb dla gołębi."), nl.
 
 dzialanie(park, obejrzyj_fontanne) :-
-    obejrzano_fontanne,
-    write("Oglądasz fontanne. Nic więcej tam nie ma."), nl.
-
-dzialanie(park, obejrzyj_fontanne) :-
-    write("Oglądasz fontanne. Patrzysz na spokojną taflę. Znajdujesz 5 zł."), nl,
-    assertz(obejrzano_fontanne),
-    dodaj(5).
+    random(2, 11, LosowaLiczba2),
+    format("Oglądasz fontannę. Patrzysz na spokojną taflę. Znajdujesz kilka monet o łącznej wartości ~w zł.~n", [LosowaLiczba2]),
+    dodaj(LosowaLiczba2).
 
 dzialanie(park, porozmawiaj_z_nieznajomym) :-
     stan(wilcza, nie),
