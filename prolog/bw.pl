@@ -169,14 +169,14 @@ przeszukaj_miejsce(1) :-
     write("Wybierz [1] Spróbuj otworzyć drzwi do dziekanatu [2] Podnieś przedmiot [3] Wróć do miejsca startowego"), nl,
     read(Wybor),
     (Wybor = 1 ->
-        shell('clear'),
+        % shell('clear'),
         write("Drzwi dalej się nie otwierają. Próbujesz na siłę, ale bez skutku. Jedyne co wywołujesz, to dziwne spojrzenie od przechodzącej Pani magister."), nl, nl,
         fail
         ;
         true
     ),
     (Wybor = 2 ->
-        shell('clear'),
+        % shell('clear'),
         (\+ posiada_1_czesc_wylamanego_klucza ->
             write("Schylasz się po przedmiot, i wysuwasz go spod drzwi. Dobra informacja: jest to klucz!"), nl,
             write("Gorsza informacja: część tego klucza wydaje się wyłamana. Może się przyda, kto wie"), nl,
@@ -191,7 +191,7 @@ przeszukaj_miejsce(1) :-
         true
     ),
     (Wybor = 3 ->
-        shell('clear'),
+        % shell('clear'),
         dzialanie(gg_pw, przeszukaj_teren)
         ;
         fail
@@ -203,7 +203,7 @@ przeszukaj_miejsce(2) :-
     write("Co sprawdzisz? [1] Pójdź w lewo [2] Pójdź w prawo [3] Pójdź na wprost [4] Wróć do miejsca startowego"), nl,
     read(Wybor),
     (Wybor = 1 ->
-        shell('clear'),
+        % shell('clear'),
         write("Przechodzisz po lewym korytarzu i sprawdzasz każdy kąt."), nl,
         write("Nic ciekawego nie zauważasz. Wracasz do rozwidlenia."), nl,
         fail
@@ -211,7 +211,7 @@ przeszukaj_miejsce(2) :-
         true
     ),
     (Wybor = 2 ->
-        shell('clear'),
+        % shell('clear'),
         write("Sprawdzasz korytarz po prawej. Sprawdzasz dosłownie wszystko co się da."), nl,
         (\+ posiada_2_czesc_wylamanego_klucza ->
             write("Zauważasz dwuzłotówkę, oraz dziwny kawałek... czegoś. Patrzysz czy nikt nie idzie, i podnosisz oba przedmioty"), nl,
@@ -225,10 +225,10 @@ przeszukaj_miejsce(2) :-
         )
         ; true
     ),
-    (Wybor = 3 -> shell('clear'), write("Idziesz na wprost. Natrafiasz na ścianę."), nl,
+    (Wybor = 3 -> write("Idziesz na wprost. Natrafiasz na ścianę."), nl,
         fail ; true),
     (Wybor = 4 ->
-        shell('clear'),
+        % shell('clear'),
         dzialanie(gg_pw, przeszukaj_teren)
         ;
         fail
@@ -240,7 +240,7 @@ przeszukaj_miejsce(3) :-
     write("Co robisz? [1] Wejdź do sali 121 [2] Wejdź do sali 113 [3] Wejdź do sali 133 [4] Wróć do miejsca startowego"), nl,
     read(Wybor),
     (Wybor = 1 ->
-        shell('clear'),
+        % shell('clear'),
         write("Próbujesz otworzyć salę 121."), nl,
         write("Sala jest zamknięta."), nl,
         (posiada_klucz_do_sekretnej_sali -> write("Twój naprawiony klucz nie pasuje do zamka."); true),
@@ -248,14 +248,14 @@ przeszukaj_miejsce(3) :-
         fail ; true
     ),
     (Wybor = 2 ->
-        shell('clear'),
+        % shell('clear'),
         write("Próbujesz otworzyć salę 113"), nl,
         write("Sala jest otwarta. Wchodzisz do środka: nikogo tutaj nie ma."), nl,
         write("Przeszukujesz salę, i wszystko wydaje się normalne. Podchodzisz do biurka nauczyciela, lecz wszystkie szafki są pozamykane."), nl,
         write("Nic nie znajdujesz."), nl, fail ; true
     ),
     (Wybor = 3 ->
-        shell('clear'),
+        % shell('clear'),
         write("Próbujesz otworzyć salę 133"), nl,
         write("Sala jest zamknięta. "),
         (posiada_klucz -> write("Klucz który znalazłeś, nie pasuje do zamka. "); true),
@@ -278,14 +278,14 @@ przeszukaj_miejsce(3) :-
         fail ; true
     ),
     (Wybor = 4 ->
-        shell('clear'),
+        % shell('clear'),
         dzialanie(gg_pw, przeszukaj_teren)
         ;
         fail
     ).
 
 przeszukaj_miejsce(4) :-
-    shell('clear'),
+    % shell('clear'),
     write("Idziesz sprawdzić najbliższą klatkę schodową. Przechodzisz się po niej w górę, i wracasz. Nic nie zauważasz."), nl,
     podnies_klucz(),
     write("Wracasz do punktu, z którego zacząłeś przeszukiwanie."), nl,
@@ -433,7 +433,12 @@ dzialanie(taras_pkin, zejdz_po_schodach) :-
 
 % Akcje dostępne na schodach PKiN
 dzialanie(schody_pkin, podnies_pieniadze) :-
+    podniesiono_przedmioty,
+    write("Nic tutaj już nie ma."), nl.
+
+dzialanie(schody_pkin, podnies_pieniadze) :-
     random(5, 16, LosowaLiczba),
+    assert(podniesiono_przedmioty),
     dodaj(LosowaLiczba).
 
 dzialanie(schody_pkin, idz_dalej) :-
@@ -522,8 +527,13 @@ dzialanie(park, karm_golebie) :-
     write("Nie masz wystarczająco pieniędzy, aby kupić chleb dla gołębi."), nl.
 
 dzialanie(park, obejrzyj_fontanne) :-
+    obejrzano_fontanne,
+    write("Oglądasz fontanne. Nic więcej tam nie ma."), nl.
+
+dzialanie(park, obejrzyj_fontanne) :-
     random(2, 11, LosowaLiczba2),
     format("Oglądasz fontannę. Patrzysz na spokojną taflę. Znajdujesz kilka monet o łącznej wartości ~w zł.~n", [LosowaLiczba2]),
+    assertz(obejrzano_fontanne),
     dodaj(LosowaLiczba2).
 
 dzialanie(park, porozmawiaj_z_nieznajomym) :-
@@ -827,29 +837,39 @@ dobre_zakonczenie() :-
     write("'Wow... doceniam Pana determinację. Powiedziałbym że jest to niedorzeczne oddawać pracę w takim stanie, ale wygląda Pan na zmęczonego...'"), nl,
     write("Więc jest szansa?! Opłaciło się zbierać te notatki? Nie wiesz co myśleć, ale czekasz aż profesor skończy czytać pracę."), nl,
     read(_),
-    shell(clear),
+    % shell('clear'),
     write("Profesor wygląda raz na zażenowanego, raz na zaskoczonego, a nawet na zadowolonego."), nl,
     write("'Muszę Panu przyznać, że może praca idealna nie jest... ale zaliczyć, to Pan zaliczy.'"), nl,
     write("'A swoją drogą... no i jak Pańska wiedza? Powalczy Pan o lepszą ocenę?'"), nl,
     write("Starasz sobie przypomnieć co się dowiedziałeś... mówisz co wiesz, trochę też zmyślaśz, ale..."), nl,
     read(_),
-    shell(clear),
+    % shell('clear'),
     licznik_interakcji(L),
     Ocena is 3.0 + 0.5 * L,
-    write("ZALICZASZ przedmiot z oceną "), write(Ocena).
+    write("ZALICZASZ przedmiot z oceną "), write(Ocena), nl,
+    write("Zebrano wszystkie 4 części notatki. Skompletowano pracę semestralną!"), nl,
+    write("Znaleziono "), write(L), write(" z czterech dostępnych sekretnych interakcji.").
 
 zle_zakonczenie() :-
-    write("Bierzesz swoje notatki z kieszeni, i składasz je w jedną czę-"), nl,
-    write("O nie..."), nl,
-    write("'I co ja mam z taką pracą zrobić? Nie czytam tego proszę Pana.'"), nl,
-    write("Ale..."), nl,
-    write("'Niestety nie ma żadnych 'ale' proszę Pana. Jak ja mam ocenić niepełną pracę? Miał Pan tyle czasu na oddanie.'"), nl,
+    stan(notatki, Lista),
+    length(Lista, X),
+    (X > 0 ->
+        write("Bierzesz swoje notatki z kieszeni, i składasz je w jedną czę-"), nl,
+        write("O nie..."), nl,
+        write("'I co ja mam z taką pracą zrobić? Nie czytam tego proszę Pana.'"), nl,
+        write("Ale..."), nl,
+        write("'Niestety nie ma żadnych 'ale' proszę Pana. Jak ja mam ocenić niepełną pracę? Miał Pan tyle czasu na oddanie.'"), nl
+        ;
+        true
+    ),
     read(_),
-    shell('clear'),
+    % shell('clear'),
     write("NIE ZALICZASZ przedmiotu. Ocena końcowa: 2.0. Profesor wydaje się być na ciebie zdenerwowany."), nl,
     stan(notatki, Lista),
     length(Lista, N),
-    write("Zebrałeś "), write(N), write("/4 notatek. Nie udało ci się skompletować pracy semestralnej.").
+    write("Zebrano "), write(N), write("/4 notatek. Nie udało ci się skompletować pracy semestralnej."), nl,
+    licznik_interakcji(L),
+    write("Znaleziono "), write(L), write(" z czterech dostępnych sekretnych interakcji.").
 
 sprawdz(stan_notatek) :-
     stan(notatki, Lista),
