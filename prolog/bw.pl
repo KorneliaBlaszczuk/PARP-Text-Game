@@ -3,6 +3,7 @@
 :- dynamic stan/2.
 :- dynamic dzialanie/2.
 :- dynamic zajrzano_do_kieszeni/0.
+:- dynamic podniesiono_przedmioty/0.
 :- dynamic licznik_interakcji/1.
 :- dynamic wie_o_brakujacym_kluczu/0.
 :- dynamic posiada_klucz/0.
@@ -10,6 +11,13 @@
 :- dynamic posiada_1_czesc_wylamanego_klucza/0.
 :- dynamic posiada_2_czesc_wylamanego_klucza/0.
 :- dynamic posiada_klucz_do_sekretnej_sali/0.
+:- dynamic sprawdzil_szatnie/0.
+:- dynamic wie_o_pracy_semestralnej/0.
+:- dynamic sprawdzil_kieszenie_sala_glowna/0.
+:- dynamic przywital_sie_z_nikim/0.
+:- dynamic podszedl_do_baru/0.
+:- dynamic kupil_notatke_na_wilczej/0.
+:- dynamic obejrzano_fontanne/0.
 
 lokalizacja(start).
 stan(pieniadze, 0).
@@ -36,10 +44,10 @@ akcje(taksowka, Akcje) :-
 akcje(wilcza_30, [zapukaj_do_drzwi, rozejrzyj_sie, idz_do_hali_koszyki]).
 akcje(dom_wilcza, [wykup_notatke, opusc_dom]).
 akcje(hala_koszyki, [podejdz_do_baru, porozmawiaj_z_gosciem, wyjdz_w_strone_chinczyka]).
-akcje(chinczyk, [porozmawiaj_z_wlascicielem, kup_cos, idz_do_gg_pw]).
-akcje(eiti, [zajrzyj_do_laboratorium, idz_do_gg_pw]).
+akcje(chinczyk, [porozmawiaj_z_wlascicielem, kup_cos, idz_do_gg_pw, idz_na_weiti]).
+akcje(eiti, [zajrzyj_do_laboratorium, zajrzyj_do_szatni, idz_do_gg_pw]).
 akcje(gg_pw, [pogadaj_z_kims, sprawdz_tablice_ogloszen, sprawdz_portiernie, przeszukaj_teren, otworz_sale_glowna]).
-akcje(glowna_sala, [odczytaj_koperte]).
+akcje(glowna_sala, [sprawdz_kieszenie, wyjdz_z_sali, podejdz_do_profesora]).
 
 dostepna_taksowka(porozmawiaj).
 dostepna_taksowka(pojedz_do_hali_koszyki) :- stan(hala_koszyki, tak).
@@ -130,7 +138,7 @@ interakcja_ggpw() :-
         stan(notatki, Lista),
         length(Lista, N),
         (N = 0 -> write("Zaraz... "); true),
-        (N = 5 ->
+        (N = 4 ->
             write("Odpowiadasz, że tak - na tym tobie teraz zależy"), nl,
             write("'Podobno klucz gdzieś się zgubił, i teraz profesor czeka w środku aż ktoś mu otworzy'"), nl,
             write("Żegnasz się, i powoli odwracasz się w stro-"), nl,
@@ -257,7 +265,7 @@ przeszukaj_miejsce(3) :-
             write("Szybko czytasz notatki. "),
             stan(notatki, Lista),
             length(Lista, N),
-            (N < 5 ->
+            (N < 4 ->
                 write("W sumie mało się dowiadujesz"), nl;
                 write("To może się przydać do twoich notatek! Bierzesz czystą kartkę z biurka nauczyciela, i przepisujesz najważniejsze rzeczy."),
                 inkrementuj_licznik(), nl % interakcja : +0.5 do oceny końcowej
@@ -334,7 +342,7 @@ wypisz_dostepne_akcje(Lokalizacja) :-
 
 % Uproszczone wywołanie akcji
 dzialanie(Akcja) :-
-    shell('clear'),
+    % shell('clear'),
     lokalizacja(Lokalizacja),
     dzialanie(Lokalizacja, Akcja).
 
@@ -519,9 +527,23 @@ dzialanie(park, obejrzyj_fontanne) :-
     dodaj(LosowaLiczba2).
 
 dzialanie(park, porozmawiaj_z_nieznajomym) :-
+    stan(wilcza, nie),
     retract(stan(wilcza, nie)), % Usuwamy stary stan
     assertz(stan(wilcza, tak)), % Ustawiamy nowy stan
-    write("Wilcza 30. To tam znajdziesz odpowiedzi. Ale uważaj… nie każda prawda przynosi ulgę."), nl.
+    write("Witasz się z nieznajomym."), nl,
+    write("'Dzień dobry! Co u Pana słychać?' - pyta się ciebie nieznajomy z entuzjazmem"), nl,
+    write("Równo entuzjastycznie odpowiadasz, że 'dobrze'... nawet jeśli pytanie nie brzmiało 'jak się czujesz', ale kto by się przejmował."), nl,
+    write("Zaczynasz rozmowę z nieznajomym, aż... tracisz czucie czasu. Ile rozmawialiście? Nie wiesz."), nl,
+    write("'Ja muszę proszę Pana jeszcze na autobus zdążyć, ale miło się z Panem rozmawiało!' - nieznajomy żegna się z tobą: znowu entuzjastycznie!"), nl, nl,
+    write("'I niech Pan pamięta o Wilczej 30! Warto tam zajrzeć!'"), nl,
+    write("??? Może o czymś wspomniałeś podczas rozmowy, co by skutkowały w takiej prośbie, ale tego nie pamiętasz"), nl,
+    write("Masz wrażenie, że coś wyniosłeś z tej konwersacji, aczkolwiek nie wiesz do końca co."), nl,
+    inkrementuj_licznik(). % interakcja - +0.5 do oceny końcowej
+
+dzialanie(park, porozmawiaj_z_nieznajomym) :-
+    write("Witasz się z nieznajomym. Entuzjastycznie machasz do niego."), nl,
+    (\+ przywital_sie_z_nikim -> true, assertz(przywital_sie_z_nikim); write("Czy wszystko dobrze?"), nl).
+
 
 dzialanie(park, idz_przed_pkin) :-
     write("Wracasz przed PKiN"),
@@ -560,9 +582,11 @@ dzialanie(wilcza_30, idz_do_hali_koszyki) :-
 
 % Dom Wilcza
 dzialanie(dom_wilcza, wykup_notatke) :-
+    (\+ kupil_notatke_na_wilczej -> true; false),
     stan(pieniadze, ObecnePieniadze),
     ObecnePieniadze >= 10,
     write("Ciekawość wzieła górę i wykupiłeś ten kawałek papieru."), nl,
+    assertz(kupil_notatke_na_wilczej),
     odejmij(10),
     retract(stan(notatki, Lista)),  % Pobieramy obecną listę notatek
     length(Lista, N),               % Sprawdzamy, ile jest notatek
@@ -571,7 +595,10 @@ dzialanie(dom_wilcza, wykup_notatke) :-
     zmien_lokalizacje(wilcza_30).
 
 dzialanie(dom_wilcza, wykup_notatke) :-
-    write("Kwota, o którą prosi cię mężczyzna jest zdecydowanie za wysoka. Może jeszcze tu wrócę..."), nl.
+    (kupil_notatke_na_wilczej -> write("Osoba nie ma nic więcej do sprzedania tobie. Po co mówiła tobie że coś ma?"), nl
+    ;
+    write("Kwota, o którą prosi cię mężczyzna jest zdecydowanie za wysoka. Może jeszcze tu wrócę..."), nl).
+
 
 dzialanie(dom_wilcza, opusc_dom) :-
     write("Postanowiłeś opuścić dom mężczyzny. Co jeszcze cię czeka?"), nl,
@@ -579,12 +606,17 @@ dzialanie(dom_wilcza, opusc_dom) :-
 
 % Hala Koszyki
 dzialanie(hala_koszyki, podejdz_do_baru) :-
+    \+ podszedl_do_baru,
+    assertz(podszedl_do_baru),
     write("Barman rozpoznaje cię i mówi, że wczoraj zostawiłeś coś ważnego."), nl,
     write("Wręcza ci kolejną część notatki i wspomina o chińskiej restauracji, do której się wybierałeś."), nl,
     retract(stan(notatki, Lista)),  % Pobieramy obecną listę notatek
     length(Lista, N),               % Sprawdzamy, ile jest notatek
     NowaNotatka is N + 1,           % Nowa notatka dostaje numer N+1
     assertz(stan(notatki, [NowaNotatka | Lista])). % Aktualizujemy stan
+
+dzialanie(hala_koszyki, podejdz_do_baru) :-
+    write("Barman nie ma nic do wręczenia. Odchodzisz"), nl.
 
 dzialanie(hala_koszyki, porozmawiaj_z_gosciem) :-
     write("Tajemniczy rozmówca wspomina o dziwnym incydencie, którego był świadkiem - ktoś potrącił cię szybko wychodząc."), nl.
@@ -595,24 +627,44 @@ dzialanie(hala_koszyki, wyjdz_w_strone_chinczyka) :-
 
 % Chińczyk
 dzialanie(chinczyk, porozmawiaj_z_wlascicielem) :-
+    stan(rozmowa, nie),
     write("Pamięta cię! Wspomina, że wczoraj zostawiłeś coś przy stoliku."), nl,
     write("Wskaże ci go jedynie, jeśli kupisz coś (10 zł), przecież za darmo nie możesz siedzieć w lokalu!"), nl,
+    retract(stan(rozmowa, nie)),
     assertz(stan(rozmowa, tak)).
+
+dzialanie(chinczyk, porozmawiaj_z_wlascicielem) :-
+    stan(rozmowa, tak),
+    write("Podchodzisz do właściciela jeszcze raz. Dalej cie pamięta."), nl,
+    (stan(eiti, tak) -> write("Nic tobie nie wskazuje. Zaczynasz się zastanawiać co właściwie chcesz od właściciela."), nl;
+                        write("Przypomina tobie o czymś przy stoliku. Jak coś kupisz (10 zł), to wskaże tobie ten tajemniczy przedmiot."), nl).
 
 dzialanie(chinczyk, kup_cos) :-
     stan(rozmowa, nie),  % Sprawdzamy, czy najpierw rozmawialiśmy z właścicielem
     write("Najpierw porozmawiaj z właścicielem."), nl.
 
 dzialanie(chinczyk, kup_cos) :-
+
     stan(rozmowa, tak),
     stan(pieniadze, ObecnePieniadze),
     ObecnePieniadze >= 10,  % Sprawdzamy, czy mamy wystarczająco pieniędzy
     stan(eiti, nie),         % Sprawdzamy, czy nie kupiliśmy wcześniej
+
     retract(stan(pieniadze, ObecnePieniadze)),  % Usuwamy stary stan pieniędzy
     NowePieniadze is ObecnePieniadze - 10,      % Zmniejszamy o 10 zł
     assertz(stan(pieniadze, NowePieniadze)),     % Ustawiamy nowy stan pieniędzy
+
+    retract(stan(eiti, nie)),
     assertz(stan(eiti, tak)),   % Ustawiamy stan eiti na 'tak'
-    write("Znajdziesz tam tajemniczą wiadomość „EITI” napisaną na odwrocie serwetki."), nl.
+    write("Znajdujesz tajemniczą wiadomość „EITI” napisaną na odwrocie serwetki."), nl.
+
+dzialanie(chinczyk, kup_cos) :-
+    stan(rozmowa, tak),
+    stan(pieniadze, ObecnePieniadze),
+    ObecnePieniadze >= 10,
+    stan(eiti, tak),
+    write("Właściciel nie ma tobie nic ciekawego do sprzedania... no w sumie oprócz jedzenia.").
+
 
 dzialanie(chinczyk, kup_cos) :-
     stan(rozmowa, tak),
@@ -626,11 +678,38 @@ dzialanie(chinczyk, idz_do_gg_pw) :-
 
 dzialanie(chinczyk, idz_na_weiti) :-
     write("Idziesz na wydział EITI."), nl,
+    (podniesiono_przedmioty -> retract(podniesiono_przedmioty); true),
     zmien_lokalizacje(eiti).
 
 % EITI
 dzialanie(eiti, zajrzyj_do_laboratorium) :-
-    write("Wchodzisz do laboratorium i widzisz profesorów."), nl.
+    (\+ podniesiono_przedmioty ->
+        write("Wchodzisz do laboratorium i widzisz profesorów."), nl,
+        write("Witasz się i powoli wchodzisz do środka. Studentów tu jeszcze nie ma, ale zapewne będą tu niedługo jakieś zajęcia."), nl,
+        write("'Szuka Pan czegoś?' - pyta profesor. Odpowiadasz że tak, coś zostawiłeś (dobrze wiesz że to nieprawda)"), nl,
+        write("Chociaż... ha, ciekawe. Widzisz kawałek notatki. Bierzesz ją - może się tobie przydać."), nl,
+        assert(podniesiono_przedmioty),
+        retract(stan(notatki, Lista)),
+        length(Lista, N),
+        NowaNotatka is N + 1,
+        assertz(stan(notatki, [NowaNotatka | Lista]))
+    ;
+        write("Wchodzisz do laboratorium i... nie, nie wchodzisz do laboratorium."), nl
+    ).
+
+dzialanie(eiti, zajrzyj_do_szatni) :-
+    (\+ sprawdzil_szatnie ->
+    write("Podchodzisz, a Pan z szatni wyjmuje już numerek, i chce go tobie wręczyć. Nie bierzesz numerka, ale rozglądasz się wokół"), nl,
+    write("'Czy w czymś Panu pomóc???' - zapytany odpowiadasz, że po prostu patrzysz czy czegoś nie zapomniałeś"), nl,
+    write("'Coś... ostatnio wydawał się Pan jakiś rozkojarzony, o ile mnie pamięć nie myli...'"), nl,
+    write("'hmmmm...' - Pan rozgląda się chwilę, patrzy pod swoje biurko, i mówi:"), nl,
+    write("'Chyba to może być Pana. Niech Pan sprawdzi - leży tu od jakiegoś czasu.'"), nl,
+    write("Dostajesz ładnie uciętą ściągę. Spoglądasz na zawartość, i rzeczywiście: coś kojarzysz. Może to się przydać..."), nl,
+    inkrementuj_licznik(), % interakcja, + 0.5 do oceny
+    assertz(sprawdzil_szatnie)
+    ;
+    write("Patrzysz jeszcze raz na szatnię, i nic nietypowego nie zauważasz. Prędko odchodzisz"), nl
+    ).
 
 dzialanie(eiti, idz_do_gg_pw) :-
     write("Idziesz do Gmachu Głównego PW."), nl,
@@ -685,15 +764,92 @@ dzialanie(gg_pw, pogadaj_z_kims) :-
     interakcja_ggpw(),
     wypisz_dostepne_akcje(gg_pw).
 
-% Główna sala
-dzialanie(glowna_sala, odczytaj_koperte) :-
-    write("Otwierasz kopertę i znajdujesz ostateczną wskazówkę."), nl.
+dzialanie(glowna_sala, wyjdz_z_sali) :-
+    write("Próbujesz wyjść z sali... ale drzwi się zamknęły, i nie chcą się otworzyć"), nl.
+
+dzialanie(glowna_sala, sprawdz_kieszenie) :-
+    \+ sprawdzil_kieszenie_sala_glowna,
+    stan(notatki, Lista),
+    length(Lista, N),
+    stan(pieniadze, X),
+    Y = 4 - X,
+    (N = 0 ->
+        write("Sprawdzasz swoje kieszenie... znajdujesz "), write(X), write(" złotych."), nl,
+        write("Ale fajnie :D... żadna inna myśl nie przychodzi tobie do głowy."), nl
+        ;
+        write("Sprawdzasz swoje kieszenie... znajdujesz "), write(N), write(" części notatek, oraz "), write(X), write(" złotych."), nl,
+        (N < 4 ->
+            write("Zaraz... o nie..."), nl,
+            write("W panice składasz części twojej pracy które wcześniej zebrałeś."), nl,
+            write("Praca... nie jest kompletna. Brzuch zaczyna cię boleć. Wygląda na to, że brakuje tobie "), write(Y), write(" części notatek."), nl
+            ;
+            write("Teraz jesteś pewien - trzymasz części twojej pracy semestralnej."), nl,
+            write("W panice składasz części twojej pracy semestralnej... jest pełna..."), nl,
+            write("30 sekund emocjonalnego rollercoastera kończy się ogromną ulgą... uśmiechasz się!"), nl
+        ),
+        assertz(wie_o_pracy_semestralnej)
+    ),
+    assertz(sprawdzil_kieszenie_sala_glowna).
+
+dzialanie(glowna_sala, sprawdz_kieszenie) :-
+    sprawdzil_kieszenie_sala_glowna,
+    write("Już sprawdziłeś kieszenie. Nic innego tam nie ma."), nl.
+
+dzialanie(glowna_sala, podejdz_do_profesora) :-
+    write("Podchodzisz do profesora siedzącego na wprost ciebie. Czeka na ciebie, i rozpoznaje cię. Witasz się."), nl,
+    write("'I kto to przyszedł? Dzień dobry Panu.'- mówi profesor w nieco onieśmielającym tonie."),
+    stan(notatki, Lista),
+    length(Lista, X),
+    (\+ wie_o_pracy_semestralnej ->
+        write("'Będzie Pan tak tu stać? Czegoś Pan potrzebuje?'"), nl, nl,
+        (X = 0 ->
+            write("Nie wiesz co ciebie tu przyprowadziło, ale przez cały czas miałeś wrażenie, że musisz tu być."), nl,
+            write("Odlatujesz myślami... gdzieś, ale nie wiesz gdzie. W tle słychać profesora coraz głośniej, ale nie wiesz o czym mówi."), nl,
+            write("Powoli wracasz na Ziemię: widzisz profesora jak wstaje i wskazuje na drzwi. Każe tobie wyjść."), nl,
+            write("Jesteś rozkojarzony. Twoje myśli błądzą w nieskończonej nicości. Próbujesz się uspokoić."), nl
+        ;
+            write("Nie wiesz w sumie co tu robisz."), nl,
+            write("'To Pan wchodzi do mnie bez pojęcia co Pan w ogóle chce?'"), nl,
+            write("No dokładnie!"), nl,
+            write("'To mogę Panu powiedzieć, że ja na pewno chcę Pańskiej pracy semestralnej'"), nl,
+            write("Naprawdę?"), nl
+        )
+        ;
+        write("'Będzie Pan tak tu stać? Czegoś Pan potrzebuje?'"), nl, nl,
+        write("Mówisz, że chcesz oddać pracę semestralną"), nl
+    ),
+    (X < 4 -> zle_zakonczenie(); dobre_zakonczenie()).
 
 % Sprawdzenie zakończenia gry
-dobre_zakonczenie :-
+dobre_zakonczenie() :-
+    write("Bierzesz swoje notatki z kieszenie, i składasz je w jedną część. Profesor patrzy się na ciebie z lekkim zdziwieniem."), nl,
+    write("Twoim oczom ukazuje się... twoja praca semstralna w pełnej postaci."), nl,
+    write("'Wow... doceniam Pana determinację. Powiedziałbym że jest to niedorzeczne oddawać pracę w takim stanie, ale wygląda Pan na zmęczonego...'"), nl,
+    write("Więc jest szansa?! Opłaciło się zbierać te notatki? Nie wiesz co myśleć, ale czekasz aż profesor skończy czytać pracę."), nl,
+    read(_),
+    shell(clear),
+    write("Profesor wygląda raz na zażenowanego, raz na zaskoczonego, a nawet na zadowolonego."), nl,
+    write("'Muszę Panu przyznać, że może praca idealna nie jest... ale zaliczyć, to Pan zaliczy.'"), nl,
+    write("'A swoją drogą... no i jak Pańska wiedza? Powalczy Pan o lepszą ocenę?'"), nl,
+    write("Starasz sobie przypomnieć co się dowiedziałeś... mówisz co wiesz, trochę też zmyślaśz, ale..."), nl,
+    read(_),
+    shell(clear),
+    licznik_interakcji(L),
+    Ocena is 3.0 + 0.5 * L,
+    write("ZALICZASZ przedmiot z oceną "), write(Ocena).
+
+zle_zakonczenie() :-
+    write("Bierzesz swoje notatki z kieszeni, i składasz je w jedną czę-"), nl,
+    write("O nie..."), nl,
+    write("'I co ja mam z taką pracą zrobić? Nie czytam tego proszę Pana.'"), nl,
+    write("Ale..."), nl,
+    write("'Niestety nie ma żadnych 'ale' proszę Pana. Jak ja mam ocenić niepełną pracę? Miał Pan tyle czasu na oddanie.'"), nl,
+    read(_),
+    shell('clear'),
+    write("NIE ZALICZASZ przedmiotu. Ocena końcowa: 2.0. Profesor wydaje się być na ciebie zdenerwowany."), nl,
     stan(notatki, Lista),
-    length(Lista, 5),
-    write("Gratulacje! Oddałeś pracę semestralną i zdałeś przedmiot!"), nl.
+    length(Lista, N),
+    write("Zebrałeś "), write(N), write("/4 notatek. Nie udało ci się skompletować pracy semestralnej.").
 
 sprawdz(stan_notatek) :-
     stan(notatki, Lista),
