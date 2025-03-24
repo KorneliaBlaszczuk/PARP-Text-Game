@@ -515,7 +515,7 @@ dzialanie(park, karm_golebie) :-
 
 dzialanie(park, obejrzyj_fontanne) :-
     random(2, 11, LosowaLiczba2),
-    write("Oglądasz fontannę. Patrzysz na spokojną taflę. Znajdujesz kilka monet o łącznej wartości ~w zł.~n", [LosowaLiczba2]),
+    format("Oglądasz fontannę. Patrzysz na spokojną taflę. Znajdujesz kilka monet o łącznej wartości ~w zł.~n", [LosowaLiczba2]),
     dodaj(LosowaLiczba2).
 
 dzialanie(park, porozmawiaj_z_nieznajomym) :-
