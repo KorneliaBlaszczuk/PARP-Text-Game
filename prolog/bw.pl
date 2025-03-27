@@ -479,8 +479,6 @@ dzialanie(szatnia_pkin, przeszukaj_plaszcz) :-
 
 dzialanie(szatnia_pkin, przeszukaj_plaszcz) :-
     stan(numerek, tak), % Jeśli numerek został znaleziony
-    retract(stan(hala_koszyki, nie)), % Usuwamy stary stan
-    assertz(stan(hala_koszyki, tak)), % Ustawiamy nowy stan
     write("Znajdujesz ulotkę z ofertą Happy Hours z baru w Hali Koszyki."), nl.
 
 % Przed PKiN
