@@ -167,6 +167,7 @@ przeszukaj_miejsce(1) :-
     repeat,
     write("Dziekanat wydaje się być zamknięty. Spod drzwi wystaje kawałek jakiegoś przedmiotu"), nl,
     write("Wybierz [1] Spróbuj otworzyć drzwi do dziekanatu [2] Podnieś przedmiot [3] Wróć do miejsca startowego"), nl,
+    ansi_format([bold, fg(green)], "Aby wykonać działanie, wpisz 'cyfra.' (bez znaków apostrofu)", []), nl,
     read(Wybor),
     (Wybor = 1 ->
         % shell('clear'),
@@ -201,6 +202,7 @@ przeszukaj_miejsce(2) :-
     repeat,
     write("Jest tutaj co sprawdzać. Ale od czego zacząć?"), nl, nl,
     write("Co sprawdzisz? [1] Pójdź w lewo [2] Pójdź w prawo [3] Pójdź na wprost [4] Wróć do miejsca startowego"), nl,
+    ansi_format([bold, fg(green)], "Aby wykonać działanie, wpisz 'cyfra.' (bez znaków apostrofu)", []), nl,
     read(Wybor),
     (Wybor = 1 ->
         % shell('clear'),
@@ -329,11 +331,20 @@ odejmij(Kwota) :-
     write(" zł"), nl.
 
 % Funkcja zmieniająca lokalizację i wypisująca dostępne akcje
+zmien_lokalizacje(glowna_sala) :-
+    retract(lokalizacja(_)),
+    assertz(lokalizacja(glowna_sala)),
+    opis(glowna_sala),
+    wypisz_dostepne_akcje(glowna_sala),
+    ansi_format([bold, fg(green)], "Aby wykonać działanie, wpisz 'dzialanie({wybór z listy}).' (bez znaków apostrofu i bez {})", []), nl,
+    ansi_format([bold, fg(yellow)], "UWAGA! Podejście do profesora stanowi zakończenie twojej rozgrywki. Możesz zobaczyć twoje zebrane rzeczy sprawdzając kieszenie.", []), nl.
+
 zmien_lokalizacje(NowaLokalizacja) :-
     retract(lokalizacja(_)),
     assertz(lokalizacja(NowaLokalizacja)),
     opis(NowaLokalizacja),
-    wypisz_dostepne_akcje(NowaLokalizacja).
+    wypisz_dostepne_akcje(NowaLokalizacja),
+    ansi_format([bold, fg(green)], "Aby wykonać działanie, wpisz 'dzialanie({wybór z listy}).' (bez znaków apostrofu i bez {})", []), nl.
 
 wypisz_dostepne_akcje(Lokalizacja) :-
     akcje(Lokalizacja, Akcje),
@@ -733,6 +744,7 @@ dzialanie(gg_pw, przeszukaj_teren) :-
     write("Przeszukujesz teren... musisz jakoś otworzyć te drzwi do sali głównej."), nl, nl,
     write("Chodzisz dookoła z myślą że coś znajdziesz, ale bez skutku... Może trzeba do tego podejść na spokojnie?"), nl,
     write("Co robisz? Wybierz [1] Idź do dziekanatu [2] Przeszukaj korytarze [3] Sprawdź różne sale, [4] Sprawdź klatkę schodową [5] Skończ szukać"), nl,
+    ansi_format([bold, fg(green)], "Aby wykonać działanie, wpisz 'cyfra.' (bez znaków apostrofu)", []), nl,
     read(Wybor),
     przeszukaj_miejsce(Wybor).
 
@@ -780,7 +792,7 @@ dzialanie(glowna_sala, sprawdz_kieszenie) :-
     stan(notatki, Lista),
     length(Lista, N),
     stan(pieniadze, X),
-    Y = 4 - X,
+    Y is 4 - N,
     (N = 0 ->
         write("Sprawdzasz swoje kieszenie... znajdujesz "), write(X), write(" złotych."), nl,
         write("Ale fajnie :D... żadna inna myśl nie przychodzi tobie do głowy."), nl
@@ -830,16 +842,18 @@ dzialanie(glowna_sala, podejdz_do_profesora) :-
 
 % Sprawdzenie zakończenia gry
 dobre_zakonczenie() :-
-    write("Bierzesz swoje notatki z kieszenie, i składasz je w jedną część. Profesor patrzy się na ciebie z lekkim zdziwieniem."), nl,
+    write("Bierzesz swoje notatki z kieszeni, i składasz je w jedną część. Profesor patrzy się na ciebie z lekkim zdziwieniem."), nl,
     write("Twoim oczom ukazuje się... twoja praca semstralna w pełnej postaci."), nl,
     write("'Wow... doceniam Pana determinację. Powiedziałbym że jest to niedorzeczne oddawać pracę w takim stanie, ale wygląda Pan na zmęczonego...'"), nl,
     write("Więc jest szansa?! Opłaciło się zbierać te notatki? Nie wiesz co myśleć, ale czekasz aż profesor skończy czytać pracę."), nl,
+    ansi_format([bold, fg(green)], "Wpisz 'true.' (bez znaków apostrofu)", []), nl,
     read(_),
     % shell('clear'),
     write("Profesor wygląda raz na zażenowanego, raz na zaskoczonego, a nawet na zadowolonego."), nl,
     write("'Muszę Panu przyznać, że może praca idealna nie jest... ale zaliczyć, to Pan zaliczy.'"), nl,
     write("'A swoją drogą... no i jak Pańska wiedza? Powalczy Pan o lepszą ocenę?'"), nl,
     write("Starasz sobie przypomnieć co się dowiedziałeś... mówisz co wiesz, trochę też zmyślaśz, ale..."), nl,
+    ansi_format([bold, fg(green)], "Wpisz 'true.' (bez znaków apostrofu)", []), nl,
     read(_),
     % shell('clear'),
     licznik_interakcji(L),
@@ -860,6 +874,7 @@ zle_zakonczenie() :-
         ;
         true
     ),
+    ansi_format([bold, fg(green)], "Wpisz 'true.' (bez znaków apostrofu)", []), nl,
     read(_),
     % shell('clear'),
     write("NIE ZALICZASZ przedmiotu. Ocena końcowa: 2.0. Profesor wydaje się być na ciebie zdenerwowany."), nl,
