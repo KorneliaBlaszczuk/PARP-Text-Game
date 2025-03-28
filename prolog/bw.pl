@@ -167,6 +167,7 @@ przeszukaj_miejsce(1) :-
     repeat,
     write("Dziekanat wydaje się być zamknięty. Spod drzwi wystaje kawałek jakiegoś przedmiotu"), nl,
     write("Wybierz [1] Spróbuj otworzyć drzwi do dziekanatu [2] Podnieś przedmiot [3] Wróć do miejsca startowego"), nl,
+    ansi_format([bold, fg(green)], "Aby wykonać działanie, wpisz 'cyfra.' (bez znaków apostrofu)", []), nl,
     read(Wybor),
     (Wybor = 1 ->
         % shell('clear'),
@@ -201,6 +202,7 @@ przeszukaj_miejsce(2) :-
     repeat,
     write("Jest tutaj co sprawdzać. Ale od czego zacząć?"), nl, nl,
     write("Co sprawdzisz? [1] Pójdź w lewo [2] Pójdź w prawo [3] Pójdź na wprost [4] Wróć do miejsca startowego"), nl,
+    ansi_format([bold, fg(green)], "Aby wykonać działanie, wpisz 'cyfra.' (bez znaków apostrofu)", []), nl,
     read(Wybor),
     (Wybor = 1 ->
         % shell('clear'),
@@ -333,7 +335,8 @@ zmien_lokalizacje(NowaLokalizacja) :-
     retract(lokalizacja(_)),
     assertz(lokalizacja(NowaLokalizacja)),
     opis(NowaLokalizacja),
-    wypisz_dostepne_akcje(NowaLokalizacja).
+    wypisz_dostepne_akcje(NowaLokalizacja),
+    ansi_format([bold, fg(green)], "Aby wykonać działanie, wpisz 'dzialanie({wybór z listy}).' (bez znaków apostrofu i bez {})", []), nl.
 
 wypisz_dostepne_akcje(Lokalizacja) :-
     akcje(Lokalizacja, Akcje),
@@ -733,6 +736,7 @@ dzialanie(gg_pw, przeszukaj_teren) :-
     write("Przeszukujesz teren... musisz jakoś otworzyć te drzwi do sali głównej."), nl, nl,
     write("Chodzisz dookoła z myślą że coś znajdziesz, ale bez skutku... Może trzeba do tego podejść na spokojnie?"), nl,
     write("Co robisz? Wybierz [1] Idź do dziekanatu [2] Przeszukaj korytarze [3] Sprawdź różne sale, [4] Sprawdź klatkę schodową [5] Skończ szukać"), nl,
+    ansi_format([bold, fg(green)], "Aby wykonać działanie, wpisz 'cyfra.' (bez znaków apostrofu)", []), nl,
     read(Wybor),
     przeszukaj_miejsce(Wybor).
 
