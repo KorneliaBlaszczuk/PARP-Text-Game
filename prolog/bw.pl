@@ -792,7 +792,7 @@ dzialanie(glowna_sala, sprawdz_kieszenie) :-
     stan(notatki, Lista),
     length(Lista, N),
     stan(pieniadze, X),
-    Y = 4 - X,
+    Y is 4 - N,
     (N = 0 ->
         write("Sprawdzasz swoje kieszenie... znajdujesz "), write(X), write(" złotych."), nl,
         write("Ale fajnie :D... żadna inna myśl nie przychodzi tobie do głowy."), nl
@@ -846,12 +846,14 @@ dobre_zakonczenie() :-
     write("Twoim oczom ukazuje się... twoja praca semstralna w pełnej postaci."), nl,
     write("'Wow... doceniam Pana determinację. Powiedziałbym że jest to niedorzeczne oddawać pracę w takim stanie, ale wygląda Pan na zmęczonego...'"), nl,
     write("Więc jest szansa?! Opłaciło się zbierać te notatki? Nie wiesz co myśleć, ale czekasz aż profesor skończy czytać pracę."), nl,
+    ansi_format([bold, fg(green)], "Wpisz 'true.' (bez znaków apostrofu)", []), nl,
     read(_),
     % shell('clear'),
     write("Profesor wygląda raz na zażenowanego, raz na zaskoczonego, a nawet na zadowolonego."), nl,
     write("'Muszę Panu przyznać, że może praca idealna nie jest... ale zaliczyć, to Pan zaliczy.'"), nl,
     write("'A swoją drogą... no i jak Pańska wiedza? Powalczy Pan o lepszą ocenę?'"), nl,
     write("Starasz sobie przypomnieć co się dowiedziałeś... mówisz co wiesz, trochę też zmyślaśz, ale..."), nl,
+    ansi_format([bold, fg(green)], "Wpisz 'true.' (bez znaków apostrofu)", []), nl,
     read(_),
     % shell('clear'),
     licznik_interakcji(L),
@@ -872,6 +874,7 @@ zle_zakonczenie() :-
         ;
         true
     ),
+    ansi_format([bold, fg(green)], "Wpisz 'true.' (bez znaków apostrofu)", []), nl,
     read(_),
     % shell('clear'),
     write("NIE ZALICZASZ przedmiotu. Ocena końcowa: 2.0. Profesor wydaje się być na ciebie zdenerwowany."), nl,

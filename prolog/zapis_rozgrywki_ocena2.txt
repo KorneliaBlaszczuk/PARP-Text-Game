@@ -1,0 +1,170 @@
+algo@ole:~/SEM4/PARP/parp_25l$ swipl -q prolog/bw.pl
+Budzisz się na tarasie PKiN. Okropnie boli cię głowa, szczególnie, kiedy na twoje powieki padają pierwsze promienie nowego dnia.
+Nagle czujesz dziabnięcie. To gołąb, który zdecydowanie nie jest zadowolony z twojej obecności na jego terytorium. Co zrobić?
+Dostępne akcje:
+- zajrzyj_do_kieszeni
+- rozejrzyj_sie
+- podejdz_do_krawedzi
+- zejdz_po_schodach
+- uzyj_windy
+Aby wykonać działanie, wpisz 'dzialanie({wybór z listy}).' (bez znaków apostrofu i bez {})
+?- dzialanie(zajrzyj_do_kieszeni).
+Sięgasz do kieszeni i znajdujesz 20 zł oraz notatkę.
+Twoje fundusze to: 20 zł
+true .
+
+?- dzialanie(uzyj_windy).
+Zjeżdzasz windą prosto na dół do holu PKiN.
+Głowa nadal boli cię nieubłaganie. Wokół cicho, tylko portier siedzi za ladą. Może warto go zapytać o wczoraj?
+Dostępne akcje:
+- porozmawiaj_z_portierem
+- wyjdz_na_zewnatrz
+- udaj_sie_do_szatni
+Aby wykonać działanie, wpisz 'dzialanie({wybór z listy}).' (bez znaków apostrofu i bez {})
+true.
+
+?- dzialanie(wyjdz_na_zewnatrz).
+Wychodzisz na zewnątrz, przed PKiN.
+Wychodząc zaczepia cię dziwny chłopak, który mówi: 'O hej brachu, pamiętasz co się działo wczoraj w Hali Koszyki?'
+Jesteś przed PKiN. Widok na miasto jest zapierający, możesz ruszyć w różne strony.
+Dostępne akcje:
+- idz_w_strone_parku
+- idz_w_strone_taksowki
+- spojrz_na_ulotke
+- idz_do_hali_koszyki
+Aby wykonać działanie, wpisz 'dzialanie({wybór z listy}).' (bez znaków apostrofu i bez {})
+true .
+
+?- dzialanie(idz_w_strone_taksowki).
+Wsiadasz do taksówki.
+Wsiadłeś do taksówki. Kierowca czeka na dalsze instrukcje.
+Dostępne akcje:
+- porozmawiaj
+- pojedz_do_hali_koszyki
+Aby wykonać działanie, wpisz 'dzialanie({wybór z listy}).' (bez znaków apostrofu i bez {})
+true .
+
+?- dzialanie(porozmawiaj).
+Kierowca mówi: 'Ciężka noc, co? Wyglądasz jakoś tak wczorajszo. Zdecydowanie wczoraj poimprezowałeś.'
+true.
+
+?- dzialanie(pojedz_do_hali_koszyki).
+Jedziesz do Hali Koszyki.
+Twoje fundusze to: 0 zł
+Hala Koszyki tętni życiem nawet o tej godzinie. Zapach kawy i świeżego pieczywa unosi się w powietrzu, a ludzie śmieją się przy stolikach.
+Czujesz, że byłeś tu wczoraj, ale wciąż nie pamiętasz, co się stało.
+Dostępne akcje:
+- podejdz_do_baru
+- porozmawiaj_z_gosciem
+- wyjdz_w_strone_chinczyka
+Aby wykonać działanie, wpisz 'dzialanie({wybór z listy}).' (bez znaków apostrofu i bez {})
+true.
+
+?- dzialanie(podejdz_do_baru).
+Barman rozpoznaje cię i mówi, że wczoraj zostawiłeś coś ważnego.
+Wręcza ci kolejną część notatki i wspomina o chińskiej restauracji, do której się wybierałeś.
+true .
+
+?- dzialanie(porozmawiaj_z_gosciem).
+Tajemniczy rozmówca wspomina o dziwnym incydencie, którego był świadkiem - ktoś potrącił cię szybko wychodząc.
+true.
+
+?- dzialanie(wyjdz_w_strone_chinczyka).
+Idziesz do chińskiej restauracji.
+Lokal jest niewielki, ale przytulny.
+Na ścianach wiszą chińskie lampiony, a w tle cicho gra azjatycka muzyka. Właściciel patrzy na ciebie z zainteresowaniem, jakby cię już widział.
+Dostępne akcje:
+- porozmawiaj_z_wlascicielem
+- kup_cos
+- idz_do_gg_pw
+- idz_na_weiti
+Aby wykonać działanie, wpisz 'dzialanie({wybór z listy}).' (bez znaków apostrofu i bez {})
+true.
+
+?- dzialanie(kup_cos).
+Najpierw porozmawiaj z właścicielem.
+true .
+
+?- dzialanie(idz_do_gg_pw
+|    ).
+Idziesz do Gmachu Głównego PW.
+Jesteś w Gmachu Głównym Politechniki Warszawskiej. Wszędzie pełno studentów i nauczycieli.
+Znajdujesz swoim wzrokiem salę główną. Czas zdaje się biec coraz szybciej.
+Dostępne akcje:
+- pogadaj_z_kims
+- sprawdz_tablice_ogloszen
+- sprawdz_portiernie
+- przeszukaj_teren
+- otworz_sale_glowna
+Aby wykonać działanie, wpisz 'dzialanie({wybór z listy}).' (bez znaków apostrofu i bez {})
+true
+
+?- dzialanie(sprawdz_tablice_ogloszen).
+Na tablicy ogłoszeń widzisz informację o terminie oddania pracy. Oprócz tego, widzisz nowo powieszoną kartkę z napisem 'Zgubiono klucz do sali ...'
+Więc chodzi o klucz... no tak.
+Dostępne akcje:
+- pogadaj_z_kims
+- sprawdz_tablice_ogloszen
+- sprawdz_portiernie
+- przeszukaj_teren
+- otworz_sale_glowna
+true.
+
+?- dzialanie(przeszukaj_teren).
+Przeszukujesz teren... musisz jakoś otworzyć te drzwi do sali głównej.
+
+Chodzisz dookoła z myślą że coś znajdziesz, ale bez skutku... Może trzeba do tego podejść na spokojnie?
+Co robisz? Wybierz [1] Idź do dziekanatu [2] Przeszukaj korytarze [3] Sprawdź różne sale, [4] Sprawdź klatkę schodową [5] Skończ szukać
+Aby wykonać działanie, wpisz 'cyfra.' (bez znaków apostrofu)
+|: 4.
+Idziesz sprawdzić najbliższą klatkę schodową. Przechodzisz się po niej w górę, i wracasz. Nic nie zauważasz.
+Znajdujesz klucz! Wygląda dość staro, ale może będzie gdzieś pasować.
+Wracasz do punktu, z którego zacząłeś przeszukiwanie.
+Przeszukujesz teren... musisz jakoś otworzyć te drzwi do sali głównej.
+
+Chodzisz dookoła z myślą że coś znajdziesz, ale bez skutku... Może trzeba do tego podejść na spokojnie?
+Co robisz? Wybierz [1] Idź do dziekanatu [2] Przeszukaj korytarze [3] Sprawdź różne sale, [4] Sprawdź klatkę schodową [5] Skończ szukać
+Aby wykonać działanie, wpisz 'cyfra.' (bez znaków apostrofu)
+|: 5.
+Dostępne akcje:
+- pogadaj_z_kims
+- sprawdz_tablice_ogloszen
+- sprawdz_portiernie
+- przeszukaj_teren
+- otworz_sale_glowna
+true .
+
+?- dzialanie(otworz_sale_glowna).
+Klucz pasuje do zamka. Przekręcasz go, a drzwi, może i powoli, ale otwierają się przed tobą.
+Jesteś w głównej sali. Czas na końcową decyzję i oddanie pracy semestralnej.
+Dostępne akcje:
+- sprawdz_kieszenie
+- wyjdz_z_sali
+- podejdz_do_profesora
+Aby wykonać działanie, wpisz 'dzialanie({wybór z listy}).' (bez znaków apostrofu i bez {})
+UWAGA! Podejście do profesora stanowi zakończenie twojej rozgrywki. Możesz zobaczyć twoje zebrane rzeczy sprawdzając kieszenie.
+true .
+
+?- dzialanie(sprawdz_kieszenie).
+Sprawdzasz swoje kieszenie... znajdujesz 2 części notatek, oraz 0 złotych.
+Zaraz... o nie...
+W panice składasz części twojej pracy które wcześniej zebrałeś.
+Praca... nie jest kompletna. Brzuch zaczyna cię boleć. Wygląda na to, że brakuje tobie 4-0 części notatek.
+true .
+
+?- dzialanie(podejdz_do_profesora).
+Podchodzisz do profesora siedzącego na wprost ciebie. Czeka na ciebie, i rozpoznaje cię. Witasz się.
+'I kto to przyszedł? Dzień dobry Panu.'- mówi profesor w nieco onieśmielającym tonie.'Będzie Pan tak tu stać? Czegoś Pan potrzebuje?'
+
+Mówisz, że chcesz oddać pracę semestralną
+Bierzesz swoje notatki z kieszeni, i składasz je w jedną czę-
+O nie...
+'I co ja mam z taką pracą zrobić? Nie czytam tego proszę Pana.'
+Ale...
+'Niestety nie ma żadnych 'ale' proszę Pana. Jak ja mam ocenić niepełną pracę? Miał Pan tyle czasu na oddanie.'
+Wpisz 'true.' (bez znaków apostrofu)
+|: true.
+NIE ZALICZASZ przedmiotu. Ocena końcowa: 2.0. Profesor wydaje się być na ciebie zdenerwowany.
+Zebrano 2/4 notatek. Nie udało ci się skompletować pracy semestralnej.
+Znaleziono 0 z czterech dostępnych sekretnych interakcji.
+true.
