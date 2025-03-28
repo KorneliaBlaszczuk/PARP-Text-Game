@@ -331,6 +331,14 @@ odejmij(Kwota) :-
     write(" zł"), nl.
 
 % Funkcja zmieniająca lokalizację i wypisująca dostępne akcje
+zmien_lokalizacje(glowna_sala) :-
+    retract(lokalizacja(_)),
+    assertz(lokalizacja(glowna_sala)),
+    opis(glowna_sala),
+    wypisz_dostepne_akcje(glowna_sala),
+    ansi_format([bold, fg(green)], "Aby wykonać działanie, wpisz 'dzialanie({wybór z listy}).' (bez znaków apostrofu i bez {})", []), nl,
+    ansi_format([bold, fg(yellow)], "UWAGA! Podejście do profesora stanowi zakończenie twojej rozgrywki. Możesz zobaczyć twoje zebrane rzeczy sprawdzając kieszenie.", []), nl.
+
 zmien_lokalizacje(NowaLokalizacja) :-
     retract(lokalizacja(_)),
     assertz(lokalizacja(NowaLokalizacja)),
