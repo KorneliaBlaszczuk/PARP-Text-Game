@@ -842,7 +842,7 @@ dzialanie(glowna_sala, podejdz_do_profesora) :-
 
 % Sprawdzenie zakończenia gry
 dobre_zakonczenie() :-
-    write("Bierzesz swoje notatki z kieszenie, i składasz je w jedną część. Profesor patrzy się na ciebie z lekkim zdziwieniem."), nl,
+    write("Bierzesz swoje notatki z kieszeni, i składasz je w jedną część. Profesor patrzy się na ciebie z lekkim zdziwieniem."), nl,
     write("Twoim oczom ukazuje się... twoja praca semstralna w pełnej postaci."), nl,
     write("'Wow... doceniam Pana determinację. Powiedziałbym że jest to niedorzeczne oddawać pracę w takim stanie, ale wygląda Pan na zmęczonego...'"), nl,
     write("Więc jest szansa?! Opłaciło się zbierać te notatki? Nie wiesz co myśleć, ale czekasz aż profesor skończy czytać pracę."), nl,
