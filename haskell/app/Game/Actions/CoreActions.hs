@@ -1,43 +1,23 @@
-module Game.Core
+module Game.Actions.CoreActions
   ( Game
-  , gameLoop
-  , startGame
+  , printAvailableActions
+  , handleBasicAction
   ) where
 
 import Game.State
-import Game.Actions (handleAction)
-import Game.Utils (checkNotes)
-import Game.Endings
+import Game.Locations
 import Control.Monad.State
-import System.IO (hFlush, stdout)
-import System.Exit (exitSuccess)
+import System.IO
+import System.Exit
+import Data.List (intercalate)
 
 type Game = StateT GameState IO
-
-gameLoop :: Game ()
-gameLoop = do
-  printAvailableActions
-  putStr "\n> "
-  liftIO $ hFlush stdout
-  input <- liftIO getLine
-  case input of
-    "sprawdz(stan_notatek)" -> checkNotes >> gameLoop
-    "quit" -> liftIO exitSuccess
-    cmd -> do
-      handleAction cmd
-      gameLoop
-
-startGame :: Game ()
-startGame = do
-  putStrLn "=== WITAJ W GRZE ==="
-  modify (\s -> s { location = TarasPKiN })
-  gets (locationDescription . location) >>= liftIO . putStrLn
-  gameLoop
 
 printAvailableActions :: Game ()
 printAvailableActions = do
   loc <- gets location
   case loc of
+    Start -> showActions ["rozpocznij_gre"]
     TarasPKiN -> showActions ["zajrzyj_do_kieszeni", "rozejrzyj_sie", "zejdz_po_schodach"]
     SchodyPKiN -> showActions ["podnies_pieniadze", "idz_dalej"]
     HolPKiN -> showActions ["porozmawiaj_z_portierem", "wyjdz_na_zewnatrz"]
@@ -56,3 +36,14 @@ printAvailableActions = do
     showActions actions = do
       liftIO $ putStrLn "\nDostępne akcje:"
       mapM_ (liftIO . putStrLn . ("- " ++)) actions
+
+handleBasicAction :: String -> Game ()
+handleBasicAction cmd = case cmd of
+  "sprawdz(stan_notatek)" -> checkNotes
+  "quit" -> liftIO exitSuccess
+  _ -> return ()
+
+checkNotes :: Game ()
+checkNotes = do
+  notes <- gets notes
+  liftIO $ putStrLn $ "Masz " ++ show (length notes) ++ "/4 notatek"
