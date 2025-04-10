@@ -1,11 +1,13 @@
 module Utils where
 
-import Game.States
+import Game.State
 import Game.Core
 import Game.Locations
 import Control.Monad.State
 import System.IO
 import Data.List (intercalate)
+import Data.Char (toLower)
+import Control.Concurrent (threadDelay)
 
 -- Funkcja czyszcząca ekran (działa na większości systemów)
 clearScreen :: IO ()
@@ -31,10 +33,10 @@ showInventory = do
     money <- gets money
     notes <- gets notes
     hasKey <- gets hasKey
-    putStrLn "\n=== EKWIPUNEK ==="
-    putStrLn $ "Pieniądze: " ++ show money ++ " zł"
-    putStrLn $ "Notatki: " ++ show (length notes) ++ "/4"
-    putStrLn $ "Klucz: " ++ if hasKey then "Tak" else "Nie"
+    liftIO $ putStrLn "\n=== EKWIPUNEK ==="
+    liftIO $ putStrLn $ "Pieniądze: " ++ show money ++ " zł"
+    liftIO $ putStrLn $ "Notatki: " ++ show (length notes) ++ "/4"
+    liftIO $ putStrLn $ "Klucz: " ++ if hasKey then "Tak" else "Nie"
 
 -- Funkcja pomocnicza do walidacji wejścia
 validateInput :: [String] -> String -> Game Bool
@@ -42,7 +44,7 @@ validateInput validCommands input = do
     if input `elem` validCommands
         then return True
         else do
-            putStrLn $ "Nieprawidłowa komenda. Dostępne opcje: " ++ intercalate ", " validCommands
+            liftIO $ putStrLn $ "Nieprawidłowa komenda. Dostępne opcje: " ++ intercalate ", " validCommands
             return False
 
 -- Wyświetla dostępne akcje w aktualnej lokalizacji
@@ -50,11 +52,11 @@ printAvailableActions :: Game ()
 printAvailableActions = do
     loc <- gets location
     case loc of
-        TarasPKiN -> showActions ["zajrzyj_do_kieszeni", "rozejrzyj_sie", "zejdz_po_schodach"]
-        SchodyPKiN -> showActions ["podnies_pieniadze", "idz_dalej"]
-        HolPKiN -> showActions ["porozmawiaj_z_portierem", "wyjdz_na_zewnatrz"]
+        TarasPKiN -> liftIO $ showActions ["zajrzyj_do_kieszeni", "rozejrzyj_sie", "zejdz_po_schodach"]
+        SchodyPKiN -> liftIO $ showActions ["podnies_pieniadze", "idz_dalej"]
+        HolPKiN -> liftIO $ showActions ["porozmawiaj_z_portierem", "wyjdz_na_zewnatrz"]
         -- ... inne lokalizacje
-        _ -> putStrLn "Brak dostępnych akcji."
+        _ -> liftIO $ putStrLn "Brak dostępnych akcji."
     where
         showActions actions = do
             putStrLn "\nDostępne akcje:"

@@ -1,5 +1,6 @@
 module Game.Core
-  ( startGame
+  ( startGame,
+  Game
   ) where
 
 import Game.State
