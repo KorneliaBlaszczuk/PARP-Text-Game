@@ -17,6 +17,8 @@ handleLocationAction loc cmd = case (loc, cmd) of
   (Start, "rozpocznij_gre") -> do
     liftIO $ putStrLn "\nRozpoczynasz swoją przygodę..."
     modify (\s -> s { location = TarasPKiN })
+    loc <- gets location
+    liftIO $ printLocationInfo loc
 
   (TarasPKiN, "zajrzyj_do_kieszeni") -> do
     hasChecked <- gets hasCheckedPockets
@@ -34,6 +36,8 @@ handleLocationAction loc cmd = case (loc, cmd) of
   (TarasPKiN, "zejdz_po_schodach") -> do
     liftIO $ putStrLn "Schodzisz powoli schodami, trzymając się poręczy..."
     modify (\s -> s { location = SchodyPKiN })
+    loc <- gets location
+    liftIO $ printLocationInfo loc
 
   (SchodyPKiN, "podnies_pieniadze") -> do
     hasPicked <- gets hasPickedUpItems
@@ -48,6 +52,8 @@ handleLocationAction loc cmd = case (loc, cmd) of
   (SchodyPKiN, "idz_dalej") -> do
     liftIO $ putStrLn "Schodzisz dalej w dół..."
     modify (\s -> s { location = HolPKiN })
+    loc <- gets location
+    liftIO $ printLocationInfo loc
 
   (HolPKiN, "porozmawiaj_z_portierem") ->
     liftIO $ putStrLn "Portier patrzy na ciebie zmęczonym wzrokiem: 'Proszę się nie zatrzymywać, przejść dalej'"
@@ -56,11 +62,15 @@ handleLocationAction loc cmd = case (loc, cmd) of
     liftIO $ putStrLn "Wychodzisz na świeże powietrze..."
     modify (\s -> s { knowsAboutHalaKoszyki = True })
     modify (\s -> s { location = PrzedPKiN })
+    loc <- gets location
+    liftIO $ printLocationInfo loc
 
   (PrzedPKiN, "idz_w_strone_parku") -> do
     liftIO $ putStrLn "Idziesz w kierunku parku..."
     modify (\s -> s { knowsAboutPark = True })
     modify (\s -> s { location = Park })
+    loc <- gets location
+    liftIO $ printLocationInfo loc
 
   (PrzedPKiN, "idz_w_strone_taksowki") -> do
     money <- gets money
@@ -68,6 +78,8 @@ handleLocationAction loc cmd = case (loc, cmd) of
       then do
         liftIO $ putStrLn "Wsiadasz do taksówki..."
         modify (\s -> s { location = Taksowka })
+        loc <- gets location
+        liftIO $ printLocationInfo loc
       else liftIO $ putStrLn "Nie stać cię na taksówkę (potrzebujesz 20 zł)"
 
   (Park, "obejrzyj_fontanne") -> do
@@ -84,6 +96,8 @@ handleLocationAction loc cmd = case (loc, cmd) of
     liftIO $ putStrLn "Kierowca wiezie cię do Hali Koszyki..."
     modify (subtractMoney 20)
     modify (\s -> s { location = HalaKoszyki })
+    loc <- gets location
+    liftIO $ printLocationInfo loc
 
   (HalaKoszyki, "podejdz_do_baru") -> do
     hasApproached <- gets hasApproachedBar
@@ -100,6 +114,8 @@ handleLocationAction loc cmd = case (loc, cmd) of
       then do
         liftIO $ putStrLn "Używasz klucza aby otworzyć salę..."
         modify (\s -> s { location = GlownaSala })
+        loc <- gets location
+        liftIO $ printLocationInfo loc
       else liftIO $ putStrLn "Nie masz klucza do sali!"
 
   (GlownaSala, "podejdz_do_profesora") -> do
@@ -132,3 +148,8 @@ subtractMoney amount s = s { money = money s - amount }
 
 addNote :: Int -> GameState -> GameState
 addNote noteId s = s { notes = noteId : notes s }
+
+printLocationInfo :: Location -> IO ()
+printLocationInfo loc = do
+  putStrLn $ "\n== " ++ show loc ++ " =="
+  putStrLn $ locationDescription loc
