@@ -7,8 +7,9 @@ module Game.Actions.LocationActions
 import Game.State
 import Game.Locations
 import Game.Actions.CoreActions (Game)
+import Control.Monad (when, unless)
 import Control.Monad.State
-import System.IO
+import Control.Monad.IO.Class (liftIO)
 import System.Exit
 import System.Random
 

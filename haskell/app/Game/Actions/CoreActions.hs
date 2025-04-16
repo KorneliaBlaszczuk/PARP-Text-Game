@@ -7,6 +7,7 @@ module Game.Actions.CoreActions
 import Game.State
 import Game.Locations
 import Control.Monad.State
+import Control.Monad.IO.Class (liftIO)
 import System.IO
 import System.Exit
 import Data.List (intercalate)

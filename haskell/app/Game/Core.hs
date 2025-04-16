@@ -18,7 +18,7 @@ startGame = do
 gameLoop :: Game ()
 gameLoop = do
   loc <- gets location
-  liftIO clearScreen
+  -- liftIO clearScreen
   liftIO $ printLocationInfo loc
   printAvailableActions
 
