@@ -14,11 +14,16 @@ import System.Random
 
 handleLocationAction :: Location -> String -> Game ()
 handleLocationAction loc cmd = case (loc, cmd) of
+
+  -- Ekran startowy gry
+
   (Start, "rozpocznij_gre") -> do
     liftIO $ putStrLn "\nRozpoczynasz swoją przygodę..."
     modify (\s -> s { location = TarasPKiN })
     loc <- gets location
     liftIO $ printLocationInfo loc
+
+  -- Taras PKiN
 
   (TarasPKiN, "zajrzyj_do_kieszeni") -> do
     hasChecked <- gets hasCheckedPockets
@@ -48,6 +53,8 @@ handleLocationAction loc cmd = case (loc, cmd) of
     loc <- gets location
     liftIO $ printLocationInfo loc
 
+  -- Schody PKiN
+
   (SchodyPKiN, "podnies_pieniadze") -> do
     hasPicked <- gets hasPickedUpItems
     if not hasPicked
@@ -63,6 +70,8 @@ handleLocationAction loc cmd = case (loc, cmd) of
     modify (\s -> s { location = HolPKiN })
     loc <- gets location
     liftIO $ printLocationInfo loc
+
+  -- Hol PKiN
 
   (HolPKiN, "porozmawiaj_z_portierem") ->
     liftIO $ putStrLn "Portier patrzy na ciebie podejrzliwie, ale nic nie mówi."
@@ -80,6 +89,8 @@ handleLocationAction loc cmd = case (loc, cmd) of
     modify (\s -> s { location = SzatniaPKiN })
     loc <- gets location
     liftIO $ printLocationInfo loc
+
+  -- Szatnia PKiN
 
   (SzatniaPKiN, "wyjdz_na_zewnatrz") -> do
     liftIO $ putStrLn "Wychodzisz z PKiN."
@@ -99,6 +110,8 @@ handleLocationAction loc cmd = case (loc, cmd) of
       then do
         liftIO $ putStrLn "Znajdujesz ulotkę z ofertą Happy Hours z baru w Hali Koszyki."
       else liftIO $ putStrLn "Nie masz numerka, więc nie wiesz, który płaszcz należy do ciebie."
+
+  -- Przed PKiN
 
   (PrzedPKiN, "idz_w_strone_parku") -> do
     state <- get
@@ -141,6 +154,7 @@ handleLocationAction loc cmd = case (loc, cmd) of
         liftIO $ printLocationInfo loc
       else liftIO $ putStrLn "Nie można wykonać tej akcji w tej lokalizacji."
 
+  -- Park
 
   (Park, "usiadz_na_lawce") -> do
     liftIO $ putStrLn "Siadasz na zimnej, metalowej ławce. Chłód poranka powoli przenika przez materiał twojego ubrania."
@@ -198,6 +212,7 @@ handleLocationAction loc cmd = case (loc, cmd) of
     loc <- gets location
     liftIO $ printLocationInfo loc
 
+  -- Taksowka
 
   (Taksowka, "pojedz_do_hali_koszyki") -> do
     liftIO $ putStrLn "Kierowca wiezie cię do Hali Koszyki..."
@@ -219,6 +234,53 @@ handleLocationAction loc cmd = case (loc, cmd) of
         loc <- gets location
         liftIO $ printLocationInfo loc
       else liftIO $ putStrLn "Nie można wykonać tej akcji w tej lokalizacji."
+
+  -- Wilcza 30
+
+  (Wilcza30, "zapukaj_do_drzwi") -> do
+    liftIO $ putStrLn "Otwiera ci nieznana osoba. 'Czekałem na ciebie.'"
+    modify (\s -> s { location = DomWilcza })
+    loc <- gets location
+    liftIO $ printLocationInfo loc
+
+  (Wilcza30, "rozejrzyj_sie") -> do
+    liftIO $ putStrLn "Wilcza 30. Stara kamienica z odrapanym numerem nad wejściem."
+    liftIO $ putStrLn "Drzwi noszą ślady zużycia, jakby ktoś niedawno próbował je sforsować."
+    liftIO $ putStrLn "W środku czuć wilgoć, kurz i zapach tanich papierosów."
+    liftIO $ putStrLn "Na skrzynkach pocztowych nazwiska lokatorów, ale jedno miejsce jest puste."
+
+  (Wilcza30, "idz_do_hali_koszyki") -> do
+    liftIO $ putStrLn "Opuszczasz Wilczą 30 i idziesz w strone Hali Koszyki."
+    modify (\s -> s { location = HalaKoszyki })
+    loc <- gets location
+    liftIO $ printLocationInfo loc
+
+  -- Wilcza 30 - środek domu
+
+  (DomWilcza, "wykup_notatke") -> do
+    wilczaNote <- gets hasBoughtNoteOnWilcza
+    money <- gets money
+    if wilczaNote
+      then liftIO $ putStrLn "Osoba nie ma nic więcej do sprzedania tobie. Po co mówiła tobie że coś ma?"
+      else do
+        if money >= 10
+          then do
+            liftIO $ putStrLn "Ciekawość wzieła górę i wykupiłeś ten kawałek papieru."
+            modify (\s -> s { hasBoughtNoteOnWilcza = True })
+            modify (subtractMoney 10)
+            modify (addNote 1)
+            modify (\s -> s { location = Wilcza30 })
+            loc <- gets location
+            liftIO $ printLocationInfo loc
+          else liftIO $ putStrLn "Kwota, o którą prosi cię mężczyzna jest zdecydowanie za wysoka. Może jeszcze tu wrócę..."
+
+  (DomWilcza, "opusc_dom") -> do
+    liftIO $ putStrLn "Postanowiłeś opuścić dom mężczyzny. Co jeszcze cię czeka?"
+    modify (\s -> s { location = Wilcza30 })
+    loc <- gets location
+    liftIO $ printLocationInfo loc
+
+  -- Hala Koszyki
 
   (HalaKoszyki, "podejdz_do_baru") -> do
     hasApproached <- gets hasApproachedBar
