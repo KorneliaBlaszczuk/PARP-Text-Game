@@ -22,9 +22,19 @@ printAvailableActions = do
     SchodyPKiN -> showActions ["podnies_pieniadze", "idz_dalej"]
     HolPKiN -> showActions ["porozmawiaj_z_portierem", "wyjdz_na_zewnatrz", "udaj_sie_do_szatni"]
     SzatniaPKiN -> showActions ["wyjdz_na_zewnatrz", "przeszukaj_kieszenie", "przeszukaj_plaszcz"]
-    PrzedPKiN -> showActions ["idz_w_strone_parku", "idz_w_strone_taksowki", "spojrz_na_ulotke"]
+    PrzedPKiN -> do
+      wilczaInfo <- gets knowsAboutWilcza
+      if wilczaInfo
+        then do
+          showActions ["idz_w_strone_parku", "idz_w_strone_taksowki", "spojrz_na_ulotke", "idz_do_hali_koszyki", "idz_na_wilcza_30"]
+        else showActions ["idz_w_strone_parku", "idz_w_strone_taksowki", "spojrz_na_ulotke", "idz_do_hali_koszyki"]
     Park -> showActions ["usiadz_na_lawce", "karm_golebie", "obejrzyj_fontanne", "porozmawiaj_z_nieznajomym", "idz_przed_pkin"]
-    Taksowka -> showActions ["porozmawiaj", "pojedz_do_hali_koszyki", "pojedz_na_wilcza_30"]
+    Taksowka -> do
+      wilczaInfo <- gets knowsAboutWilcza
+      if wilczaInfo
+        then do
+          showActions ["porozmawiaj", "pojedz_do_hali_koszyki", "pojedz_na_wilcza_30"]
+        else showActions ["porozmawiaj", "pojedz_do_hali_koszyki"]
     Wilcza30 -> showActions ["zapukaj_do_drzwi", "rozejrzyj_sie", "idz_do_hali_koszyki"]
     DomWilcza -> showActions ["wykup_notatke", "opusc_dom"]
     HalaKoszyki -> showActions ["podejdz_do_baru", "porozmawiaj_z_gosciem", "wyjdz_w_strone_chinczyka"]

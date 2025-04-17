@@ -132,10 +132,15 @@ handleLocationAction loc cmd = case (loc, cmd) of
     liftIO $ printLocationInfo loc
 
   (PrzedPKiN, "idz_na_wilcza_30") -> do
-    liftIO $ putStrLn "Postanawiasz pójść na Wilczą 30 spacerując, aby móc podziwiać budzącą się Warszawę."
-    modify (\s -> s { location = Wilcza30 })
-    loc <- gets location
-    liftIO $ printLocationInfo loc
+    wilczaInfo <- gets knowsAboutWilcza
+    if wilczaInfo
+      then do
+        liftIO $ putStrLn "Postanawiasz pójść na Wilczą 30 spacerując, aby móc podziwiać budzącą się Warszawę."
+        modify (\s -> s { location = Wilcza30 })
+        loc <- gets location
+        liftIO $ printLocationInfo loc
+      else liftIO $ putStrLn "Nie można wykonać tej akcji w tej lokalizacji."
+
 
   (Park, "usiadz_na_lawce") -> do
     liftIO $ putStrLn "Siadasz na zimnej, metalowej ławce. Chłód poranka powoli przenika przez materiał twojego ubrania."
@@ -161,18 +166,31 @@ handleLocationAction loc cmd = case (loc, cmd) of
       else liftIO $ putStrLn "Fontanna wygląda tak samo jak przedtem."
 
   (Park, "porozmawiaj_z_nieznajomym") -> do
-    modify (\s -> s { knowsAboutWilcza = True })
-    liftIO $ putStrLn "Witasz się z nieznajomym."
-    liftIO $ putStrLn "'Dzień dobry! Co u Pana słychać?' - pyta się ciebie nieznajomy z entuzjazmem"
-    liftIO $ putStrLn "Równo entuzjastycznie odpowiadasz, że 'dobrze'... nawet jeśli pytanie nie brzmiało 'jak się czujesz', ale kto by się przejmował."
-    liftIO $ putStrLn "Zaczynasz rozmowę z nieznajomym, aż... tracisz czucie czasu. Ile rozmawialiście? Nie wiesz."
-    liftIO $ putStrLn "'Ja muszę proszę Pana jeszcze na autobus zdążyć, ale miło się z Panem rozmawiało!' - nieznajomy żegna się z tobą: znowu entuzjastycznie!"
-    liftIO $ putStrLn "'I niech Pan pamięta o Wilczej 30! Warto tam zajrzeć!'"
-    liftIO $ putStrLn "??? Może o czymś wspomniałeś podczas rozmowy, co by skutkowały w takiej prośbie, ale tego nie pamiętasz"
-    liftIO $ putStrLn "Masz wrażenie, że coś wyniosłeś z tej konwersacji, aczkolwiek nie wiesz do końca co."
-    modify (\s -> s { conversationCounter = conversationCounter s + 1 })
+    wilczaInfo <- gets knowsAboutWilcza
+    if not wilczaInfo
+      then do
+        modify (\s -> s { knowsAboutWilcza = True })
+        liftIO $ putStrLn "Witasz się z nieznajomym."
+        liftIO $ putStrLn "'Dzień dobry! Co u Pana słychać?' - pyta się ciebie nieznajomy z entuzjazmem"
+        liftIO $ putStrLn "Równo entuzjastycznie odpowiadasz, że 'dobrze'... nawet jeśli pytanie nie brzmiało 'jak się czujesz', ale kto by się przejmował."
+        liftIO $ putStrLn "Zaczynasz rozmowę z nieznajomym, aż... tracisz czucie czasu. Ile rozmawialiście? Nie wiesz."
+        liftIO $ putStrLn "'Ja muszę proszę Pana jeszcze na autobus zdążyć, ale miło się z Panem rozmawiało!' - nieznajomy żegna się z tobą: znowu entuzjastycznie!"
+        liftIO $ putStrLn "'I niech Pan pamięta o Wilczej 30! Warto tam zajrzeć!'"
+        liftIO $ putStrLn "??? Może o czymś wspomniałeś podczas rozmowy, co by skutkowały w takiej prośbie, ale tego nie pamiętasz"
+        liftIO $ putStrLn "Masz wrażenie, że coś wyniosłeś z tej konwersacji, aczkolwiek nie wiesz do końca co."
+        modify (\s -> s { conversationCounter = conversationCounter s + 1 })
+      else do
+        greet <- gets hasGreetedNoOne
+        liftIO $ putStrLn "Witasz się z nieznajomym. Entuzjastycznie machasz do niego."
+        if not greet
+          then do
+            modify (\s -> s { hasGreetedNoOne = True })
+          else liftIO $ putStrLn "Czy wszystko dobrze?"
 
   -- w Prologu są dwie interakcje z gadaniem
+
+  -- do komentarza: druga interakcja występowała w Prologu kiedy przynajmniej raz gadaliśmy z nieznajomym i spróbowaliśmy jeszcze raz
+  -- zamysł był taki, że za drugim podejściem do rozmowy witasz się w zasadzie z osobą, która odeszła po rozmowie i której już nie ma
 
   (Park, "idz_przed_pkin") -> do
     liftIO $ putStrLn "Wracasz przed PKiN"
@@ -187,6 +205,20 @@ handleLocationAction loc cmd = case (loc, cmd) of
     modify (\s -> s { location = HalaKoszyki })
     loc <- gets location
     liftIO $ printLocationInfo loc
+
+  (Taksowka, "porozmawiaj") -> do
+    liftIO $ putStrLn "Kierowca mówi: 'Ciężka noc, co? Wyglądasz jakoś tak wczorajszo. Zdecydowanie wczoraj poimprezowałeś.'"
+
+  (Taksowka, "pojedz_na_wilcza_30") -> do
+    wilczaInfo <- gets knowsAboutWilcza
+    if wilczaInfo
+      then do
+        liftIO $ putStrLn "Jedziesz na Wilczą 30."
+        modify (subtractMoney 20)
+        modify (\s -> s { location = Wilcza30 })
+        loc <- gets location
+        liftIO $ printLocationInfo loc
+      else liftIO $ putStrLn "Nie można wykonać tej akcji w tej lokalizacji."
 
   (HalaKoszyki, "podejdz_do_baru") -> do
     hasApproached <- gets hasApproachedBar
