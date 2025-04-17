@@ -288,39 +288,99 @@ handleLocationAction loc cmd = case (loc, cmd) of
       then do
         modify (\s -> s { hasApproachedBar = True })
         modify (addNote 2)
+        liftIO $ putStrLn "Barman rozpoznaje cię i mówi, że wczoraj zostawiłeś coś ważnego."
         liftIO $ putStrLn "Barman wręcza ci drugą część notatki!"
       else liftIO $ putStrLn "Barman zajmuje się innymi klientami"
 
   (HalaKoszyki, "porozmawiaj_z_gosciem") -> do
-    return ()
+    liftIO $ putStrLn "Tajemniczy rozmówca wspomina o dziwnym incydencie, którego był świadkiem - ktoś potrącił cię szybko wychodząc."
 
   (HalaKoszyki, "wyjdz_w_strone_chinczyka") -> do
-    return ()
+    liftIO $ putStrLn "Idziesz do chińskiej restauracji."
+    modify (\s -> s { location = Chinczyk })
+    loc <- gets location
+    liftIO $ printLocationInfo loc
 
   -- Chińczyk
 
   (Chinczyk, "porozmawiaj_z_wlascicielem") -> do
-    return ()
+    talkStatus <- gets hasTalked
+    if not talkStatus
+      then do
+        liftIO $ putStrLn "Właściciel pamięta cię! Wspomina, że wczoraj zostawiłeś coś przy stoliku."
+        liftIO $ putStrLn "Wskaże ci go jedynie, jeśli kupisz coś (10 zł), przecież za darmo nie możesz siedzieć w lokalu!"
+        modify (\s -> s {hasTalked = True})
+      else do
+        liftIO $ putStrLn "Podchodzisz do właściciela jeszcze raz. Dalej cie pamięta."
+        eitiStatus <- gets knowsAboutEiti
+        if eitiStatus
+          then liftIO $ putStrLn "Nic tobie nie wskazuje. Zaczynasz się zastanawiać co właściwie chcesz od właściciela."
+          else liftIO $ putStrLn "Przypomina tobie o czymś przy stoliku. Jak coś kupisz (10 zł), to wskaże tobie ten tajemniczy przedmiot."
 
   (Chinczyk, "kup_cos") -> do
-    return ()
+    talkStatus <- gets hasTalked
+    if not talkStatus
+      then liftIO $ putStrLn "Najpierw porozmawiaj z właścicielem."
+      else do
+        eitiStatus <- gets knowsAboutEiti
+        if eitiStatus
+          then liftIO $ putStrLn "Właściciel nie ma tobie nic ciekawego do sprzedania... no w sumie oprócz jedzenia."
+          else do
+            money <- gets money
+            if money >= 10
+              then do
+                modify (subtractMoney 10)
+                modify (\s -> s { knowsAboutEiti = True })
+                liftIO $ putStrLn "Znajdujesz tajemniczą wiadomość „EITI” napisaną na odwrocie serwetki."
+              else liftIO $ putStrLn "Nie masz tyle forsy! Musisz mieć 10 zł, aby kupić coś."
+
 
   (Chinczyk, "idz_do_gg_pw") -> do
-    return ()
+    liftIO $ putStrLn "Idziesz do Gmachu Głównego PW."
+    modify (\s -> s { location = GGPW })
+    loc <- gets location
+    liftIO $ printLocationInfo loc
 
   (Chinczyk, "idz_na_weiti") -> do
-    return ()
+    liftIO $ putStrLn "Idziesz na wydział EITI."
+    modify (\s -> s { hasPickedUpItems = False })
+    modify (\s -> s { location = EITI })
+    loc <- gets location
+    liftIO $ printLocationInfo loc
 
   -- EiTI
 
   (EITI, "zajrzyj_do_laboratorium") -> do
-    return ()
+    itemStatus <- gets hasPickedUpItems
+    if not itemStatus
+      then do
+        liftIO $ putStrLn "Wchodzisz do laboratorium i widzisz profesorów."
+        liftIO $ putStrLn "Witasz się i powoli wchodzisz do środka. Studentów tu jeszcze nie ma, ale zapewne będą tu niedługo jakieś zajęcia."
+        liftIO $ putStrLn "'Szuka Pan czegoś?' - pyta profesor. Odpowiadasz że tak, coś zostawiłeś (dobrze wiesz że to nieprawda)"
+        liftIO $ putStrLn "Chociaż... ha, ciekawe. Widzisz kawałek notatki. Bierzesz ją - może się tobie przydać."
+        modify (\s -> s { hasPickedUpItems = True })
+        modify (addNote 4)
+      else liftIO $ putStrLn "Wchodzisz do laboratorium i... nie, nie wchodzisz do laboratorium."
 
   (EITI, "zajrzyj_do_szatni") -> do
-    return ()
+    cloakroomStatus <- gets hasCheckedCloakroom
+    if not cloakroomStatus
+      then do
+        liftIO $ putStrLn "Podchodzisz, a Pan z szatni wyjmuje już numerek, i chce go tobie wręczyć. Nie bierzesz numerka, ale rozglądasz się wokół"
+        liftIO $ putStrLn "'Czy w czymś Panu pomóc???' - zapytany odpowiadasz, że po prostu patrzysz czy czegoś nie zapomniałeś"
+        liftIO $ putStrLn "'Coś... ostatnio wydawał się Pan jakiś rozkojarzony, o ile mnie pamięć nie myli...'"
+        liftIO $ putStrLn "'hmmmm...' - Pan rozgląda się chwilę, patrzy pod swoje biurko, i mówi:"
+        liftIO $ putStrLn "'Chyba to może być Pana. Niech Pan sprawdzi - leży tu od jakiegoś czasu.'"
+        liftIO $ putStrLn "Dostajesz ładnie uciętą ściągę. Spoglądasz na zawartość, i rzeczywiście: coś kojarzysz. Może to się przydać..."
+        modify (\s -> s { conversationCounter = conversationCounter s + 1 })
+        modify (\s -> s { hasCheckedCloakroom = True })
+      else liftIO $ putStrLn "Patrzysz jeszcze raz na szatnię, i nic nietypowego nie zauważasz. Prędko odchodzisz"
 
   (EITI, "idz_do_gg_pw") -> do
-    return ()
+    liftIO $ putStrLn "Idziesz do Gmachu Głównego PW."
+    modify (\s -> s { location = GGPW })
+    loc <- gets location
+    liftIO % printLocationInfo loc
 
   -- Gmach główny PW
 
