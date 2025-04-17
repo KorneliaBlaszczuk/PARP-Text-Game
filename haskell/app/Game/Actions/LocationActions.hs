@@ -268,7 +268,7 @@ handleLocationAction loc cmd = case (loc, cmd) of
             liftIO $ putStrLn "Ciekawość wzieła górę i wykupiłeś ten kawałek papieru."
             modify (\s -> s { hasBoughtNoteOnWilcza = True })
             modify (subtractMoney 10)
-            modify (addNote 1)
+            modify (addNote 3)
             modify (\s -> s { location = Wilcza30 })
             loc <- gets location
             liftIO $ printLocationInfo loc
@@ -291,6 +291,51 @@ handleLocationAction loc cmd = case (loc, cmd) of
         liftIO $ putStrLn "Barman wręcza ci drugą część notatki!"
       else liftIO $ putStrLn "Barman zajmuje się innymi klientami"
 
+  (HalaKoszyki, "porozmawiaj_z_gosciem") -> do
+    return ()
+
+  (HalaKoszyki, "wyjdz_w_strone_chinczyka") -> do
+    return ()
+
+  -- Chińczyk
+
+  (Chinczyk, "porozmawiaj_z_wlascicielem") -> do
+    return ()
+
+  (Chinczyk, "kup_cos") -> do
+    return ()
+
+  (Chinczyk, "idz_do_gg_pw") -> do
+    return ()
+
+  (Chinczyk, "idz_na_weiti") -> do
+    return ()
+
+  -- EiTI
+
+  (EITI, "zajrzyj_do_laboratorium") -> do
+    return ()
+
+  (EITI, "zajrzyj_do_szatni") -> do
+    return ()
+
+  (EITI, "idz_do_gg_pw") -> do
+    return ()
+
+  -- Gmach główny PW
+
+  (GGPW, "pogadaj_z_kims") -> do
+    return ()
+
+  (GGPW, "sprawdz_tablice_ogloszen") -> do
+    return ()
+
+  (GGPW, "sprawdz_portiernie") -> do
+    return ()
+
+  (GGPW, "przeszukaj_teren") -> do
+    return ()
+
   (GGPW, "otworz_sale_glowna") -> do
     hasKey <- gets hasKey
     if hasKey
@@ -300,6 +345,14 @@ handleLocationAction loc cmd = case (loc, cmd) of
         loc <- gets location
         liftIO $ printLocationInfo loc
       else liftIO $ putStrLn "Nie masz klucza do sali!"
+
+  -- Sala główna
+
+  (GlownaSala, "sprawdz_kieszenie") -> do
+    return ()
+
+  (GlownaSala, "wyjdz_z_sali") -> do
+    return ()
 
   (GlownaSala, "podejdz_do_profesora") -> do
     notes <- gets notes
