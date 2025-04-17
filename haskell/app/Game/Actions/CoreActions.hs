@@ -18,9 +18,9 @@ printAvailableActions = do
   loc <- gets location
   case loc of
     Start -> showActions ["rozpocznij_gre"]
-    TarasPKiN -> showActions ["zajrzyj_do_kieszeni", "rozejrzyj_sie", "zejdz_po_schodach"]
+    TarasPKiN -> showActions ["zajrzyj_do_kieszeni", "rozejrzyj_sie", "podejdz_do_krawedzi", "zejdz_po_schodach", "uzyj_windy"]
     SchodyPKiN -> showActions ["podnies_pieniadze", "idz_dalej"]
-    HolPKiN -> showActions ["porozmawiaj_z_portierem", "wyjdz_na_zewnatrz"]
+    HolPKiN -> showActions ["porozmawiaj_z_portierem", "wyjdz_na_zewnatrz", "udaj_sie_do_szatni"]
     SzatniaPKiN -> showActions ["wyjdz_na_zewnatrz", "przeszukaj_kieszenie", "przeszukaj_plaszcz"]
     PrzedPKiN -> showActions ["idz_w_strone_parku", "idz_w_strone_taksowki", "spojrz_na_ulotke"]
     Park -> showActions ["usiadz_na_lawce", "karm_golebie", "obejrzyj_fontanne", "porozmawiaj_z_nieznajomym", "idz_przed_pkin"]

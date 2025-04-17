@@ -28,7 +28,7 @@ data GameState = GameState
   , hasNumber :: Bool
   , knowsAboutWilcza :: Bool
   , knowsAboutHalaKoszyki :: Bool
-  , knowsAboutPark :: Bool
+  , wasAtPark :: Bool
   , hasTalked :: Bool
   , knowsAboutEiti :: Bool
   , hasCheckedPockets :: Bool
@@ -57,7 +57,7 @@ initialState = GameState
   , hasNumber = False
   , knowsAboutWilcza = False
   , knowsAboutHalaKoszyki = False
-  , knowsAboutPark = False
+  , wasAtPark = False
   , hasTalked = False
   , knowsAboutEiti = False
   , hasCheckedPockets = False
