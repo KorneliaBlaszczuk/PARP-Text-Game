@@ -431,10 +431,11 @@ handleLocationAction loc cmd = case (loc, cmd) of
       then do
         liftIO $ putStrLn "Używasz klucza aby otworzyć salę..."
         modify (\s -> s { location = GlownaSala })
-        modify (\s -> {knowsAboutMissingKey = True})
         loc <- gets location
         liftIO $ printLocationInfo loc
-      else liftIO $ putStrLn "Nie masz klucza do sali!"
+      else do
+        liftIO $ putStrLn "Nie masz klucza do sali!"
+        modify (\s -> s { knowsAboutMissingKey = True })
 
   -- Sala główna
 
@@ -466,26 +467,77 @@ handleLocationAction loc cmd = case (loc, cmd) of
   (GlownaSala, "wyjdz_z_sali") -> liftIO $ putStrLn "Próbujesz wyjść z sali... ale drzwi się zamknęły, i nie chcą się otworzyć"
 
   (GlownaSala, "podejdz_do_profesora") -> do
+    liftIO $ putStrLn "Podchodzisz do profesora siedzącego na wprost ciebie. Czeka na ciebie, i rozpoznaje cię. Witasz się."
+    liftIO $ putStrLn "'I kto to przyszedł? Dzień dobry Panu.'- mówi profesor w nieco onieśmielającym tonie."
     notes <- gets notes
+    semesterWork <- gets knowsAboutSemesterWork
+    if not semesterWork
+      then do
+        liftIO $ putStrLn "'Będzie Pan tak tu stać? Czegoś Pan potrzebuje?'"
+        if length notes == 0
+          then do
+            liftIO $ putStrLn "Nie wiesz co ciebie tu przyprowadziło, ale przez cały czas miałeś wrażenie, że musisz tu być."
+            liftIO $ putStrLn "Odlatujesz myślami... gdzieś, ale nie wiesz gdzie. W tle słychać profesora coraz głośniej, ale nie wiesz o czym mówi."
+            liftIO $ putStrLn "Powoli wracasz na Ziemię: widzisz profesora jak wstaje i wskazuje na drzwi. Każe tobie wyjść."
+            liftIO $ putStrLn "Jesteś rozkojarzony. Twoje myśli błądzą w nieskończonej nicości. Próbujesz się uspokoić."
+          else do
+            liftIO $ putStrLn "Nie wiesz w sumie co tu robisz."
+            liftIO $ putStrLn "'To Pan wchodzi do mnie bez pojęcia co Pan w ogóle chce?'"
+            liftIO $ putStrLn "No dokładnie!"
+            liftIO $ putStrLn "'To mogę Panu powiedzieć, że ja na pewno chcę Pańskiej pracy semestralnej'"
+            liftIO $ putStrLn "Naprawdę?"
+      else do
+        liftIO $ putStrLn "'Będzie Pan tak tu stać? Czegoś Pan potrzebuje?'"
+        liftIO $ putStrLn "Mówisz, że chcesz oddać pracę semestralną"
+    liftIO $ putStrLn "\n"
     if length notes >= 4
       then goodEnding
       else badEnding
 
   _ -> liftIO $ putStrLn "Nie można wykonać tej akcji w tej lokalizacji."
 
+-- Game endings
+
 goodEnding :: Game ()
 goodEnding = do
+  liftIO $ putStrLn "Bierzesz swoje notatki z kieszeni, i składasz je w jedną część. Profesor patrzy się na ciebie z lekkim zdziwieniem."
+  liftIO $ putStrLn "Twoim oczom ukazuje się... twoja praca semstralna w pełnej postaci."
+  liftIO $ putStrLn "'Wow... doceniam Pana determinację. Powiedziałbym że jest to niedorzeczne oddawać pracę w takim stanie, ale wygląda Pan na zmęczonego...'"
+  liftIO $ putStrLn "Więc jest szansa?! Opłaciło się zbierać te notatki? Nie wiesz co myśleć, ale czekasz aż profesor skończy czytać pracę.\n\n"
   counter <- gets interactionCounter
   let grade = 3.0 + 0.5 * fromIntegral counter
+  _ <- liftIO getLine
+  liftIO $ putStrLn "Profesor wygląda raz na zażenowanego, raz na zaskoczonego, a nawet na zadowolonego."
+  liftIO $ putStrLn "'Muszę Panu przyznać, że może praca idealna nie jest... ale zaliczyć, to Pan zaliczy.'"
+  liftIO $ putStrLn "'A swoją drogą... no i jak Pańska wiedza? Powalczy Pan o lepszą ocenę?'"
+  liftIO $ putStrLn "Starasz sobie przypomnieć co się dowiedziałeś... mówisz co wiesz, trochę też zmyślaśz, ale..."
   liftIO $ do
     putStrLn "\n=== DOBRE ZAKOŃCZENIE ==="
-    putStrLn $ "Otrzymujesz ocenę: " ++ show grade ++ "!"
+    putStrLn $ "ZALICZASZ przedmiot z oceną " ++ show grade ++ "!"
+    putStrLn "Zebrano wszystkie 4 części notatki. Skompletowano pracę semestralną!"
+    putStrLn ("Znaleziono " ++ show counter ++ " z czterech dostępnych sekretnych interakcji.")
   liftIO exitSuccess
 
 badEnding :: Game ()
 badEnding = do
+  lst <- gets notes
+  if length lst > 0
+    then do
+      liftIO $ putStrLn "Bierzesz swoje notatki z kieszeni, i składasz je w jedną czę-"
+      liftIO $ putStrLn "O nie..."
+      liftIO $ putStrLn "'I co ja mam z taką pracą zrobić? Nie czytam tego proszę Pana.'"
+      liftIO $ putStrLn "Ale..."
+      liftIO $ putStrLn "'Niestety nie ma żadnych 'ale' proszę Pana. Jak ja mam ocenić niepełną pracę? Miał Pan tyle czasu na oddanie.'"
+    else return ()
+  _ <- liftIO getLine
+  counter <- gets interactionCounter
   liftIO $ putStrLn "\n=== ZŁE ZAKOŃCZENIE ==="
+  liftIO $ putStrLn "NIE ZALICZASZ przedmiotu. Ocena końcowa: 2.0. Profesor wydaje się być na ciebie zdenerwowany."
+  liftIO $ putStrLn ("Zebrano " ++ show (length lst) ++ "/4 notatek. Nie udało ci się skompletować pracy semestralnej.")
+  liftIO $ putStrLn ("Znaleziono " ++ show counter ++ " z czterech dostępnych sekretnych interakcji.")
   liftIO exitSuccess
+
+-- Funkcje do działań na pieniądzach oraz notatkach
 
 addMoney :: Int -> GameState -> GameState
 addMoney amount s = s { money = money s + amount }
