@@ -1,5 +1,6 @@
 module Game.Core
-  ( startGame
+  ( startGame,
+  Game
   ) where
 
 import Game.State
@@ -18,8 +19,8 @@ startGame = do
 gameLoop :: Game ()
 gameLoop = do
   loc <- gets location
-  liftIO clearScreen
-  liftIO $ printLocationInfo loc
+  -- liftIO clearScreen
+  -- liftIO $ printLocationInfo loc
   printAvailableActions
 
   liftIO $ putStr "\n> "
@@ -30,11 +31,6 @@ gameLoop = do
   handleLocationAction loc input
   gameLoop
 
-
-printLocationInfo :: Location -> IO ()
-printLocationInfo loc = do
-  putStrLn $ "\n== " ++ show loc ++ " =="
-  putStrLn $ locationDescription loc
 
 clearScreen :: IO ()
 clearScreen = putStr "\ESC[2J"
