@@ -7,8 +7,9 @@ module Game.Actions.LocationActions
 import Game.State
 import Game.Locations
 import Game.Actions.CoreActions (Game)
+import Control.Monad (when, unless)
 import Control.Monad.State
-import System.IO
+import Control.Monad.IO.Class (liftIO)
 import System.Exit
 import System.Random
 
@@ -294,7 +295,7 @@ handleLocationAction loc cmd = case (loc, cmd) of
         modify (\s -> s { hasApproachedBar = True })
         modify (addNote 2)
         liftIO $ putStrLn "Barman rozpoznaje cię i mówi, że wczoraj zostawiłeś coś ważnego."
-        liftIO $ putStrLn "Barman wręcza ci drugą część notatki!"
+        liftIO $ putStrLn "Barman wręcza ci kolejną część notatki!"
       else liftIO $ putStrLn "Barman zajmuje się innymi klientami"
 
   (HalaKoszyki, "porozmawiaj_z_gosciem") -> do
@@ -494,7 +495,7 @@ handleLocationAction loc cmd = case (loc, cmd) of
       then goodEnding
       else badEnding
 
-  _ -> liftIO $ putStrLn "Nie można wykonać tej akcji w tej lokalizacji."
+  _ -> liftIO $ putStrLn "Nie można wykonać tej akcji w tej lokalizacji. Jeśli nie masz na myśli akcji bazowej - spróbuj jeszcze raz."
 
 -- Game endings
 

@@ -7,6 +7,7 @@ module Game.Actions.CoreActions
 import Game.State
 import Game.Locations
 import Control.Monad.State
+import Control.Monad.IO.Class (liftIO)
 import System.IO
 import System.Exit
 import Data.List (intercalate)
@@ -50,6 +51,7 @@ printAvailableActions = do
 handleBasicAction :: String -> Game ()
 handleBasicAction cmd = case cmd of
   "sprawdz(stan_notatek)" -> checkNotes
+  "sprawdz(stan_pieniedzy)" -> checkMoney
   "quit" -> liftIO exitSuccess
   _ -> return ()
 
@@ -57,3 +59,8 @@ checkNotes :: Game ()
 checkNotes = do
   notes <- gets notes
   liftIO $ putStrLn $ "Masz " ++ show (length notes) ++ "/4 notatek"
+
+checkMoney :: Game ()
+checkMoney = do
+  money <- gets money
+  liftIO $ putStrLn $ "Masz " ++ show (money)
