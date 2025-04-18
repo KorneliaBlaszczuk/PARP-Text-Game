@@ -509,17 +509,17 @@ searchDeanOffice = do
       searchDeanOffice
     "2" -> do
       keyPartOne <- gets hasFirstPartOfBrokenKey
-      if not keyPartOne
-        then do
+      if keyPartOne
+        then liftIO $ putStrLn "Pod drzwiami jest jeszcze kawałek kartki. Zostawiasz go."
+        else do
           liftIO $ putStrLn "Schylasz się po przedmiot, i wysuwasz go spod drzwi. Dobra informacja: jest to klucz!"
           liftIO $ putStrLn "Gorsza informacja: część tego klucza wydaje się wyłamana. Może się przyda, kto wie"
           keyPartTwo <- gets hasSecondPartOfBrokenKey
           if keyPartTwo
             then liftIO $ putStrLn "Gdyby tylko dało się go jakoś naprawić..."
-            else searchDeanOffice
+            else return ()
           modify (\s -> s { hasFirstPartOfBrokenKey = True })
-          searchDeanOffice
-        else liftIO $ putStrLn "Pod drzwiami jest jeszcze kawałek kartki. Zostawiasz go."
+      searchDeanOffice
     "3" -> return ()
     _ -> do
       liftIO (putStrLn "Nieprawidłowy wybór.")
