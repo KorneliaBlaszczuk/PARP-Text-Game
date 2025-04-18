@@ -391,7 +391,7 @@ handleLocationAction loc cmd = case (loc, cmd) of
   -- Gmach główny PW
 
   (GGPW, "pogadaj_z_kims") -> do
-    return ()
+    handleInteraction
 
   (GGPW, "sprawdz_tablice_ogloszen") -> do
     liftIO $ putStrLn "Na tablicy ogłoszeń widzisz informację o terminie oddania pracy. Oprócz tego, widzisz nowo powieszoną kartkę z napisem 'Zgubiono klucz do sali ...'"
@@ -413,9 +413,13 @@ handleLocationAction loc cmd = case (loc, cmd) of
     keyPartTwo <- gets hasSecondPartOfBrokenKey
     if keyPartOne && keyPartTwo
       then do
-        liftIO $ putStrLn "Masz dwie części klucza, które mniej więcej pasują do siebie. Bierzesz z biurka taśmę, i łączysz umiejętnie dwie części klucza."
-        liftIO $ putStrLn "Hmmm. Ciekawe do czego ten klucz pasuje."
-        modify (\s -> s { hasSecretRoomKey = True })
+        secretKeyStatus <- gets hasSecretRoomKey
+        if secretKeyStatus
+          then liftIO $ putStrLn "Już naprawiłeś klucz."
+          else do
+            liftIO $ putStrLn "Masz dwie części klucza, które mniej więcej pasują do siebie. Bierzesz z biurka taśmę, i łączysz umiejętnie dwie części klucza."
+            liftIO $ putStrLn "Hmmm. Ciekawe do czego ten klucz pasuje."
+            modify (\s -> s { hasSecretRoomKey = True })
       else liftIO $ putStrLn "Odchodzisz."
 
   (GGPW, "przeszukaj_teren") -> do
@@ -427,6 +431,7 @@ handleLocationAction loc cmd = case (loc, cmd) of
       then do
         liftIO $ putStrLn "Używasz klucza aby otworzyć salę..."
         modify (\s -> s { location = GlownaSala })
+        modify (\s -> {knowsAboutMissingKey = True})
         loc <- gets location
         liftIO $ printLocationInfo loc
       else liftIO $ putStrLn "Nie masz klucza do sali!"
@@ -434,10 +439,31 @@ handleLocationAction loc cmd = case (loc, cmd) of
   -- Sala główna
 
   (GlownaSala, "sprawdz_kieszenie") -> do
-    return ()
+    pckt <- gets hasCheckedMainRoomPockets
+    money <- gets money
+    if pckt
+      then liftIO $ putStrLn "Już sprawdziłeś kieszenie. Nic innego tam nie ma."
+      else do
+        lst <- gets notes
+        if length lst == 0
+          then do
+            liftIO $ putStrLn ("Sprawdzasz swoje kieszenie... znajdujesz " ++ show money ++ " zł.")
+            liftIO $ putStrLn "Ale fajnie :D... żadna inna myśl nie przychodzi tobie do głowy."
+          else do
+            liftIO $ putStrLn ("Sprawdzasz swoje kieszenie... znajdujesz " ++ show (length lst) ++ " części notatek, oraz " ++ show money ++ " zł.")
+            if length lst < 4
+              then do
+                liftIO $ putStrLn "Zaraz... o nie..."
+                liftIO $ putStrLn "W panice składasz części twojej pracy które wcześniej zebrałeś."
+                liftIO $ putStrLn ("Praca... nie jest kompletna. Brzuch zaczyna cię boleć. Wygląda na to, że brakuje tobie " ++ show (4 - length lst) ++ " części notatek.")
+              else do
+                liftIO $ putStrLn "Teraz jesteś pewien - trzymasz części twojej pracy semestralnej."
+                liftIO $ putStrLn "W panice składasz części twojej pracy semestralnej... jest pełna..."
+                liftIO $ putStrLn "30 sekund emocjonalnego rollercoastera kończy się ogromną ulgą... uśmiechasz się!"
+            modify (\s -> s { knowsAboutSemesterWork = True })
+    modify (\s -> s { hasCheckedMainRoomPockets = True })
 
-  (GlownaSala, "wyjdz_z_sali") -> do
-    return ()
+  (GlownaSala, "wyjdz_z_sali") -> liftIO $ putStrLn "Próbujesz wyjść z sali... ale drzwi się zamknęły, i nie chcą się otworzyć"
 
   (GlownaSala, "podejdz_do_profesora") -> do
     notes <- gets notes
@@ -474,6 +500,8 @@ printLocationInfo :: Location -> IO ()
 printLocationInfo loc = do
   putStrLn $ "\n== " ++ show loc ++ " =="
   putStrLn $ locationDescription loc
+
+-- Wszystkie funkcje do przeszukiwania terenu (GG PW)
 
 handleSearchArea :: Game ()
 handleSearchArea = do
@@ -624,3 +652,86 @@ searchStairs = do
       liftIO $ putStrLn "Znajdujesz klucz! Wygląda dość staro, ale może będzie gdzieś pasować."
       modify (\s -> s {hasKey = True})
   liftIO $ putStrLn "Wracasz do punktu, z którego zacząłeś przeszukiwanie."
+
+
+-- Wszystkie interakcje wewnątrz GG PW
+
+interact_zero :: Game ()
+interact_one :: Game ()
+interact_two :: Game ()
+interact_three :: Game ()
+
+handleInteraction :: Game ()
+handleInteraction = do
+  conv <- gets conversationCounter
+  case conv of
+    0 -> interact_zero
+    1 -> interact_one
+    2 -> interact_two
+    3 -> interact_three
+    _ -> interact_none
+
+interact_zero = do
+  modify (\s -> s {conversationCounter = conversationCounter s + 1})
+  liftIO $ putStrLn "Zauważasz jakiegoś profesora, i podchodzisz do niego."
+  keyKnowledge <- gets knowsAboutMissingKey
+  if keyKnowledge
+    then do
+      liftIO $ putStrLn "Witasz się z profesorem. Pytasz go też, czy wie jak otworzyć salę główną."
+      liftIO $ putStrLn "'Nie jest otwarta? Hm. Niech Pan sprawdzi może w portierni - tam powinni Panu pomóc.'"
+    else liftIO $ putStrLn "Mówisz do profesora dzień dobry. Profesor z uśmiechem wita się z tobą. Nic więcej nie mówisz."
+
+interact_one = do
+  modify (\s -> s {conversationCounter = conversationCounter s + 1})
+  liftIO $ putStrLn "Zaczepiasz jakiegoś studenta. Student uśmiecha się do ciebie."
+  liftIO $ putStrLn "'Hej, co tam?'"
+  liftIO $ putStrLn "Patrzysz się ze zdziwieniem. Student przypomina tobie, że jest z tobą na roku. Nadal nic ci to nie mówi."
+  keyKnowledge <- gets knowsAboutMissingKey
+  if not keyKnowledge
+    then liftIO $ putStrLn "Nie wiedząc co powiedzieć, jak najszybciej znikasz z miejsca zdarzenia."
+    else do
+      liftIO $ putStrLn "Nieważne. Pytasz go, czy wie jak dostać się do sali głównej."
+      liftIO $ putStrLn "'Czytałeś może tablicę ogłoszeń? Napisali że klucza nie ma - zginął gdzieś. Ciekawe gdzie go zgubili...'"
+      liftIO $ putStrLn "Nie pomogło tobie to za bardzo. Odchodzisz."
+
+interact_two = do
+  modify (\s -> s {conversationCounter = conversationCounter s + 1})
+  liftIO $ putStrLn "Próbujesz pogadać z Panią woźną."
+  keyKnowledge <- gets knowsAboutMissingKey
+  if not keyKnowledge
+    then liftIO $ putStrLn "W sumie uznajesz, że nie chcesz jej przeszkadzać. Odchodzisz."
+    else do
+      liftIO $ putStrLn "Pytasz Panią, czy może wie na temat zamknięcia sali głównej."
+      liftIO $ putStrLn "'Oj nie wiem, słyszałam tylko że zginął niedawno. Tak dokładnie nie szukaliśmy go jeszcze.'"
+
+interact_three = do
+  modify (\s -> s {conversationCounter = conversationCounter s + 1})
+  liftIO $ putStrLn "Podchodzisz do studentki. Witasz się. "
+  keyKnowledge <- gets knowsAboutMissingKey
+  if not keyKnowledge
+    then liftIO $ putStrLn "Pytasz jak idzie w tym semestrze. Studentka krótko odpowiada że, idzie jej nieźle."
+    else do
+      liftIO $ putStrLn "Pytasz, czy może wie dlaczego sala główna jest zamknięta."
+      liftIO $ putStrLn "'Hm, też próbujesz oddać pracę semestralną, nie?'"
+      lst <- gets notes
+      if length lst == 0
+        then liftIO $ putStrLn "Zaraz... "
+        else return ()
+      if length lst /= 4
+        then liftIO $ putStrLn "Aha, faktycznie. Odchodzisz."
+        else do
+          liftIO $ putStrLn "Odpowiadasz, że tak - na tym tobie teraz zależy"
+          liftIO $ putStrLn "'Podobno klucz gdzieś się zgubił, i teraz profesor czeka w środku aż ktoś mu otworzy'"
+          liftIO $ putStrLn "Żegnasz się, i powoli odwracasz się w stro-"
+          liftIO $ putStrLn "'Tak jak coś, kolega mi mówił że zaczął odpytywać ostatnio.'"
+          liftIO $ putStrLn "'Podobno mówi coś w stylu 'no i jak twoja wiedza', i jak mu odpowiesz, to można wyższą ocenę dostać.'"
+          liftIO $ putStrLn "Pytasz, czy może wie, z czego odpytywał."
+          liftIO $ putStrLn "'Chyba wszystkich pytał o to samo...'"
+          liftIO $ putStrLn "Przez kolejną minutę rozmawiasz, i słuchasz o pytaniach. To się może przydać!"
+          modify (\s -> s {interactionCounter = interactionCounter s + 1})
+
+interact_none = do
+  keyKnowledge <- gets knowsAboutMissingKey
+  if keyKnowledge
+    then liftIO $ putStrLn "Chciałbyś zagadać jeszcze raz, ale nie widzisz już nikogo, z kim rozmawiałeś."
+    else liftIO $ putStrLn "Nie chcesz już próbować."
