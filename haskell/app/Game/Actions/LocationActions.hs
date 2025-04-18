@@ -12,6 +12,11 @@ import System.IO
 import System.Exit
 import System.Random
 
+searchDeanOffice :: Game ()
+searchCorridors :: Game ()
+searchRooms :: Game ()
+searchStairs :: Game ()
+
 handleLocationAction :: Location -> String -> Game ()
 handleLocationAction loc cmd = case (loc, cmd) of
 
@@ -192,7 +197,7 @@ handleLocationAction loc cmd = case (loc, cmd) of
         liftIO $ putStrLn "'I niech Pan pamięta o Wilczej 30! Warto tam zajrzeć!'"
         liftIO $ putStrLn "??? Może o czymś wspomniałeś podczas rozmowy, co by skutkowały w takiej prośbie, ale tego nie pamiętasz"
         liftIO $ putStrLn "Masz wrażenie, że coś wyniosłeś z tej konwersacji, aczkolwiek nie wiesz do końca co."
-        modify (\s -> s { conversationCounter = conversationCounter s + 1 })
+        modify (\s -> s { interactionCounter = interactionCounter s + 1 })
       else do
         greet <- gets hasGreetedNoOne
         liftIO $ putStrLn "Witasz się z nieznajomym. Entuzjastycznie machasz do niego."
@@ -334,10 +339,10 @@ handleLocationAction loc cmd = case (loc, cmd) of
                 liftIO $ putStrLn "Znajdujesz tajemniczą wiadomość „EITI” napisaną na odwrocie serwetki."
               else liftIO $ putStrLn "Nie masz tyle forsy! Musisz mieć 10 zł, aby kupić coś."
 
-
   (Chinczyk, "idz_do_gg_pw") -> do
     liftIO $ putStrLn "Idziesz do Gmachu Głównego PW."
     modify (\s -> s { location = GGPW })
+    modify (\s -> s { hasPickedUpItems = False })
     loc <- gets location
     liftIO $ printLocationInfo loc
 
@@ -372,15 +377,16 @@ handleLocationAction loc cmd = case (loc, cmd) of
         liftIO $ putStrLn "'hmmmm...' - Pan rozgląda się chwilę, patrzy pod swoje biurko, i mówi:"
         liftIO $ putStrLn "'Chyba to może być Pana. Niech Pan sprawdzi - leży tu od jakiegoś czasu.'"
         liftIO $ putStrLn "Dostajesz ładnie uciętą ściągę. Spoglądasz na zawartość, i rzeczywiście: coś kojarzysz. Może to się przydać..."
-        modify (\s -> s { conversationCounter = conversationCounter s + 1 })
+        modify (\s -> s { interactionCounter = interactionCounter s + 1 })
         modify (\s -> s { hasCheckedCloakroom = True })
       else liftIO $ putStrLn "Patrzysz jeszcze raz na szatnię, i nic nietypowego nie zauważasz. Prędko odchodzisz"
 
   (EITI, "idz_do_gg_pw") -> do
     liftIO $ putStrLn "Idziesz do Gmachu Głównego PW."
     modify (\s -> s { location = GGPW })
+    modify (\s -> s { hasPickedUpItems = False })
     loc <- gets location
-    liftIO % printLocationInfo loc
+    liftIO $ printLocationInfo loc
 
   -- Gmach główny PW
 
@@ -388,13 +394,32 @@ handleLocationAction loc cmd = case (loc, cmd) of
     return ()
 
   (GGPW, "sprawdz_tablice_ogloszen") -> do
-    return ()
+    liftIO $ putStrLn "Na tablicy ogłoszeń widzisz informację o terminie oddania pracy. Oprócz tego, widzisz nowo powieszoną kartkę z napisem 'Zgubiono klucz do sali ...'"
+    keyKnowledge <- gets knowsAboutMissingKey
+    if not keyKnowledge
+      then do
+        liftIO $ putStrLn "Więc chodzi o klucz... no tak."
+        modify (\s -> s { knowsAboutMissingKey = True })
+      else do
+        liftIO $ putStrLn "Wiesz o tym..."
+        keyStatus <- gets hasKey
+        if keyStatus
+          then liftIO $ putStrLn "Patrzysz na klucz leżący w twojej dłoni."
+          else return ()
 
   (GGPW, "sprawdz_portiernie") -> do
-    return ()
+    liftIO $ putStrLn "Podchodzisz do pustej portierni. Zauważasz kubek z kawą, taśmę, i kilka innych przedmiotów."
+    keyPartOne <- gets hasFirstPartOfBrokenKey
+    keyPartTwo <- gets hasSecondPartOfBrokenKey
+    if keyPartOne && keyPartTwo
+      then do
+        liftIO $ putStrLn "Masz dwie części klucza, które mniej więcej pasują do siebie. Bierzesz z biurka taśmę, i łączysz umiejętnie dwie części klucza."
+        liftIO $ putStrLn "Hmmm. Ciekawe do czego ten klucz pasuje."
+        modify (\s -> s { hasSecretRoomKey = True })
+      else liftIO $ putStrLn "Odchodzisz."
 
   (GGPW, "przeszukaj_teren") -> do
-    return ()
+    handleSearchArea
 
   (GGPW, "otworz_sale_glowna") -> do
     hasKey <- gets hasKey
@@ -449,3 +474,153 @@ printLocationInfo :: Location -> IO ()
 printLocationInfo loc = do
   putStrLn $ "\n== " ++ show loc ++ " =="
   putStrLn $ locationDescription loc
+
+handleSearchArea :: Game ()
+handleSearchArea = do
+  keyStatus <- gets knowsAboutMissingKey
+  if not keyStatus
+    then do
+      liftIO $ putStrLn "Przeszukujesz teren dookoła kompletnie bez pomysłu. Nic nie znajdujesz."
+    else do
+      liftIO $ putStrLn "Przeszukujesz teren... musisz jakoś otworzyć te drzwi do sali głównej."
+      liftIO $ putStrLn "Chodzisz dookoła z myślą że coś znajdziesz, ale bez skutku... Może trzeba do tego podejść na spokojnie?"
+      liftIO $ putStrLn "Co robisz? Wybierz [1] Idź do dziekanatu [2] Przeszukaj korytarze [3] Sprawdź różne sale, [4] Sprawdź klatkę schodową [5] Skończ szukać"
+      input <- liftIO getLine
+      case input of
+        "1" -> searchDeanOffice >> handleSearchArea
+        "2" -> searchCorridors >> handleSearchArea
+        "3" -> searchRooms >> handleSearchArea
+        "4" -> searchStairs >> handleSearchArea
+        "5" -> do
+          modify (\s -> s { location = GGPW })
+          loc <- gets location
+          liftIO $ printLocationInfo loc
+        _   -> do
+          liftIO (putStrLn "Nieprawidłowy wybór.")
+          handleSearchArea
+
+searchDeanOffice = do
+  liftIO $ putStrLn "Dziekanat wydaje się być zamknięty. Spod drzwi wystaje kawałek jakiegoś przedmiotu"
+  liftIO $ putStrLn "Wybierz [1] Spróbuj otworzyć drzwi do dziekanatu [2] Podnieś przedmiot [3] Wróć do miejsca startowego"
+  input <- liftIO getLine
+  case input of
+    "1" -> do
+      liftIO $ putStrLn "Drzwi dalej się nie otwierają. Próbujesz na siłę, ale bez skutku. Jedyne co wywołujesz, to dziwne spojrzenie od przechodzącej Pani magister."
+      searchDeanOffice
+    "2" -> do
+      keyPartOne <- gets hasFirstPartOfBrokenKey
+      if not keyPartOne
+        then do
+          liftIO $ putStrLn "Schylasz się po przedmiot, i wysuwasz go spod drzwi. Dobra informacja: jest to klucz!"
+          liftIO $ putStrLn "Gorsza informacja: część tego klucza wydaje się wyłamana. Może się przyda, kto wie"
+          keyPartTwo <- gets hasSecondPartOfBrokenKey
+          if keyPartTwo
+            then liftIO $ putStrLn "Gdyby tylko dało się go jakoś naprawić..."
+            else searchDeanOffice
+          modify (\s -> s { hasFirstPartOfBrokenKey = True })
+          searchDeanOffice
+        else liftIO $ putStrLn "Pod drzwiami jest jeszcze kawałek kartki. Zostawiasz go."
+    "3" -> return ()
+    _ -> do
+      liftIO (putStrLn "Nieprawidłowy wybór.")
+      searchDeanOffice
+
+searchCorridors = do
+  liftIO $ putStrLn "Jest tutaj co sprawdzać. Ale od czego zacząć?"
+  liftIO $ putStrLn "Co sprawdzisz? [1] Pójdź w lewo [2] Pójdź w prawo [3] Pójdź na wprost [4] Wróć do miejsca startowego"
+  input <- liftIO getLine
+  case input of
+    "1" -> do
+      liftIO $ putStrLn "Przechodzisz po lewym korytarzu i sprawdzasz każdy kąt."
+      liftIO $ putStrLn "Nic ciekawego nie zauważasz. Wracasz do rozwidlenia."
+      searchCorridors
+    "2" -> do
+      liftIO $ putStrLn "Sprawdzasz korytarz po prawej. Sprawdzasz dosłownie wszystko co się da."
+      keyPartTwo <- gets hasSecondPartOfBrokenKey
+      if keyPartTwo
+        then do
+          liftIO $ putStrLn "Nic nie zauważasz"
+          searchCorridors
+        else do
+          liftIO $ putStrLn "Zauważasz dwuzłotówkę, oraz dziwny kawałek... czegoś. Patrzysz czy nikt nie idzie, i podnosisz oba przedmioty"
+          modify (\s -> s {hasSecondPartOfBrokenKey = True})
+          keyPartOne <- gets hasFirstPartOfBrokenKey
+          if keyPartOne
+            then liftIO $ putStrLn "Ten kawałek w sumie pasuje do wyłamanego klucza. Gdyby go jakoś naprawić..."
+            else return ()
+          modify (addMoney 2)
+          searchCorridors
+    "3" -> do
+      liftIO $ putStrLn "Idziesz na wprost. Natrafiasz na ścianę."
+      searchCorridors
+    "4" -> return ()
+    _ -> do
+      liftIO (putStrLn "Nieprawidłowy wybór.")
+      searchCorridors
+
+searchRooms = do
+  liftIO $ putStrLn "Idziesz na pierwsze piętro, i wchodzisz do losowego korytarza. Za cel obierasz sobie losowe sale."
+  liftIO $ putStrLn "Co robisz? [1] Wejdź do sali 121 [2] Wejdź do sali 113 [3] Wejdź do sali 133 [4] Wróć do miejsca startowego"
+  input <- liftIO getLine
+  case input of
+    "1" -> do
+      liftIO $ putStrLn "Próbujesz otworzyć salę 121."
+      liftIO $ putStrLn "Sala jest zamknięta."
+      secretKeyStatus <- gets hasSecretRoomKey
+      if secretKeyStatus
+        then liftIO $ putStrLn "Twój naprawiony klucz nie pasuje do zamka."
+        else return ()
+      keyStatus <- gets hasKey
+      if keyStatus
+        then liftIO $ putStrLn "Klucz który znalazłeś, nie pasuje do zamka."
+        else return ()
+      searchRooms
+    "2" -> do
+      liftIO $ putStrLn "Próbujesz otworzyć salę 113"
+      liftIO $ putStrLn "Sala jest otwarta. Wchodzisz do środka: nikogo tutaj nie ma."
+      liftIO $ putStrLn "Przeszukujesz salę, i wszystko wydaje się normalne. Podchodzisz do biurka nauczyciela, lecz wszystkie szafki są pozamykane."
+      liftIO $ putStrLn "Nic nie znajdujesz."
+      searchRooms
+    "3" -> do
+      liftIO $ putStrLn "Próbujesz otworzyć salę 133"
+      liftIO $ putStrLn "Sala jest zamknięta. "
+      keyStatus <- gets hasKey
+      secretKeyStatus <- gets hasSecretRoomKey
+      if keyStatus
+        then liftIO $ putStrLn "Klucz który znalazłeś, nie pasuje do zamka. "
+        else return ()
+      if not secretKeyStatus
+        then liftIO $ putStrLn "Odchodzisz od drzwi"
+        else do
+          liftIO $ putStrLn "Klucz który naprawiłeś, pasuje do zamka. Otwierasz drzwi do sali 133, i wchodzisz do środka."
+          liftIO $ putStrLn "Wszystko wygląda normalnie. Zauważasz zostawione przez jakiegoś studenta notatki. Są z przedmiotu, który przecież kojarzysz."
+          liftIO $ putStrLn "Szybko czytasz notatki. "
+          itemStatus <- gets hasPickedUpItems
+          lst <- gets notes
+          if itemStatus
+            then do
+              liftIO $ putStrLn "Niczego więcej się nie dowiadujesz."
+              return ()
+            else do
+              if length lst < 4
+                then liftIO $ putStrLn "W sumie mało się dowiadujesz"
+                else do
+                  liftIO $ putStrLn "To może się przydać do twoich notatek! Bierzesz czystą kartkę z biurka nauczyciela, i przepisujesz najważniejsze rzeczy."
+                  modify (\s -> s {interactionCounter = interactionCounter s + 1})
+                  modify (\s -> s {hasPickedUpItems = True})
+      searchRooms
+
+    "4" -> return ()
+    _ -> do
+      liftIO (putStrLn "Nieprawidłowy wybór.")
+      searchRooms
+
+searchStairs = do
+  liftIO $ putStrLn "Idziesz sprawdzić najbliższą klatkę schodową. Przechodzisz się po niej w górę, i wracasz. Nic nie zauważasz."
+  keyStatus <- gets hasKey
+  if keyStatus
+    then liftIO $ putStrLn "Schylasz się po klucz i... nic nie podnosisz. Klucz trzymasz przecież w ręku. Niezręcznie..."
+    else do
+      liftIO $ putStrLn "Znajdujesz klucz! Wygląda dość staro, ale może będzie gdzieś pasować."
+      modify (\s -> s {hasKey = True})
+  liftIO $ putStrLn "Wracasz do punktu, z którego zacząłeś przeszukiwanie."
