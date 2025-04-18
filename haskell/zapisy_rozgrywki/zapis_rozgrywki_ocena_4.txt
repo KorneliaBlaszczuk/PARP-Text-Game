@@ -1,0 +1,582 @@
+kornelia@CORNELIE:~/parp/prolog/haskell/app$ ghci -e main -v0 Main.hs
+DEBUG: Uruchamianie main...
+DEBUG: Rozpoczynanie gry...
+
+Dostępne akcje:
+- rozpocznij_gre
+
+> rozpocznij_gre
+
+Rozpoczynasz swoją przygodę...
+
+== TarasPKiN ==
+Budzisz się na tarasie PKiN. Okropnie boli cię głowa, szczególnie, kiedy na twoje powieki padają pierwsze promienie nowego dnia.
+Nagle czujesz dziabnięcie. To gołąb, który zdecydowanie nie jest zadowolony z twojej obecności na jego terytorium. Co zrobić?
+
+Dostępne akcje:
+- zajrzyj_do_kieszeni
+- rozejrzyj_sie
+- podejdz_do_krawedzi
+- zejdz_po_schodach
+- uzyj_windy
+
+> zajrzyj_do_kieszeni
+Sięgasz do kieszeni i znajdujesz 20 zł oraz notatkę.
+
+Dostępne akcje:
+- zajrzyj_do_kieszeni
+- rozejrzyj_sie
+- podejdz_do_krawedzi
+- zejdz_po_schodach
+- uzyj_windy
+
+> sprawdz(stan_pieniedzy)
+Masz 20
+Nie można wykonać tej akcji w tej lokalizacji. Jeśli nie masz na myśli akcji bazowej - spróbuj jeszcze raz.
+
+Dostępne akcje:
+- zajrzyj_do_kieszeni
+- rozejrzyj_sie
+- podejdz_do_krawedzi
+- zejdz_po_schodach
+- uzyj_windy
+
+> rozejrzyj_sie
+Widzisz panoramę miasta. Słońce wschodzi nad Warszawą.
+
+Dostępne akcje:
+- zajrzyj_do_kieszeni
+- rozejrzyj_sie
+- podejdz_do_krawedzi
+- zejdz_po_schodach
+- uzyj_windy
+
+> zejdz_po_schodach
+Schodzisz schodami PKiN.
+
+== SchodyPKiN ==
+Schodząc w dół robisz krótką przerwę, strasznie boli Cię głowa. Patrząc w dół zauważasz leżące na podłodze pieniądze.
+
+Dostępne akcje:
+- podnies_pieniadze
+- idz_dalej
+
+> podnies_pieniadze
+Znalazłeś 13 zł na schodach!
+
+Dostępne akcje:
+- podnies_pieniadze
+- idz_dalej
+
+> podnies_pieniadze
+Nic tutaj już nie ma.
+
+Dostępne akcje:
+- podnies_pieniadze
+- idz_dalej
+
+> idz_dalej
+Schodzisz schodami do holu PKiN.
+
+== HolPKiN ==
+Głowa nadal boli cię nieubłaganie. Wokół cicho, tylko portier siedzi za ladą. Może warto go zapytać o wczoraj?
+
+Dostępne akcje:
+- porozmawiaj_z_portierem
+- wyjdz_na_zewnatrz
+- udaj_sie_do_szatni
+
+> porozmawiaj_z_portierem
+Portier patrzy na ciebie podejrzliwie, ale nic nie mówi.
+
+Dostępne akcje:
+- porozmawiaj_z_portierem
+- wyjdz_na_zewnatrz
+- udaj_sie_do_szatni
+
+> udaj_sie_do_szatni
+Idziesz do szatni.
+
+== SzatniaPKiN ==
+Wygląda na to, że kilka osób zapomniało wziąć płaszcz wychodząc. Może być trudno zgadnąć, który jest mój.
+
+Dostępne akcje:
+- wyjdz_na_zewnatrz
+- przeszukaj_kieszenie
+- przeszukaj_plaszcz
+
+> przeszukaj_plaszcz
+Nie masz numerka, więc nie wiesz, który płaszcz należy do ciebie.
+
+Dostępne akcje:
+- wyjdz_na_zewnatrz
+- przeszukaj_kieszenie
+- przeszukaj_plaszcz
+
+> przeszukaj_kieszenie
+Warto było przeszukać kieszenie jeszce raz. Znajdujesz numerek.
+
+Dostępne akcje:
+- wyjdz_na_zewnatrz
+- przeszukaj_kieszenie
+- przeszukaj_plaszcz
+
+> przeszukaj_plaszcz
+Znajdujesz ulotkę z ofertą Happy Hours z baru w Hali Koszyki.
+
+Dostępne akcje:
+- wyjdz_na_zewnatrz
+- przeszukaj_kieszenie
+- przeszukaj_plaszcz
+
+> wyjdz_na_zewnatrz
+Wychodzisz z PKiN.
+Wychodząc zaczepia cię dziwny chłopak, który mówi: 'O hej brachu, pamiętasz co się działo wczoraj w Hali Koszyki?'
+
+== PrzedPKiN ==
+Jesteś przed PKiN. Widok na miasto jest zapierający, możesz ruszyć w różne strony.
+
+Dostępne akcje:
+- idz_w_strone_parku
+- idz_w_strone_taksowki
+- spojrz_na_ulotke
+- idz_do_hali_koszyki
+
+> spojrz_na_ulotke
+Znajdujesz ulotkę z baru w Hali Koszyki z reklamą Happy Hours. Może warto się dam udać?
+
+Dostępne akcje:
+- idz_w_strone_parku
+- idz_w_strone_taksowki
+- spojrz_na_ulotke
+- idz_do_hali_koszyki
+
+> idz_w_strone_parku
+Idziesz w stronę parku.
+
+== Park ==
+Wchodzisz do Parku Świętokrzyskiego. Powietrze jest rześkie, a pierwsze promienie słońca oświetlają puste alejki. W oddali słyszysz szum miasta, ale tutaj panuje dziwny spokój.
+
+Dostępne akcje:
+- usiadz_na_lawce
+- karm_golebie
+- obejrzyj_fontanne
+- porozmawiaj_z_nieznajomym
+- idz_przed_pkin
+
+> karm_golebie
+Kupujesz nasiona i karmisz gołębie. Jeden z nich wygląda znajomo... To ten, który dziabnął cię na tarasie!
+
+Dostępne akcje:
+- usiadz_na_lawce
+- karm_golebie
+- obejrzyj_fontanne
+- porozmawiaj_z_nieznajomym
+- idz_przed_pkin
+
+> sprawdz(stan_pieniedzy)
+Masz 28
+Nie można wykonać tej akcji w tej lokalizacji. Jeśli nie masz na myśli akcji bazowej - spróbuj jeszcze raz.
+
+Dostępne akcje:
+- usiadz_na_lawce
+- karm_golebie
+- obejrzyj_fontanne
+- porozmawiaj_z_nieznajomym
+- idz_przed_pkin
+
+> obejrzyj_fontanne
+Znalazłeś 6 zł w fontannie!
+
+Dostępne akcje:
+- usiadz_na_lawce
+- karm_golebie
+- obejrzyj_fontanne
+- porozmawiaj_z_nieznajomym
+- idz_przed_pkin
+
+> sprawdz(stan_pieniedzy)
+Masz 34
+Nie można wykonać tej akcji w tej lokalizacji. Jeśli nie masz na myśli akcji bazowej - spróbuj jeszcze raz.
+
+Dostępne akcje:
+- usiadz_na_lawce
+- karm_golebie
+- obejrzyj_fontanne
+- porozmawiaj_z_nieznajomym
+- idz_przed_pkin
+
+> porozmawiaj_z_nieznajomym
+Witasz się z nieznajomym.
+'Dzień dobry! Co u Pana słychać?' - pyta się ciebie nieznajomy z entuzjazmem
+Równo entuzjastycznie odpowiadasz, że 'dobrze'... nawet jeśli pytanie nie brzmiało 'jak się czujesz', ale kto by się przejmował.
+Zaczynasz rozmowę z nieznajomym, aż... tracisz czucie czasu. Ile rozmawialiście? Nie wiesz.
+'Ja muszę proszę Pana jeszcze na autobus zdążyć, ale miło się z Panem rozmawiało!' - nieznajomy żegna się z tobą: znowu entuzjastycznie!
+'I niech Pan pamięta o Wilczej 30! Warto tam zajrzeć!'
+??? Może o czymś wspomniałeś podczas rozmowy, co by skutkowały w takiej prośbie, ale tego nie pamiętasz
+Masz wrażenie, że coś wyniosłeś z tej konwersacji, aczkolwiek nie wiesz do końca co.
+
+Dostępne akcje:
+- usiadz_na_lawce
+- karm_golebie
+- obejrzyj_fontanne
+- porozmawiaj_z_nieznajomym
+- idz_przed_pkin
+
+> usiadz_na_lawce
+Siadasz na zimnej, metalowej ławce. Chłód poranka powoli przenika przez materiał twojego ubrania.
+Przymykasz oczy na chwilę i wsłuchujesz się w dźwięki miasta. Czujesz chwilowy spokój. Może nawet zbyt wielki.
+Jakby świat na moment się zatrzymał, pozwalając ci złapać oddech przed kolejnym krokiem.
+
+Dostępne akcje:
+- usiadz_na_lawce
+- karm_golebie
+- obejrzyj_fontanne
+- porozmawiaj_z_nieznajomym
+- idz_przed_pkin
+
+> idz_przed_pkin
+Wracasz przed PKiN
+
+== PrzedPKiN ==
+Jesteś przed PKiN. Widok na miasto jest zapierający, możesz ruszyć w różne strony.
+
+Dostępne akcje:
+- idz_w_strone_parku
+- idz_w_strone_taksowki
+- spojrz_na_ulotke
+- idz_do_hali_koszyki
+- idz_na_wilcza_30
+
+> idz_na_wilcza_30
+Postanawiasz pójść na Wilczą 30 spacerując, aby móc podziwiać budzącą się Warszawę.
+
+== Wilcza30 ==
+Stoisz przed drzwiami mieszkania na Wilczej 30.
+
+Dostępne akcje:
+- zapukaj_do_drzwi
+- rozejrzyj_sie
+- idz_do_hali_koszyki
+
+> rozejrzyj_sie
+Wilcza 30. Stara kamienica z odrapanym numerem nad wejściem.
+Drzwi noszą ślady zużycia, jakby ktoś niedawno próbował je sforsować.
+W środku czuć wilgoć, kurz i zapach tanich papierosów.
+Na skrzynkach pocztowych nazwiska lokatorów, ale jedno miejsce jest puste.
+
+Dostępne akcje:
+- zapukaj_do_drzwi
+- rozejrzyj_sie
+- idz_do_hali_koszyki
+
+> zapukaj_do_drzwi
+Otwiera ci nieznana osoba. 'Czekałem na ciebie.'
+
+== DomWilcza ==
+Wchodzisz do środka, w pokoju unosi się zapach papierosów i starego drewna. Mężczyzna wskazuje na krzesło, każąc ci usiąść.
+
+Dostępne akcje:
+- wykup_notatke
+- opusc_dom
+
+> wykup_notatke
+Ciekawość wzieła górę i wykupiłeś ten kawałek papieru.
+
+== Wilcza30 ==
+Stoisz przed drzwiami mieszkania na Wilczej 30.
+
+Dostępne akcje:
+- zapukaj_do_drzwi
+- rozejrzyj_sie
+- idz_do_hali_koszyki
+
+> sprawdz(stan_notatek)
+Masz 2/4 notatek
+Nie można wykonać tej akcji w tej lokalizacji. Jeśli nie masz na myśli akcji bazowej - spróbuj jeszcze raz.
+
+Dostępne akcje:
+- zapukaj_do_drzwi
+- rozejrzyj_sie
+- idz_do_hali_koszyki
+
+> idz_do_hali_koszyki
+Opuszczasz Wilczą 30 i idziesz w strone Hali Koszyki.
+
+== HalaKoszyki ==
+Hala Koszyki tętni życiem nawet o tej godzinie. Zapach kawy i świeżego pieczywa unosi się w powietrzu, a ludzie śmieją się przy stolikach.
+
+Dostępne akcje:
+- podejdz_do_baru
+- porozmawiaj_z_gosciem
+- wyjdz_w_strone_chinczyka
+
+> porozmawiaj_z_gosciem
+Tajemniczy rozmówca wspomina o dziwnym incydencie, którego był świadkiem - ktoś potrącił cię szybko wychodząc.
+
+Dostępne akcje:
+- podejdz_do_baru
+- porozmawiaj_z_gosciem
+- wyjdz_w_strone_chinczyka
+
+> podejdz_do_baru
+Barman rozpoznaje cię i mówi, że wczoraj zostawiłeś coś ważnego.
+Barman wręcza ci kolejną część notatki!
+
+Dostępne akcje:
+- podejdz_do_baru
+- porozmawiaj_z_gosciem
+- wyjdz_w_strone_chinczyka
+
+> wyjdz_w_strone_chinczyka
+Idziesz do chińskiej restauracji.
+
+== Chinczyk ==
+Lokal jest niewielki, ale przytulny. Na ścianach wiszą chińskie lampiony, a w tle cicho gra azjatycka muzyka.
+
+Dostępne akcje:
+- porozmawiaj_z_wlascicielem
+- kup_cos
+- idz_do_gg_pw
+- idz_na_weiti
+
+> porozmawiaj_z_wlascicielem
+Właściciel pamięta cię! Wspomina, że wczoraj zostawiłeś coś przy stoliku.
+Wskaże ci go jedynie, jeśli kupisz coś (10 zł), przecież za darmo nie możesz siedzieć w lokalu!
+
+Dostępne akcje:
+- porozmawiaj_z_wlascicielem
+- kup_cos
+- idz_do_gg_pw
+- idz_na_weiti
+
+> kup_cos
+Znajdujesz tajemniczą wiadomość „EITI” napisaną na odwrocie serwetki.
+
+Dostępne akcje:
+- porozmawiaj_z_wlascicielem
+- kup_cos
+- idz_do_gg_pw
+- idz_na_weiti
+
+> idz_na_weiti
+Idziesz na wydział EITI.
+
+== EITI ==
+Jesteś na Wydziale EITI. Laboratoria i studenci dookoła.
+
+Dostępne akcje:
+- zajrzyj_do_laboratorium
+- zajrzyj_do_szatni
+- idz_do_gg_pw
+
+> zajrzyj_do_laboratorium
+Wchodzisz do laboratorium i widzisz profesorów.
+Witasz się i powoli wchodzisz do środka. Studentów tu jeszcze nie ma, ale zapewne będą tu niedługo jakieś zajęcia.
+'Szuka Pan czegoś?' - pyta profesor. Odpowiadasz że tak, coś zostawiłeś (dobrze wiesz że to nieprawda)
+Chociaż... ha, ciekawe. Widzisz kawałek notatki. Bierzesz ją - może się tobie przydać.
+
+Dostępne akcje:
+- zajrzyj_do_laboratorium
+- zajrzyj_do_szatni
+- idz_do_gg_pw
+
+> sprawdz(stan_notatek)
+Masz 4/4 notatek
+Nie można wykonać tej akcji w tej lokalizacji. Jeśli nie masz na myśli akcji bazowej - spróbuj jeszcze raz.
+
+Dostępne akcje:
+- zajrzyj_do_laboratorium
+- zajrzyj_do_szatni
+- idz_do_gg_pw
+
+> zajrzyj_do_szatni
+Podchodzisz, a Pan z szatni wyjmuje już numerek, i chce go tobie wręczyć. Nie bierzesz numerka, ale rozglądasz się wokół
+'Czy w czymś Panu pomóc???' - zapytany odpowiadasz, że po prostu patrzysz czy czegoś nie zapomniałeś
+'Coś... ostatnio wydawał się Pan jakiś rozkojarzony, o ile mnie pamięć nie myli...'
+'hmmmm...' - Pan rozgląda się chwilę, patrzy pod swoje biurko, i mówi:
+'Chyba to może być Pana. Niech Pan sprawdzi - leży tu od jakiegoś czasu.'
+Dostajesz ładnie uciętą ściągę. Spoglądasz na zawartość, i rzeczywiście: coś kojarzysz. Może to się przydać...
+
+Dostępne akcje:
+- zajrzyj_do_laboratorium
+- zajrzyj_do_szatni
+- idz_do_gg_pw
+
+> idz_do_gg_pw
+Idziesz do Gmachu Głównego PW.
+
+== GGPW ==
+Jesteś w Gmachu Głównym Politechniki Warszawskiej. Wszędzie pełno studentów i nauczycieli.
+
+Dostępne akcje:
+- pogadaj_z_kims
+- sprawdz_tablice_ogloszen
+- sprawdz_portiernie
+- przeszukaj_teren
+- otworz_sale_glowna
+
+> pogadaj_z_kims
+Zauważasz jakiegoś profesora, i podchodzisz do niego.
+Mówisz do profesora dzień dobry. Profesor z uśmiechem wita się z tobą. Nic więcej nie mówisz.
+
+Dostępne akcje:
+- pogadaj_z_kims
+- sprawdz_tablice_ogloszen
+- sprawdz_portiernie
+- przeszukaj_teren
+- otworz_sale_glowna
+
+> sprawdz_tablice_ogloszen
+Na tablicy ogłoszeń widzisz informację o terminie oddania pracy. Oprócz tego, widzisz nowo powieszoną kartkę z napisem 'Zgubiono klucz do sali ...'
+Więc chodzi o klucz... no tak.
+
+Dostępne akcje:
+- pogadaj_z_kims
+- sprawdz_tablice_ogloszen
+- sprawdz_portiernie
+- przeszukaj_teren
+- otworz_sale_glowna
+
+> sprawdz_portiernie
+Podchodzisz do pustej portierni. Zauważasz kubek z kawą, taśmę, i kilka innych przedmiotów.
+Odchodzisz.
+
+Dostępne akcje:
+- pogadaj_z_kims
+- sprawdz_tablice_ogloszen
+- sprawdz_portiernie
+- przeszukaj_teren
+- otworz_sale_glowna
+
+> przeszukaj_teren
+Przeszukujesz teren... musisz jakoś otworzyć te drzwi do sali głównej.
+Chodzisz dookoła z myślą że coś znajdziesz, ale bez skutku... Może trzeba do tego podejść na spokojnie?
+Co robisz? Wybierz [1] Idź do dziekanatu [2] Przeszukaj korytarze [3] Sprawdź różne sale, [4] Sprawdź klatkę schodową [5] Skończ szukać
+1
+Dziekanat wydaje się być zamknięty. Spod drzwi wystaje kawałek jakiegoś przedmiotu
+Wybierz [1] Spróbuj otworzyć drzwi do dziekanatu [2] Podnieś przedmiot [3] Wróć do miejsca startowego
+2
+Schylasz się po przedmiot, i wysuwasz go spod drzwi. Dobra informacja: jest to klucz!
+Gorsza informacja: część tego klucza wydaje się wyłamana. Może się przyda, kto wie
+Dziekanat wydaje się być zamknięty. Spod drzwi wystaje kawałek jakiegoś przedmiotu
+Wybierz [1] Spróbuj otworzyć drzwi do dziekanatu [2] Podnieś przedmiot [3] Wróć do miejsca startowego
+1
+Drzwi dalej się nie otwierają. Próbujesz na siłę, ale bez skutku. Jedyne co wywołujesz, to dziwne spojrzenie od przechodzącej Pani magister.
+Dziekanat wydaje się być zamknięty. Spod drzwi wystaje kawałek jakiegoś przedmiotu
+Wybierz [1] Spróbuj otworzyć drzwi do dziekanatu [2] Podnieś przedmiot [3] Wróć do miejsca startowego
+3
+Przeszukujesz teren... musisz jakoś otworzyć te drzwi do sali głównej.
+Chodzisz dookoła z myślą że coś znajdziesz, ale bez skutku... Może trzeba do tego podejść na spokojnie?
+Co robisz? Wybierz [1] Idź do dziekanatu [2] Przeszukaj korytarze [3] Sprawdź różne sale, [4] Sprawdź klatkę schodową [5] Skończ szukać
+2
+Jest tutaj co sprawdzać. Ale od czego zacząć?
+Co sprawdzisz? [1] Pójdź w lewo [2] Pójdź w prawo [3] Pójdź na wprost [4] Wróć do miejsca startowego
+1
+Przechodzisz po lewym korytarzu i sprawdzasz każdy kąt.
+Nic ciekawego nie zauważasz. Wracasz do rozwidlenia.
+Jest tutaj co sprawdzać. Ale od czego zacząć?
+Co sprawdzisz? [1] Pójdź w lewo [2] Pójdź w prawo [3] Pójdź na wprost [4] Wróć do miejsca startowego
+2
+Sprawdzasz korytarz po prawej. Sprawdzasz dosłownie wszystko co się da.
+Zauważasz dwuzłotówkę, oraz dziwny kawałek... czegoś. Patrzysz czy nikt nie idzie, i podnosisz oba przedmioty
+Ten kawałek w sumie pasuje do wyłamanego klucza. Gdyby go jakoś naprawić...
+Jest tutaj co sprawdzać. Ale od czego zacząć?
+Co sprawdzisz? [1] Pójdź w lewo [2] Pójdź w prawo [3] Pójdź na wprost [4] Wróć do miejsca startowego
+3
+Idziesz na wprost. Natrafiasz na ścianę.
+Jest tutaj co sprawdzać. Ale od czego zacząć?
+Co sprawdzisz? [1] Pójdź w lewo [2] Pójdź w prawo [3] Pójdź na wprost [4] Wróć do miejsca startowego
+4
+Przeszukujesz teren... musisz jakoś otworzyć te drzwi do sali głównej.
+Chodzisz dookoła z myślą że coś znajdziesz, ale bez skutku... Może trzeba do tego podejść na spokojnie?
+Co robisz? Wybierz [1] Idź do dziekanatu [2] Przeszukaj korytarze [3] Sprawdź różne sale, [4] Sprawdź klatkę schodową [5] Skończ szukać
+3
+Idziesz na pierwsze piętro, i wchodzisz do losowego korytarza. Za cel obierasz sobie losowe sale.
+Co robisz? [1] Wejdź do sali 121 [2] Wejdź do sali 113 [3] Wejdź do sali 133 [4] Wróć do miejsca startowego
+1
+Próbujesz otworzyć salę 121.
+Sala jest zamknięta.
+Idziesz na pierwsze piętro, i wchodzisz do losowego korytarza. Za cel obierasz sobie losowe sale.
+Co robisz? [1] Wejdź do sali 121 [2] Wejdź do sali 113 [3] Wejdź do sali 133 [4] Wróć do miejsca startowego
+2
+Próbujesz otworzyć salę 113
+Sala jest otwarta. Wchodzisz do środka: nikogo tutaj nie ma.
+Przeszukujesz salę, i wszystko wydaje się normalne. Podchodzisz do biurka nauczyciela, lecz wszystkie szafki są pozamykane.
+Nic nie znajdujesz.
+Idziesz na pierwsze piętro, i wchodzisz do losowego korytarza. Za cel obierasz sobie losowe sale.
+Co robisz? [1] Wejdź do sali 121 [2] Wejdź do sali 113 [3] Wejdź do sali 133 [4] Wróć do miejsca startowego
+3
+Próbujesz otworzyć salę 133
+Sala jest zamknięta.
+Odchodzisz od drzwi
+Idziesz na pierwsze piętro, i wchodzisz do losowego korytarza. Za cel obierasz sobie losowe sale.
+Co robisz? [1] Wejdź do sali 121 [2] Wejdź do sali 113 [3] Wejdź do sali 133 [4] Wróć do miejsca startowego
+4
+Przeszukujesz teren... musisz jakoś otworzyć te drzwi do sali głównej.
+Chodzisz dookoła z myślą że coś znajdziesz, ale bez skutku... Może trzeba do tego podejść na spokojnie?
+Co robisz? Wybierz [1] Idź do dziekanatu [2] Przeszukaj korytarze [3] Sprawdź różne sale, [4] Sprawdź klatkę schodową [5] Skończ szukać
+4
+Idziesz sprawdzić najbliższą klatkę schodową. Przechodzisz się po niej w górę, i wracasz. Nic nie zauważasz.
+Znajdujesz klucz! Wygląda dość staro, ale może będzie gdzieś pasować.
+Wracasz do punktu, z którego zacząłeś przeszukiwanie.
+Przeszukujesz teren... musisz jakoś otworzyć te drzwi do sali głównej.
+Chodzisz dookoła z myślą że coś znajdziesz, ale bez skutku... Może trzeba do tego podejść na spokojnie?
+Co robisz? Wybierz [1] Idź do dziekanatu [2] Przeszukaj korytarze [3] Sprawdź różne sale, [4] Sprawdź klatkę schodową [5] Skończ szukać
+5
+
+== GGPW ==
+Jesteś w Gmachu Głównym Politechniki Warszawskiej. Wszędzie pełno studentów i nauczycieli.
+
+Dostępne akcje:
+- pogadaj_z_kims
+- sprawdz_tablice_ogloszen
+- sprawdz_portiernie
+- przeszukaj_teren
+- otworz_sale_glowna
+
+> otworz_sale_glowna
+Używasz klucza aby otworzyć salę...
+
+== GlownaSala ==
+Jesteś w głównej sali. Czas na końcową decyzję i oddanie pracy semestralnej.
+
+Dostępne akcje:
+- sprawdz_kieszenie
+- wyjdz_z_sali
+- podejdz_do_profesora
+
+> sprawdz_kieszenie
+Sprawdzasz swoje kieszenie... znajdujesz 4 części notatek, oraz 16 zł.
+Teraz jesteś pewien - trzymasz części twojej pracy semestralnej.
+W panice składasz części twojej pracy semestralnej... jest pełna...
+30 sekund emocjonalnego rollercoastera kończy się ogromną ulgą... uśmiechasz się!
+
+Dostępne akcje:
+- sprawdz_kieszenie
+- wyjdz_z_sali
+- podejdz_do_profesora
+
+> podejdz_do_profesora
+Podchodzisz do profesora siedzącego na wprost ciebie. Czeka na ciebie, i rozpoznaje cię. Witasz się.
+'I kto to przyszedł? Dzień dobry Panu.'- mówi profesor w nieco onieśmielającym tonie.
+'Będzie Pan tak tu stać? Czegoś Pan potrzebuje?'
+Mówisz, że chcesz oddać pracę semestralną
+
+
+Bierzesz swoje notatki z kieszeni, i składasz je w jedną część. Profesor patrzy się na ciebie z lekkim zdziwieniem.
+Twoim oczom ukazuje się... twoja praca semstralna w pełnej postaci.
+'Wow... doceniam Pana determinację. Powiedziałbym że jest to niedorzeczne oddawać pracę w takim stanie, ale wygląda Pan na zmęczonego...'
+Więc jest szansa?! Opłaciło się zbierać te notatki? Nie wiesz co myśleć, ale czekasz aż profesor skończy czytać pracę.
+
+
+
+Profesor wygląda raz na zażenowanego, raz na zaskoczonego, a nawet na zadowolonego.
+'Muszę Panu przyznać, że może praca idealna nie jest... ale zaliczyć, to Pan zaliczy.'
+'A swoją drogą... no i jak Pańska wiedza? Powalczy Pan o lepszą ocenę?'
+Starasz sobie przypomnieć co się dowiedziałeś... mówisz co wiesz, trochę też zmyślaśz, ale...
+
+=== DOBRE ZAKOŃCZENIE ===
+ZALICZASZ przedmiot z oceną 4.0!
+Zebrano wszystkie 4 części notatki. Skompletowano pracę semestralną!
+Znaleziono 2 z czterech dostępnych sekretnych interakcji.
