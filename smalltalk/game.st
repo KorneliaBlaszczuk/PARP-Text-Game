@@ -2,7 +2,7 @@ Object subclass: Game [
     | location money notes hasNumber visitedWilcza visitedHala visitedPark conversationDone visitedEiti
       interactionCounter talkCounter hasKey hasKeyPart1 hasKeyPart2 hasSecretKey checkedLockerRoom
       knowsAboutMissingKey knowsAboutSemesterWork checkedMainHallPockets greetedNobody approachedBar
-      boughtWilczaNote viewedFountain pocketChecked pickedUpItems |
+      boughtWilczaNote viewedFountain pocketChecked pickedUpItems gameOver visitedWilcza30|
 
     Game class >> new [
         ^super new initialize
@@ -32,27 +32,72 @@ Object subclass: Game [
         approachedBar := false.
         boughtWilczaNote := false.
         viewedFountain := false.
+        visitedWilcza30 := false.
         pocketChecked := false.
         pickedUpItems := false.
+        gameOver := false.
+    ]
+
+    start [
+        self gameLoop.
+    ]
+
+    gameLoop [
+        | input |
+        self showFullLocationInfo. "Pełna informacja tylko przy pierwszym wejściu"
+
+        [gameOver] whileFalse: [
+            input := self getInput.
+            (self tryPerformAction: input) ifFalse: [
+                'Nie rozpoznano akcji!' displayNl.
+            ].
+        ].
+        self endGame.
+    ]
+
+    showFullLocationInfo [
+        '===== LOKALIZACJA =====' displayNl.
+        '' displayNl.
+        location description displayNl.
+        '' displayNl.
+        'DOSTĘPNE AKCJE:' displayNl.
+        '' displayNl.
+        location availableActionsFor: self do: [:action |
+            ' * ' display.
+            action displayNl.
+        ].
+        '' displayNl.
+    ]
+
+    getInput [
+        Transcript show: 'Wpisz akcję: '; flush.
+        ^ stdin nextLine asString
+    ]
+
+    tryPerformAction: inputString [
+        | actionSymbol |
+        actionSymbol := inputString asSymbol.
+
+        location availableActionsFor: self do: [:availableAction |
+            (availableAction asSymbol = actionSymbol) ifTrue: [
+                '' displayNl.
+                '>>> Wykonuję: ' display. availableAction displayNl. '' displayNl.
+                location performAction: actionSymbol inGame: self.
+                ^ true
+            ].
+        ].
+        ^ false
+    ]
+
+    endGame [
+        Transcript show: 'Koniec gry!'; cr.
     ]
 
     changeLocation: newLocation [
         location := newLocation.
-        self displayDescription.
-        self displayAvailableActions.
+        self showFullLocationInfo.
     ]
 
-    displayDescription [
-        Transcript show: location description; cr.
-    ]
-
-    displayAvailableActions [
-        Transcript show: 'Dostepne akcje:'; cr.
-        location availableActionsFor: self do: [:action |
-            Transcript show: '- '; show: action; cr.
-        ].
-        Transcript show: 'Aby wykonac dzialanie, wpisz: game performAction: #akcja'; cr.
-    ]
 
     performAction: actionSymbol [
         location performAction: actionSymbol inGame: self.
@@ -60,12 +105,13 @@ Object subclass: Game [
 
     addMoney: amount [
         money := money + amount.
-        Transcript show: 'Twoje fundusze to: '; show: money; show: ' zl'; cr.
+        "Zmieniamy sposób wyświetlania liczby"
+        ('Twoje fundusze to: %1 zl' % {money}) displayNl.
     ]
 
     subtractMoney: amount [
         money := money - amount.
-        Transcript show: 'Twoje fundusze to: '; show: money; show: ' zl'; cr.
+        ('Twoje fundusze to: %1 zl' % {money}) displayNl.
     ]
 
     incrementInteractionCounter [
@@ -78,8 +124,14 @@ Object subclass: Game [
 
     "Gettery i settery dla zmiennych stanu"
     location [^location]
+    money [^money]
     money: anAmount [money := anAmount]
-    notes: aCollection [notes := aCollection]
+    notes [
+        ^ notes
+    ]
+    notes: aCollection [
+        notes := aCollection
+    ]
     hasKey: aBoolean [hasKey := aBoolean]
     hasKeyPart1: aBoolean [hasKeyPart1 := aBoolean]
     hasKeyPart2: aBoolean [hasKeyPart2 := aBoolean]
@@ -88,6 +140,30 @@ Object subclass: Game [
     hasSecretKey: aBoolean [hasSecretKey := aBoolean]
     knowsAboutMissingKey: aBoolean [knowsAboutMissingKey := aBoolean]
     talkCounter [^talkCounter]
+    pickedUpItems [^ pickedUpItems]
+    pickedUpItems: aBoolean [pickedUpItems := aBoolean]
+    visitedHala [^ visitedHala]
+    visitedHala: aBoolean [visitedHala := aBoolean]
+    hasNumber [^ hasNumber]
+    hasNumber: aBoolean [hasNumber := aBoolean]
+    visitedWilcza [^ visitedWilcza]
+    visitedWilcza: aBoolean [visitedWilcza := aBoolean]
+    visitedPark [^ visitedPark]
+    visitedPark: aBoolean [visitedPark := aBoolean]
+    viewedFountain [^ viewedFountain]
+    viewedFountain: aBoolean [viewedFountain := aBoolean]
+    boughtWilczaNote [^ boughtWilczaNote]
+    boughtWilczaNote: aBoolean [boughtWilczaNote := aBoolean]
+    approachedBar [^ approachedBar]
+    approachedBar: aBoolean [approachedBar := aBoolean]
+    visitedWilcza30 [^ visitedWilcza30]
+    visitedWilcza30: aBoolean [visitedWilcza30 := aBoolean]
+    conversationDone [^ conversationDone]
+    conversationDone: aBoolean [conversationDone := aBoolean]
+    visitedEiti [^ visitedEiti]
+    visitedEiti: aBoolean [visitedEiti := aBoolean]
+    checkedLockerRoom [^ checkedLockerRoom]
+    checkedLockerRoom: aBoolean [checkedLockerRoom := aBoolean]
 
     checkNotes [
         Transcript show: 'Aktualnie masz '; show: notes size; show: ' notatek.'; cr.
@@ -148,19 +224,22 @@ Location subclass: TarasPKiN [
         ^'Budzisz sie na tarasie PKiN. Okropnie boli cie glowa, szczegolnie, kiedy na twoje powieki padaja pierwsze promienie nowego dnia. Nagle czujesz dziabniecie. To golab, ktory zdecydowanie nie jest zadowolony z twojej obecnosci na jego terytorium. Co zrobic?'
     ]
 
-    availableActionsFor: game [
-        ^#(zajrzyjDoKieszeni rozejrzyjSie podejdzDoKrawedzi zejdzPoSchodach uzyjWindy)
+    availableActionsFor: game do: aBlock [
+        #('zajrzyjDoKieszeni' 'rozejrzyjSie' 'podejdzDoKrawedzi' 'zejdzPoSchodach' 'uzyjWindy') asOrderedCollection
+            do: [ :akcja | aBlock value: akcja ].
     ]
 
     performAction: actionSymbol inGame: game [
         actionSymbol = #zajrzyjDoKieszeni ifTrue: [
             game pocketChecked ifFalse: [
                 game pocketChecked: true.
-                Transcript show: 'Siegasz do kieszeni i znajdujesz 20zl oraz notatke.'; cr.
+                'Siegasz do kieszeni i znajdujesz 20zl oraz notatke.' displayNl.
                 game addMoney: 20.
-                game notes: (game notes add: 1; yourself).
+                game notes: (game notes add: 1; yourself).  "Poprawiona linia"
+                ^ true
             ] ifTrue: [
-                Transcript show: 'Juz zajrzales do kieszeni, nic tam wiecej nie ma.'; cr.
+                'Juz zajrzales do kieszeni, nic tam wiecej nie ma.' displayNl.
+                ^ true
             ].
         ].
         actionSymbol = #rozejrzyjSie ifTrue: [
@@ -185,13 +264,14 @@ Location subclass: SchodyPKiN [
         ^'Schodzac w dol robisz krotka przerwe, strasznie boli Cie glowa. Patrzac w dol zauwazasz lezace na podlodze pieniadze.'
     ]
 
-    availableActionsFor: game [
-        ^#(podniesPieniadze idzDalej)
+    availableActionsFor: game do: aBlock [
+        ^#('podniesPieniadze' 'idzDalej') asOrderedCollection
+            do: [ :akcja | aBlock value: akcja ].
     ]
 
     performAction: actionSymbol inGame: game [
         actionSymbol = #podniesPieniadze ifTrue: [
-            game pickedUpItems ifTrue: [
+            (game pickedUpItems) ifTrue: [
                 Transcript show: 'Nic tutaj juz nie ma.'; cr.
             ] ifFalse: [
                 | amount |
@@ -212,8 +292,9 @@ Location subclass: HolPKiN [
         ^'Glowa nadal boli cie nieublaganie. Wokol cicho, tylko portier siedzi za lada. Moze warto go zapytac o wczoraj?'
     ]
 
-    availableActionsFor: game [
-        ^#(porozmawiajZPortierem wyjdzNaZewnatrz udajSieDoSzatni)
+    availableActionsFor: game do: aBlock [
+        ^#('porozmawiajZPortierem' 'wyjdzNaZewnatrz' 'udajSieDoSzatni') asOrderedCollection
+            do: [ :akcja | aBlock value: akcja ].
     ]
 
     performAction: actionSymbol inGame: game [
@@ -238,8 +319,9 @@ Location subclass: SzatniaPKiN [
         ^'Wyglada na to, ze kilka osob zapomnialo wziac plaszcz wychodzac. Moze byc trudno zgadnac, ktory jest moj.'
     ]
 
-    availableActionsFor: game [
-        ^#(wyjdzNaZewnatrz przeszukajKieszenie przeszukajPlaszcz)
+    availableActionsFor: game do: aBlock [
+        ^#('wyjdzNaZewnatrz' 'przeszukajKieszenie' 'przeszukajPlaszcz') asOrderedCollection
+            do: [ :akcja | aBlock value: akcja ].
     ]
 
     performAction: actionSymbol inGame: game [
@@ -248,10 +330,12 @@ Location subclass: SzatniaPKiN [
             Transcript show: 'Wychodzac zaczepia cie dziwny chlopak, ktory mowi: ''O hej brachu, pamietasz co sie dzialo wczoraj w Hali Koszyki?'''; cr.
             game visitedHala: true.
             game changeLocation: (PrzedPKiN new).
+            ^ true
         ].
         actionSymbol = #przeszukajKieszenie ifTrue: [
             Transcript show: 'Warto bylo przeszukac kieszenie jeszcze raz. Znajdujesz numerek.'; cr.
             game hasNumber: true.
+            ^ true
         ].
         actionSymbol = #przeszukajPlaszcz ifTrue: [
             game hasNumber ifTrue: [
@@ -259,7 +343,9 @@ Location subclass: SzatniaPKiN [
             ] ifFalse: [
                 Transcript show: 'Nie masz numerka, wiec nie wiesz, ktory plaszcz nalezy do ciebie.'; cr.
             ].
+            ^ true
         ].
+        ^ false
     ]
 ]
 
@@ -268,15 +354,18 @@ Location subclass: PrzedPKiN [
         ^'Jestes przed PKiN. Widok na miasto jest zapierajacy, mozesz ruszyc w rozne strony.'
     ]
 
-    availableActionsFor: game [
-        | actions |
-        actions := OrderedCollection new.
-        actions addAll: {#idzWStroneParku. #idzWStroneTaksowki. #spojrzNaUlotke}.
+    availableActionsFor: game do: aBlock [
+        #('idzWStroneParku' 'idzWStroneTaksowki' 'spojrzNaUlotke') do: [:akcja |
+            aBlock value: akcja
+        ].
 
-        game visitedHala ifTrue: [actions add: #idzDoHaliKoszyki].
-        game visitedWilcza ifTrue: [actions add: #idzNaWilcza30].
+        game visitedHala ifTrue: [
+            aBlock value: 'idzDoHaliKoszyki'
+        ].
 
-        ^actions
+        game visitedWilcza ifTrue: [
+            aBlock value: 'idzNaWilcza30'
+        ].
     ]
 
     performAction: actionSymbol inGame: game [
@@ -315,8 +404,9 @@ Location subclass: Park [
         ^'Wchodzisz do Parku swietokrzyskiego. Powietrze jest rzeskie, a pierwsze promienie slonca oswietlaja puste alejki. W oddali slyszysz szum miasta, ale tutaj panuje dziwny spokoj. Na jednej z lawek siedzi mezczyzna owiniety w gruby plaszcz, z broda gesta jak historia tego miasta. Kiedy przechodzisz obok, unosi wzrok i usmiecha sie lekko. Obok widzisz budke, gdzie mozesz kupic nasiona dla golebi (-5zl).'
     ]
 
-    availableActionsFor: game [
-        ^#(usiadzNaLawce karmGolebie obejrzyjFontanne porozmawiajZNieznajomym idzPrzedPKiN)
+    availableActionsFor: game do: aBlock [
+        ^#('usiadzNaLawce' 'karmGolebie' 'obejrzyjFontanne' 'porozmawiajZNieznajomym' 'idzPrzedPKiN') asOrderedCollection
+            do: [ :akcja | aBlock value: akcja ].
     ]
 
     performAction: actionSymbol inGame: game [
@@ -337,7 +427,8 @@ Location subclass: Park [
             ] ifFalse: [
                 | amount |
                 amount := 2 + (Random new next * 9) floor. "Losowa liczba od 2 do 10"
-                Transcript show: 'Ogladasz fontanne. Patrzysz na spokojna tafle. Znajdujesz kilka monet o lacznej wartosci '; show: amount; show: ' zl.'; cr.
+                'Ogladasz fontanne. Patrzysz na spokojna tafle. Znajdujesz kilka monet o lacznej wartosci ' display.
+                amount display. ' zl.' displayNl.
                 game viewedFountain: true.
                 game addMoney: amount.
             ].
@@ -376,22 +467,18 @@ Location subclass: Taksowka [
         ^'Wsiadles do taksowki. Kierowca czeka na dalsze instrukcje.'
     ]
 
-    availableActionsFor: game [
-        | actions warunki |
-
-        actions := OrderedCollection new.
-        actions add: #porozmawiaj.
-
-        warunki := {
-            game visitedHala -> #pojedzDoHaliKoszyki.
-            game visitedWilcza -> #pojedzNaWilcza30
-        }.
-
-        warunki do: [:par |
-            par key ifTrue: [actions add: par value]
+    availableActionsFor: game do: aBlock [
+        aBlock value: 'porozmawiaj'.
+        (game respondsTo: #visitedHala) ifTrue: [
+            game visitedHala ifTrue: [
+                aBlock value: 'pojedzDoHaliKoszyki'
+            ].
         ].
-
-        ^actions
+        (game respondsTo: #visitedWilcza) ifTrue: [
+            game visitedWilcza ifTrue: [
+                aBlock value: 'pojedzNaWilcza30'
+            ].
+        ].
     ]
 
     performAction: actionSymbol inGame: game [
@@ -416,14 +503,21 @@ Location subclass: Wilcza30 [
         ^'Stoisz przed drzwiami mieszkania na Wilczej 30.'
     ]
 
-    availableActionsFor: game [
-        ^#(zapukajDoDrzwi rozejrzyjSie idzDoHaliKoszyki)
+    availableActionsFor: game do: aBlock [
+        ^#('zapukajDoDrzwi' 'rozejrzyjSie' 'idzDoHaliKoszyki') asOrderedCollection
+            do: [ :akcja | aBlock value: akcja ].
     ]
 
     performAction: actionSymbol inGame: game [
         actionSymbol = #zapukajDoDrzwi ifTrue: [
-            Transcript show: 'Otwiera ci nieznana osoba. ''Czekalem na ciebie.'''; cr.
-            game changeLocation: (DomWilcza new).
+            (game visitedWilcza30) ifTrue: [
+                'Drzwi są zamknięte. Nikt nie odpowiada.' displayNl.
+            ] ifFalse: [
+                'Otwiera ci nieznana osoba. ''Czekalem na ciebie.''' displayNl.
+                game visitedWilcza30: true.
+                game changeLocation: (DomWilcza new).
+            ].
+            ^ true
         ].
         actionSymbol = #rozejrzyjSie ifTrue: [
             Transcript show: 'Wilcza 30. Stara kamienica z odrapanym numerem nad wejsciem.'; cr.
@@ -443,14 +537,15 @@ Location subclass: DomWilcza [
         ^'Wchodzisz do srodka, w pokoju unosi sie zapach papierosow i starego drewna. Mezczyzna wskazuje na krzeslo, kazac ci usiasc. Nagle bierze jakas kartke ze stolu. Mowi: ''Potrzebujesz tego, ale za darmo ci tego nie oddam (-10zl).'''
     ]
 
-    availableActionsFor: game [
-        ^#(wykupNotatke opuscDom)
+    availableActionsFor: game do: aBlock [
+        ^#('wykupNotatke' 'opuscDom') asOrderedCollection
+            do: [ :akcja | aBlock value: akcja ].
     ]
 
     performAction: actionSymbol inGame: game [
         actionSymbol = #wykupNotatke ifTrue: [
             game boughtWilczaNote ifTrue: [
-                Transcript show: 'Osoba nie ma nic wiecej do sprzedania tobie. Po co mowila tobie ze cos ma?'; cr.
+                Transcript show: 'Osoba nie ma nic wiecej do sprzedania tobie.'; cr.
             ] ifFalse: [
                 game money >= 10 ifTrue: [
                     Transcript show: 'Ciekawosc wziela gore i wykupiles ten kawalek papieru.'; cr.
@@ -475,8 +570,9 @@ Location subclass: HalaKoszyki [
         ^'Hala Koszyki tetni zyciem nawet o tej godzinie. Zapach kawy i swiezego pieczywa unosi sie w powietrzu, a ludzie smieja sie przy stolikach. Czujesz, ze byles tu wczoraj, ale wciaz nie pamietasz, co sie stalo.'
     ]
 
-    availableActionsFor: game [
-        ^#(podejdzDoBaru porozmawiajZGosciem wyjdzWStroneChinczyka)
+    availableActionsFor: game do: aBlock [
+        ^#('podejdzDoBaru' 'porozmawiajZGosciem' 'wyjdzWStroneChinczyka') asOrderedCollection
+            do: [ :akcja | aBlock value: akcja ].
     ]
 
     performAction: actionSymbol inGame: game [
@@ -499,3 +595,105 @@ Location subclass: HalaKoszyki [
         ].
     ]
 ]
+
+Location subclass: Chinczyk [
+    description [
+        ^'Lokal jest niewielki, ale przytulny. Na scianach wisza chinskie lampiony, a w tle cicho gra azjatycka muzyka. Wlasciciel patrzy na ciebie z zainteresowaniem, jakby cie juz widzial.'
+    ]
+
+    availableActionsFor: game do: aBlock [
+        ^#('porozmawiajZWlascicielem' 'kupCos' 'idzDoGgPw' 'idzNaWeiti') asOrderedCollection
+            do: [ :akcja | aBlock value: akcja ].
+    ]
+
+    performAction: actionSymbol inGame: game [
+        actionSymbol = #porozmawiajZWlascicielem ifTrue: [
+            game conversationDone ifFalse: [
+                Transcript show: 'Pamieta cie! Wspomina, ze wczoraj zostawiles cos przy stoliku.'; cr.
+                Transcript show: 'Wskaze ci go jedynie, jesli kupisz cos (10zl), przeciez za darmo nie mozesz siedziec w lokalu!'; cr.
+                game conversationDone: true.
+            ] ifTrue: [
+                Transcript show: 'Podchodzisz do wlasciciela jeszcze raz. Dalej cie pamieta.'; cr.
+                game visitedEiti ifTrue: [
+                    Transcript show: 'Nic tobie nie wskazuje. Zaczynasz sie zastanawiac co wlasciwie chcesz od wlasciciela.'; cr.
+                ] ifFalse: [
+                    Transcript show: 'Przypomina tobie o czyms przy stoliku. Jak cos kupisz (10zl), to wskaze tobie ten tajemniczy przedmiot.'; cr.
+                ].
+            ].
+        ].
+        actionSymbol = #kupCos ifTrue: [
+            game conversationDone ifFalse: [
+                Transcript show: 'Najpierw porozmawiaj z wlascicielem.'; cr.
+            ] ifTrue: [
+                game money >= 10 ifTrue: [
+                    game visitedEiti ifFalse: [
+                        game subtractMoney: 10.
+                        game visitedEiti: true.
+                        Transcript show: 'Znajdujesz tajemnicza wiadomosc "EITI" napisana na odwrocie serwetki.'; cr.
+                    ] ifTrue: [
+                        Transcript show: 'Wlasciciel nie ma tobie nic ciekawego do sprzedania... no w sumie oprocz jedzenia.'; cr.
+                    ].
+                ] ifFalse: [
+                    Transcript show: 'Nie masz tyle forsy! Musisz miec 10zl, aby kupic cos.'; cr.
+                ].
+            ].
+        ].
+        actionSymbol = #idzDoGgPw ifTrue: [
+            Transcript show: 'Idziesz do Gmachu Glownego PW.'; cr.
+            game changeLocation: (GgPw new).
+        ].
+        actionSymbol = #idzNaWeiti ifTrue: [
+            Transcript show: 'Idziesz na wydzial EITI.'; cr.
+            game pickedUpItems: false.
+            game changeLocation: (Eiti new).
+        ].
+    ]
+]
+
+Location subclass: Eiti [
+    description [
+        ^'Jestes na Wydziale EITI. Laboratoria i studenci dookola.'
+    ]
+
+    availableActionsFor: game do: aBlock [
+        ^#('zajrzyjDoLaboratorium' 'zajrzyjDoSzatni' 'idzDoGgPw') asOrderedCollection
+            do: [ :akcja | aBlock value: akcja ].
+    ]
+
+    performAction: actionSymbol inGame: game [
+        actionSymbol = #zajrzyjDoLaboratorium ifTrue: [
+            game pickedUpItems ifFalse: [
+                Transcript show: 'Wchodzisz do laboratorium i widzisz profesorow.'; cr.
+                Transcript show: 'Witasz sie i powoli wchodzisz do srodka. Studentow tu jeszcze nie ma, ale zapewne beda tu niedlugo jakies zajecia.'; cr.
+                Transcript show: '"Szuka Pan czegos?" - pyta profesor. Odpowiadasz ze tak, cos zostawiles (dobrze wiesz ze to nieprawda)'; cr.
+                Transcript show: 'Chociaz... ha, ciekawe. Widzisz kawalek notatki. Bierzesz ja - moze sie tobie przydac.'; cr.
+                game pickedUpItems: true.
+                game notes: (game notes add: (game notes size + 1); yourself).
+            ] ifTrue: [
+                Transcript show: 'Wchodzisz do laboratorium i... nie, nie wchodzisz do laboratorium.'; cr.
+            ].
+        ].
+        actionSymbol = #zajrzyjDoSzatni ifTrue: [
+            game checkedLockerRoom ifFalse: [
+                Transcript show: 'Podchodzisz, a Pan z szatni wyjmuje juz numerek, i chce go tobie wreczyc. Nie bierzesz numerka, ale rozgladasz sie wokol'; cr.
+                Transcript show: '"Czy w czyms Panu pomoc???" - zapytany odpowiadasz, ze po prostu patrzysz czy czegos nie zapomniales'; cr.
+                Transcript show: '"Cos... ostatnio wydawal sie Pan jakis rozkojarzony, o ile mnie pamiec nie myli..."'; cr.
+                Transcript show: '"hmmmm..." - Pan rozglada sie chwile, patrzy pod swoje biurko, i mowi:'; cr.
+                Transcript show: '"Chyba to moze byc Pana. Niech Pan sprawdzi - lezy tu od jakiegos czasu."'; cr.
+                Transcript show: 'Dostajesz ladnie ucieta sciage. Spogladasz na zawartosc, i rzeczywiscie: cos kojarzysz. Moze to sie przydac...'; cr.
+                game incrementInteractionCounter.
+                game checkedLockerRoom: true.
+            ] ifTrue: [
+                Transcript show: 'Patrzysz jeszcze raz na szatnie, i nic nietypowego nie zauwazasz. Predko odchodzisz'; cr.
+            ].
+        ].
+        actionSymbol = #idzDoGgPw ifTrue: [
+            Transcript show: 'Idziesz do Gmachu Glownego PW.'; cr.
+            game changeLocation: (GgPw new).
+        ].
+    ]
+]
+
+| game |
+game := Game new.
+game start.
