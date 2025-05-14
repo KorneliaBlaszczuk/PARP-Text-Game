@@ -1,0 +1,18 @@
+#!/bin/bash
+gst << EOF
+FileStream fileIn: 'Location.st'.
+FileStream fileIn: 'TarasPKiN.st'.
+FileStream fileIn: 'SchodyPKiN.st'.
+FileStream fileIn: 'HolPKiN.st'.
+FileStream fileIn: 'SzatniaPKiN.st'.
+FileStream fileIn: 'PrzedPKiN.st'.
+FileStream fileIn: 'Park.st'.
+FileStream fileIn: 'Taksowka.st'.
+FileStream fileIn: 'Wilcza30.st'.
+FileStream fileIn: 'DomWilcza.st'.
+FileStream fileIn: 'HalaKoszyki.st'.
+FileStream fileIn: 'Chinczyk.st'.
+FileStream fileIn: 'EiTi.st'.
+FileStream fileIn: 'Game.st'.
+FileStream fileIn: 'Main.st'.
+EOF
