@@ -42,43 +42,18 @@ Object subclass: Game [
         self gameLoop.
     ]
 
-gameLoop [
-    | input |
-    self showFullLocationInfo. "Pełna informacja tylko przy pierwszym wejściu"
+    gameLoop [
+        | input |
+        self showFullLocationInfo. "Pełna informacja tylko przy pierwszym wejściu"
 
-    [gameOver] whileFalse: [
-        Transcript show: 'Wpisz akcję: '; flush.
-
-        "Pętla oczekująca na prawidłowe wejście"
-        [
-            input := self getInput. "Odczytaj wejście od użytkownika"
-
-            "Sprawdzanie, czy input jest nil lub pusty"
-            (input isNil or: [input isEmpty]) ifTrue: [
-                'Nie rozpoznano akcji!' displayNl. "Wyświetl komunikat o błędzie"
-                input := self getInput. "Ponownie czekaj na poprawne wejście"
+        [gameOver] whileFalse: [
+            input := self getInput.
+            (self tryPerformAction: input) ifFalse: [
+                'Nie rozpoznano akcji!' displayNl.
             ].
-
-            "Jeśli akcja jest dostępna"
-            (((location availableActionsFor: self) includes: input) not) ifTrue: [
-                'Nie rozpoznano akcji!' displayNl. "Wyświetl komunikat o błędzie"
-                input := self getInput. "Czekaj na poprawne wejście"
-            ].
-
-            "Po prawidłowym wejściu wykonaj akcję"
-            (input isEmpty not) ifTrue: [
-                (self tryPerformAction: input) ifFalse: [
-                    'Nie rozpoznano akcji!' displayNl. "Wyświetl komunikat o błędzie"
-                    input := self getInput. "Ponownie czekaj na prawidłową akcję"
-                ].
-            ].
-        ] whileTrue.
-    ].
-    self endGame.
-]
-
-
-
+        ].
+        self endGame.
+    ]
 
     showFullLocationInfo [
         '===== LOKALIZACJA =====' displayNl.
@@ -95,13 +70,8 @@ gameLoop [
     ]
 
     getInput [
-        | input |
-        input := FileStream stdin nextLine.
-        "Sprawdzamy, czy input jest pusty lub nil"
-        (input isNil or: [input isEmpty]) ifTrue: [
-            ^'' "Jeśli nic nie wpisano, zwróć pusty ciąg"
-        ].
-        ^input
+        Transcript show: 'Wpisz akcję: '; flush.
+        ^ stdin nextLine asString
     ]
 
     tryPerformAction: inputString [

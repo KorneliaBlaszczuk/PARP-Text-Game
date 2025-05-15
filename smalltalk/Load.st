@@ -1,5 +1,3 @@
-#!/bin/bash
-gst << EOF
 FileStream fileIn: 'Location.st'.
 FileStream fileIn: 'TarasPKiN.st'.
 FileStream fileIn: 'SchodyPKiN.st'.
@@ -14,5 +12,3 @@ FileStream fileIn: 'HalaKoszyki.st'.
 FileStream fileIn: 'Chinczyk.st'.
 FileStream fileIn: 'EiTi.st'.
 FileStream fileIn: 'Game.st'.
-FileStream fileIn: 'Main.st'.
-EOF
