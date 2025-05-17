@@ -20,9 +20,9 @@ Location subclass: GmachGlowny [
                 Transcript show: 'Wiesz o tym...'; cr.
                 game hasKey ifTrue: [
                     Transcript show: 'Patrzysz na klucz leżący w twojej dłoni.'; cr.
-                ]
-            ]
-        ]
+                ].
+            ].
+        ].
 
         actionSymbol = #sprawdz_portiernie ifTrue: [
             Transcript show: 'Podchodzisz do pustej portierni. Zauważasz kubek z kawą, taśmę, i kilka innych przedmiotów.'; cr.
@@ -34,13 +34,11 @@ Location subclass: GmachGlowny [
                     Transcript show: 'Masz dwie części klucza, które mniej więcej pasują do siebie. Bierzesz z biurka taśmę, i łączysz umiejętnie dwie części klucza.'; cr.
                     Transcript show: 'Hmmm. Ciekawe do czego ten klucz pasuje.'; cr.
                     game hasSecretKey: true.
-                ]
-            ] [
-                ifFalse: [
-                    Transcript show: 'Odchodzisz'; cr.
-                ]
-            ]
-        ]
+                ].
+            ] ifFalse: [
+                Transcript show: 'Odchodzisz'; cr.
+            ].
+        ].
 
         actionSymbol = #otworz_sale_glowna ifTrue: [
             game hasKey ifTrue [
