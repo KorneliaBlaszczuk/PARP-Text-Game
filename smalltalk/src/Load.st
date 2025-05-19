@@ -11,4 +11,6 @@ FileStream fileIn: 'DomWilcza.st'.
 FileStream fileIn: 'HalaKoszyki.st'.
 FileStream fileIn: 'Chinczyk.st'.
 FileStream fileIn: 'EiTi.st'.
+FileStream fileIn: 'GmachGlowny.st'.
+FileStream fileIn: 'SalaGlowna.st'.
 FileStream fileIn: 'Game.st'.

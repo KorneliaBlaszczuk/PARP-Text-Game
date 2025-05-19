@@ -37,7 +37,7 @@ Location subclass: Eiti [
         ].
         actionSymbol = #idzDoGgPw ifTrue: [
             Transcript show: 'Idziesz do Gmachu Glownego PW.'; cr.
-            game changeLocation: (GgPw new).
+            game changeLocation: (GmachGlowny new).
         ].
     ]
 ]
