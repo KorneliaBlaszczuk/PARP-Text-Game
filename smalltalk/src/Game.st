@@ -9,33 +9,33 @@ Object subclass: Game [
     ]
 
     initialize [
-        location := TarasPKiN new.
-        money := 0.
-        notes := OrderedCollection new.
-        hasNumber := false.
-        visitedWilcza := false.
-        visitedHala := false.
-        visitedPark := false.
-        conversationDone := false.
-        visitedEiti := false.
-        interactionCounter := 0.
-        talkCounter := 0.
-        hasKey := false.
-        hasKeyPart1 := false.
-        hasKeyPart2 := false.
-        hasSecretKey := false.
-        checkedLockerRoom := false.
-        knowsAboutMissingKey := false.
-        knowsAboutSemesterWork := false.
-        checkedMainHallPockets := false.
-        greetedNobody := false.
-        approachedBar := false.
-        boughtWilczaNote := false.
-        viewedFountain := false.
-        visitedWilcza30 := false.
-        pocketChecked := false.
-        pickedUpItems := false.
-        gameOver := false.
+        location := TarasPKiN new.              "uzywane w lokalizacji"
+        money := 0.                             "pieniadze"
+        notes := OrderedCollection new.         "notatki"
+        hasNumber := false.                     "szatnia_pkin"
+        visitedWilcza := false.                 "chyba powinno byc knowsAboutWilcza?"
+        visitedHala := false.                   "tu knowsAboutHalaKoszyki?"
+        visitedPark := false.                   "blokada po wizycie w parku"
+        conversationDone := false.              "chinczyk, rozmowa przed kupnem notatki"
+        visitedEiti := false.                   "knowsAboutEiti?"
+        interactionCounter := 0.                "do oceny koncowej"
+        talkCounter := 0.                       "DO GGPW, licznik rozmow"
+        hasKey := false.                        "DO GGPW, klucz do sali glownej"
+        hasKeyPart1 := false.                   "DO GGPW, klucz do sekretnej sali"
+        hasKeyPart2 := false.                   "DO GGPW, klucz do sekretnej sali"
+        hasSecretKey := false.                  "DO GGPW, klucz do sekretnej sali"
+        checkedLockerRoom := false.             "EiTI szatnia"
+        knowsAboutMissingKey := false.          "DO GGPW, czy wie o brakujacym kluczu"
+        knowsAboutSemesterWork := false.        "DO SALI GLOWNEJ, po sprawdzeniu kieszeni"
+        checkedMainHallPockets := false.        "DO SALI GLOWNEJ, sprawdzanie kieszeni"
+        greetedNobody := false.                 "W parku"
+        approachedBar := false.                 "Hala koszyki bar"
+        boughtWilczaNote := false.              "Notatka z wilczej"
+        viewedFountain := false.                "Park"
+        visitedWilcza30 := false.               "visitedWilcza bylo wyzej? To chyba do faktycznych odwiedzin uzywane"
+        pocketChecked := false.                 "poczatek gry"
+        pickedUpItems := false.                 "kilka momentow w grze z itemkami"
+        gameOver := false.                      "hm?"
     ]
 
     start [
@@ -132,12 +132,14 @@ Object subclass: Game [
     notes: aCollection [
         notes := aCollection
     ]
+    hasKey [^hasKey]
     hasKey: aBoolean [hasKey := aBoolean]
     hasKeyPart1: aBoolean [hasKeyPart1 := aBoolean]
     hasKeyPart2: aBoolean [hasKeyPart2 := aBoolean]
     pocketChecked [^pocketChecked]
     pocketChecked: aBoolean [pocketChecked := aBoolean]
     hasSecretKey: aBoolean [hasSecretKey := aBoolean]
+    knowsAboutMissingKey [^knowsAboutMissingKey]
     knowsAboutMissingKey: aBoolean [knowsAboutMissingKey := aBoolean]
     talkCounter [^talkCounter]
     pickedUpItems [^ pickedUpItems]
@@ -202,5 +204,107 @@ Object subclass: Game [
         Transcript show: 'NIE ZALICZASZ przedmiotu. Ocena koncowa: 2.0. Profesor wydaje sie byc na ciebie zdenerwowany.'; cr.
         Transcript show: 'Zebrano '; show: notes size; show: '/4 notatek. Nie udalo ci sie skompletowac pracy semestralnej.'; cr.
         Transcript show: 'Znaleziono '; show: interactionCounter; show: ' z czterech dostepnych sekretnych interakcji.'; cr.
+    ]
+
+    handleInteraction [
+        talkCounter = 0 ifTrue: [ ^self interactZero ].
+        talkCounter = 1 ifTrue: [ ^self interactOne ].
+        talkCounter = 2 ifTrue: [ ^self interactTwo ].
+        talkCounter = 3 ifTrue: [ ^self interactThree ].
+        ^self interactNone
+    ]
+
+    interactZero [
+        self incrementTalkCounter.
+        Transcript show: 'Zauważasz jakiegoś profesora, i podchodzisz do niego.'; cr.
+        self knowsAboutMissingKey
+            ifTrue: [
+                Transcript
+                    show: 'Witasz się z profesorem. Pytasz go też, czy wie jak otworzyć salę główną.'; cr;
+                    show: 'Nie jest otwarta? Hm. Niech Pan sprawdzi może w portierni - tam powinni Panu pomóc.'; cr.
+            ]
+            ifFalse: [
+                Transcript show: 'Mówisz do profesora dzień dobry. Profesor z uśmiechem wita się z tobą. Nic więcej nie mówisz.'; cr.
+            ].
+        ^ self
+    ]
+
+    interactOne [
+        self incrementTalkCounter.
+        Transcript show: 'Zaczepiasz jakiegoś studenta. Student uśmiecha się do ciebie.'; cr.
+        Transcript show: 'Hej, co tam?'; cr.
+        Transcript show: 'Patrzysz się ze zdziwieniem. Student przypomina tobie, że jest z tobą na roku. Nadal nic ci to nie mówi.'; cr.
+        self knowsAboutMissingKey
+            ifTrue: [
+                Transcript show: 'Nieważne. Pytasz go, czy wie jak dostać się do sali głównej.'; cr.
+                Transcript show: 'Czytałeś może tablicę ogłoszeń? Napisali że klucza nie ma - zginął gdzieś. Ciekawe gdzie go zgubili.'; cr.
+                Transcript show: 'Nie pomogło tobie to za bardzo. Odchodzisz.'; cr.
+            ]
+            ifFalse: [
+                Transcript show: 'Nie wiedząc co powiedzieć, jak najszybciej znikasz z miejsca zdarzenia.'; cr.
+            ].
+        ^ self
+    ]
+
+    interactTwo [
+        self incrementTalkCounter. "Corresponds to: modify (\s -> s {conversationCounter = conversationCounter s + 1})"
+        Transcript show: 'Próbujesz pogadać z Panią woźną.'; cr.
+
+        self knowsAboutMissingKey
+            ifFalse: [ "Corresponds to: if not keyKnowledge"
+                Transcript show: 'W sumie uznajesz, że nie chcesz jej przeszkadzać. Odchodzisz.'; cr.
+            ]
+            ifTrue: [ "Corresponds to: else do"
+                Transcript show: 'Pytasz Panią, czy może wie na temat zamknięcia sali głównej.'; cr;
+                show: 'Oj nie wiem, słyszałam tylko że zginął niedawno. Tak dokładnie nie szukaliśmy go jeszcze.'; cr. "Note the single quote inside for dialogue"
+            ].
+        ^ self
+    ]
+
+    interactThree [
+        self incrementTalkCounter.
+        Transcript show: 'Podchodzisz do studentki. Witasz się.'; cr.
+
+        self knowsAboutMissingKey
+            ifFalse: [
+                Transcript show: 'Pytasz jak idzie w tym semestrze. Studentka krótko odpowiada że, idzie jej nieźle.'; cr.
+            ]
+            ifTrue: [
+                Transcript show: 'Pytasz, czy może wie dlaczego sala główna jest zamknięta.'; cr;
+                show: 'Hm, też próbujesz oddać pracę semestralną, nie?'; cr.
+
+                (notes size = 0)
+                    ifTrue: [ Transcript show: 'Zaraz...'; cr. ]. "No 'else return ()' needed, Smalltalk just proceeds"
+
+                (notes size = 4) "Changed from Haskell's 'if length lst /= 4 then ... else ...' to a direct check"
+                    ifTrue: [
+                        Transcript show: 'Odpowiadasz, że tak - na tym tobie teraz zależy'; cr;
+                        show: 'Podobno klucz gdzieś się zgubił, i teraz profesor czeka w środku aż ktoś mu otworzy'; cr;
+                        show: 'Żegnasz się, i powoli odwracasz się w stro-'; cr; "Note the trailing dash"
+                        show: 'Tak jak coś, kolega mi mówił że zaczął odpytywać ostatnio.'; cr;
+                        show: 'Podobno mówi coś w stylu ''no i jak twoja wiedza'', i jak mu odpowiesz, to można wyższą ocenę dostać.'; cr; "Double single quotes for 'no i jak twoja wiedza'"
+                        show: 'Pytasz, czy może wie, z czego odpytywał.'; cr;
+                        show: 'Chyba wszystkich pytał o to samo...'; cr;
+                        show: 'Przez kolejną minutę rozmawiasz, i słuchasz o pytaniach. To się może przydać!'; cr.
+                        self incrementInteractionCounter. "Corresponds to: modify (\s -> s {interactionCounter = interactionCounter s + 1})"
+                    ]
+                    ifFalse: [ "This covers notes size > 0 AND notes size < 4 (and not 0)"
+                        (notes size = 0) ifFalse: [ "Only show 'Aha, faktycznie...' if not already handled by 'Zaraz...'"
+                            Transcript show: 'Aha, faktycznie. Odchodzisz.'; cr.
+                        ]
+                    ].
+            ].
+        ^ self
+    ]
+
+    interactNone [
+        self knowsAboutMissingKey
+            ifTrue: [
+                Transcript show: 'Chciałbyś zagadać jeszcze raz, ale nie widzisz już nikogo, z kim rozmawiałeś.'; cr.
+            ]
+            ifFalse: [
+                Transcript show: 'Nie chcesz już próbować.'; cr.
+            ].
+        ^ self
     ]
 ]
