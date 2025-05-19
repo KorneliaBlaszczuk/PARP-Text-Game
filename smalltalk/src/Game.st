@@ -173,6 +173,8 @@ Object subclass: Game [
     checkedLockerRoom: aBoolean [checkedLockerRoom := aBoolean]
     knowsAboutSemesterWork [^knowsAboutSemesterWork]
     knowsAboutSemesterWork: aBoolean [knowsAboutSemesterWork := aBoolean]
+    gameOver [^gameOver]
+    gameOver: aBoolean [gameOver := aBoolean]
 
     checkNotes [
         Transcript show: 'Aktualnie masz '; show: notes size; show: ' notatek.'; cr.
@@ -185,17 +187,18 @@ Object subclass: Game [
         Transcript show: '"Wow... doceniam Pana determinacje. Powiedzialbym ze jest to niedorzeczne oddawac prace w takim stanie, ale wyglada Pan na zmeczonego..."'; cr.
         Transcript show: 'Wiec jest szansa?! Oplacilo sie zbierac te notatki? Nie wiesz co myslec, ale czekasz az profesor skonczy czytac prace.'; cr.
         Transcript show: 'Wpisz "true" i nacisnij Enter.'; cr.
-        StdIn readLine.
+        FileStream stdin nextLine. "CHANGED to nextLine"
         Transcript show: 'Profesor wyglada raz na zazenowanego, raz na zaskoczonego, a nawet na zadowolonego.'; cr.
         Transcript show: '"Musze Panu przyznac, ze moze praca idealna nie jest... ale zaliczyc, to Pan zaliczy."'; cr.
         Transcript show: '"A swoja droga... no i jak Panska wiedza? Powalczy Pan o lepsza ocene?"'; cr.
         Transcript show: 'Starasz sobie przypomniec co sie dowiedziales... mowisz co wiesz, troche tez zmyslasz, ale...'; cr.
         Transcript show: 'Wpisz "true" i nacisnij Enter.'; cr.
-        StdIn readLine.
+        FileStream stdin nextLine. "CHANGED to nextLine"
         grade := 3.0 + (0.5 * interactionCounter).
-        Transcript show: 'ZALICZASZ przedmiot z ocena '; show: grade; cr.
+        Transcript show: 'ZALICZASZ przedmiot z ocena '; show: grade printString; cr.
         Transcript show: 'Zebrano wszystkie 4 czesci notatki. Skompletowano prace semestralna!'; cr.
-        Transcript show: 'Znaleziono '; show: interactionCounter; show: ' z czterech dostepnych sekretnych interakcji.'; cr.
+        Transcript show: 'Znaleziono '; show: interactionCounter printString; show: ' z czterech dostepnych sekretnych interakcji.'; cr.
+        self gameOver: true.
     ]
 
     badEnding [
@@ -207,10 +210,11 @@ Object subclass: Game [
             Transcript show: 'Niestety nie ma zadnych "ale" prosze Pana. Jak ja mam ocenic niepelna prace? Mial Pan tyle czasu na oddanie.'; cr.
         ].
         Transcript show: 'Wpisz "true" i nacisnij Enter.'; cr.
-        StdIn readLine.
+        FileStream stdin nextLine. "CHANGED to nextLine"
         Transcript show: 'NIE ZALICZASZ przedmiotu. Ocena koncowa: 2.0. Profesor wydaje sie byc na ciebie zdenerwowany.'; cr.
-        Transcript show: 'Zebrano '; show: notes size; show: '/4 notatek. Nie udalo ci sie skompletowac pracy semestralnej.'; cr.
-        Transcript show: 'Znaleziono '; show: interactionCounter; show: ' z czterech dostepnych sekretnych interakcji.'; cr.
+        Transcript show: 'Zebrano '; show: notes size printString; show: '/4 notatek. Nie udalo ci sie skompletowac pracy semestralnej.'; cr.
+        Transcript show: 'Znaleziono '; show: interactionCounter printString; show: ' z czterech dostepnych sekretnych interakcji.'; cr.
+        self gameOver: true.
     ]
 
     handleInteraction [
@@ -500,5 +504,4 @@ Object subclass: Game [
         Transcript show: 'Wracasz do punktu, z którego zacząłeś przeszukiwanie.'; cr.
         ^ self
     ]
-
 ]
