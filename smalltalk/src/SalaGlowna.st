@@ -10,14 +10,13 @@ Location subclass: SalaGlowna [
 
     performAction: actionSymbol inGame: game [
         actionSymbol = #sprawdzKieszenie ifTrue: [
+            | notesCount money |
+            notesCount := game notes size.
+            money := game money.
+
             game hasCheckedMainHallPockets ifTrue: [
                 Transcript show: 'Już sprawdziłeś kieszenie. Nic innego tam nie ma.'; cr.
-            ].
-            ifFalse: [
-                | notesCount money |
-                notesCount := game notes size.
-                money := game money.
-
+            ] ifFalse: [
                 notesCount = 0 ifTrue: [
                     Transcript show: 'Sprawdzasz swoje kieszenie... znajdujesz '; show: money; show: ' zł.'; cr.
                     Transcript show: 'Ale fajnie :D... żadna inna myśl nie przychodzi tobie do głowy.'; cr.
@@ -48,8 +47,11 @@ Location subclass: SalaGlowna [
             notesCount := game notes size.
             Transcript show: 'Podchodzisz do profesora siedzącego na wprost ciebie. Czeka na ciebie, i rozpoznaje cię. Witasz się.'; cr.
             Transcript show: '''I kto to przyszedł? Dzień dobry Panu.'' - mówi profesor w nieco onieśmielającym tonie.'; cr.
-            game knowsAboutSemesterWork ifFalse: [
-                Transcript show: '''Będzie Pan tak tu stać? Czegoś Pan potrzebuje?'''; cr
+            game knowsAboutSemesterWork ifTrue: [
+                Transcript show: '''Będzie Pan tak tu stać? Czegoś Pan potrzebuje?'''; cr.
+                Transcript show: 'Mówisz, że chcesz oddać pracę semestralną'; cr.
+            ] ifFalse: [
+                Transcript show: '''Będzie Pan tak tu stać? Czegoś Pan potrzebuje?'''; cr.
                 notesCount = 0 ifTrue: [
                     Transcript show: 'Nie wiesz co ciebie tu przyprowadziło, ale przez cały czas miałeś wrażenie, że musisz tu być.'; cr.
                     Transcript show: 'Odlatujesz myślami... gdzieś, ale nie wiesz gdzie. W tle słychać profesora coraz głośniej, ale nie wiesz o czym mówi.'; cr.
@@ -62,12 +64,9 @@ Location subclass: SalaGlowna [
                     Transcript show: '''To mogę Panu powiedzieć, że ja na pewno chcę Pańskiej pracy semestralnej'''; cr.
                     Transcript show: 'Naprawdę?'; cr.
                 ].
-            ] ifTrue: [
-                Transcript show: '''Będzie Pan tak tu stać? Czegoś Pan potrzebuje?'''; cr.
-                Transcript show: 'Mówisz, że chcesz oddać pracę semestralną'; cr.
             ].
             Transcript cr.
-            (notesCount >= 4)
+            notesCount >= 4
                 ifTrue: [game goodEnding].
                 ifFalse: [game badEnding].
         ].

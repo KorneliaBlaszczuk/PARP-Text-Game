@@ -138,6 +138,8 @@ Object subclass: Game [
     hasKeyPart1: aBoolean [hasKeyPart1 := aBoolean]
     hasKeyPart2 [^hasKeyPart2]
     hasKeyPart2: aBoolean [hasKeyPart2 := aBoolean]
+    checkedMainHallPockets [^checkedMainHallPockets]
+    checkedMainHallPockets: aBoolean [checkedMainHallPockets := aBoolean]
     pocketChecked [^pocketChecked]
     pocketChecked: aBoolean [pocketChecked := aBoolean]
     hasSecretKey [^hasSecretKey]
@@ -169,6 +171,8 @@ Object subclass: Game [
     visitedEiti: aBoolean [visitedEiti := aBoolean]
     checkedLockerRoom [^ checkedLockerRoom]
     checkedLockerRoom: aBoolean [checkedLockerRoom := aBoolean]
+    knowsAboutSemesterWork [^knowsAboutSemesterWork]
+    knowsAboutSemesterWork: aBoolean [knowsAboutSemesterWork := aBoolean]
 
     checkNotes [
         Transcript show: 'Aktualnie masz '; show: notes size; show: ' notatek.'; cr.
