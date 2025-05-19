@@ -9,33 +9,33 @@ Object subclass: Game [
     ]
 
     initialize [
-        location := TarasPKiN new.              "uzywane w lokalizacji"
-        money := 0.                             "pieniadze"
-        notes := OrderedCollection new.         "notatki"
-        hasNumber := false.                     "szatnia_pkin"
-        visitedWilcza := false.                 "chyba powinno byc knowsAboutWilcza?"
-        visitedHala := false.                   "tu knowsAboutHalaKoszyki?"
-        visitedPark := false.                   "blokada po wizycie w parku"
-        conversationDone := false.              "chinczyk, rozmowa przed kupnem notatki"
-        visitedEiti := false.                   "knowsAboutEiti?"
-        interactionCounter := 0.                "do oceny koncowej"
-        talkCounter := 0.                       "DO GGPW, licznik rozmow"
-        hasKey := false.                        "DO GGPW, klucz do sali glownej"
-        hasKeyPart1 := false.                   "DO GGPW, klucz do sekretnej sali"
-        hasKeyPart2 := false.                   "DO GGPW, klucz do sekretnej sali"
-        hasSecretKey := false.                  "DO GGPW, klucz do sekretnej sali"
-        checkedLockerRoom := false.             "EiTI szatnia"
-        knowsAboutMissingKey := false.          "DO GGPW, czy wie o brakujacym kluczu"
-        knowsAboutSemesterWork := false.        "DO SALI GLOWNEJ, po sprawdzeniu kieszeni"
-        checkedMainHallPockets := false.        "DO SALI GLOWNEJ, sprawdzanie kieszeni"
-        greetedNobody := false.                 "W parku"
-        approachedBar := false.                 "Hala koszyki bar"
-        boughtWilczaNote := false.              "Notatka z wilczej"
-        viewedFountain := false.                "Park"
-        visitedWilcza30 := false.               "visitedWilcza bylo wyzej? To chyba do faktycznych odwiedzin uzywane"
-        pocketChecked := false.                 "poczatek gry"
-        pickedUpItems := false.                 "kilka momentow w grze z itemkami"
-        gameOver := false.                      "hm?"
+        location := TarasPKiN new.
+        money := 0.
+        notes := OrderedCollection new.
+        hasNumber := false.
+        visitedWilcza := false.
+        visitedHala := false.
+        visitedPark := false.
+        conversationDone := false.
+        visitedEiti := false.
+        interactionCounter := 0.
+        talkCounter := 0.
+        hasKey := false.
+        hasKeyPart1 := false.
+        hasKeyPart2 := false.
+        hasSecretKey := false.
+        checkedLockerRoom := false.
+        knowsAboutMissingKey := false.
+        knowsAboutSemesterWork := false.
+        checkedMainHallPockets := false.
+        greetedNobody := false.
+        approachedBar := false.
+        boughtWilczaNote := false.
+        viewedFountain := false.
+        visitedWilcza30 := false.
+        pocketChecked := false.
+        pickedUpItems := false.
+        gameOver := false.
     ]
 
     start [
