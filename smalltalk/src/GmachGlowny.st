@@ -44,6 +44,10 @@ Location subclass: GmachGlowny [
             ].
         ].
 
+        actionSymbol = #przeszukajTeren ifTrue: [
+            game handleSearchArea.
+        ].
+
         actionSymbol = #otworzSaleGlowna ifTrue: [
             game hasKey ifTrue: [
                 Transcript show: 'Używasz klucza aby otworzyć salę...'; cr.

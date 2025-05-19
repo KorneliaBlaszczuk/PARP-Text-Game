@@ -4,12 +4,12 @@ Location subclass: SalaGlowna [
     ]
 
     availableActionsFor: game do: aBlock [
-        ^#('sprawdz_kieszenie' 'wyjdz_z_sali' 'podejdz_do_profesora') asOrderedCollection
+        ^#('sprawdzKieszenie' 'wyjdzZSali' 'podejdzDoProfesora') asOrderedCollection
             do: [ :akcja | aBlock value: akcja ].
     ]
 
     performAction: actionSymbol inGame: game [
-        actionSymbol = #sprawdz_kieszenie ifTrue: [
+        actionSymbol = #sprawdzKieszenie ifTrue: [
             game hasCheckedMainHallPockets ifTrue: [
                 Transcript show: 'Już sprawdziłeś kieszenie. Nic innego tam nie ma.'; cr.
             ].
@@ -39,11 +39,11 @@ Location subclass: SalaGlowna [
             ].
         ].
 
-        actionSymbol = #wyjdz_z_sali ifTrue: [
+        actionSymbol = #wyjdzZSali ifTrue: [
             Transcript show: 'Próbujesz wyjść z sali... ale drzwi się zamknęły, i nie chcą się otworzyć'; cr.
         ].
 
-        actionSymbol = #podejdz_do_profesora ifTrue: [
+        actionSymbol = #podejdzDoProfesora ifTrue: [
             | notesCount |
             notesCount := game notes size.
             Transcript show: 'Podchodzisz do profesora siedzącego na wprost ciebie. Czeka na ciebie, i rozpoznaje cię. Witasz się.'; cr.
