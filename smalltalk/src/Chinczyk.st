@@ -42,6 +42,7 @@ Location subclass: Chinczyk [
         ].
         actionSymbol = #idzDoGgPw ifTrue: [
             Transcript show: 'Idziesz do Gmachu Glownego PW.'; cr.
+            game pickedUpItems: false.
             game changeLocation: (GmachGlowny new).
         ].
         actionSymbol = #idzNaWeiti ifTrue: [
