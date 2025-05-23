@@ -1,0 +1,349 @@
+algo@ole:~/SEM4/PARP/parp_25l/smalltalk/src$ gst Main.st -g
+===== LOKALIZACJA =====
+
+Budzisz sie na tarasie PKiN. Okropnie boli cie glowa, szczegolnie, kiedy na twoje powieki padaja pierwsze promienie nowego dnia. Nagle czujesz dziabniecie. To golab, ktory zdecydowanie nie jest zadowolony z twojej obecnosci na jego terytorium. Co zrobic?
+
+DOSTĘPNE AKCJE:
+
+ * zajrzyjDoKieszeni
+ * rozejrzyjSie
+ * podejdzDoKrawedzi
+ * zejdzPoSchodach
+ * uzyjWindy
+
+Wpisz akcję: zajrzyjDoKieszeni
+
+>>> Wykonuję: zajrzyjDoKieszeni
+
+Siegasz do kieszeni i znajdujesz 20zl oraz notatke.
+Twoje fundusze to: 20 zl
+Wpisz akcję: zejdzPoSchodach
+
+>>> Wykonuję: zejdzPoSchodach
+
+Schodzisz schodami PKiN.
+===== LOKALIZACJA =====
+
+Schodzac w dol robisz krotka przerwe, strasznie boli Cie glowa. Patrzac w dol zauwazasz lezace na podlodze pieniadze.
+
+DOSTĘPNE AKCJE:
+
+ * podniesPieniadze
+ * idzDalej
+
+Wpisz akcję: podniesPieniadze
+
+>>> Wykonuję: podniesPieniadze
+
+Twoje fundusze to: 31 zl
+Wpisz akcję: idzDalej
+
+>>> Wykonuję: idzDalej
+
+Schodzisz schodami do holu PKiN.
+===== LOKALIZACJA =====
+
+Glowa nadal boli cie nieublaganie. Wokol cicho, tylko portier siedzi za lada. Moze warto go zapytac o wczoraj?
+
+DOSTĘPNE AKCJE:
+
+ * porozmawiajZPortierem
+ * wyjdzNaZewnatrz
+ * udajSieDoSzatni
+
+Wpisz akcję: porozmawiajZPortierem
+
+>>> Wykonuję: porozmawiajZPortierem
+
+Portier patrzy na ciebie podejrzliwie, ale nic nie mowi.
+Wpisz akcję: udajSieDoSzatni
+
+>>> Wykonuję: udajSieDoSzatni
+
+Idziesz do szatni.
+===== LOKALIZACJA =====
+
+Wyglada na to, ze kilka osob zapomnialo wziac plaszcz wychodzac. Moze byc trudno zgadnac, ktory jest moj.
+
+DOSTĘPNE AKCJE:
+
+ * wyjdzNaZewnatrz
+ * przeszukajKieszenie
+ * przeszukajPlaszcz
+
+Wpisz akcję: przeszukajKieszenie
+
+>>> Wykonuję: przeszukajKieszenie
+
+Warto bylo przeszukac kieszenie jeszcze raz. Znajdujesz numerek.
+Wpisz akcję: przeszukajPlaszcz
+
+>>> Wykonuję: przeszukajPlaszcz
+
+Znajdujesz ulotke z oferta Happy Hours z baru w Hali Koszyki.
+Wpisz akcję: wyjdzNaZewnatrz
+
+>>> Wykonuję: wyjdzNaZewnatrz
+
+Wychodzisz z PKiN.
+Wychodzac zaczepia cie dziwny chlopak, ktory mowi: 'O hej brachu, pamietasz co sie dzialo wczoraj w Hali Koszyki?'
+===== LOKALIZACJA =====
+
+Jestes przed PKiN. Widok na miasto jest zapierajacy, mozesz ruszyc w rozne strony.
+
+DOSTĘPNE AKCJE:
+
+ * idzWStroneParku
+ * idzWStroneTaksowki
+ * spojrzNaUlotke
+ * idzDoHaliKoszyki
+
+Wpisz akcję: idzWStroneParku
+
+>>> Wykonuję: idzWStroneParku
+
+Idziesz w strone parku...
+===== LOKALIZACJA =====
+
+Wchodzisz do Parku swietokrzyskiego. Powietrze jest rzeskie, a pierwsze promienie slonca oswietlaja puste alejki. W oddali slyszysz szum miasta, ale tutaj panuje dziwny spokoj. Na jednej z lawek siedzi mezczyzna owiniety w gruby plaszcz, z broda gesta jak historia tego miasta. Kiedy przechodzisz obok, unosi wzrok i usmiecha sie lekko. Obok widzisz budke, gdzie mozesz kupic nasiona dla golebi (-5zl).
+
+DOSTĘPNE AKCJE:
+
+ * usiadzNaLawce
+ * karmGolebie
+ * obejrzyjFontanne
+ * porozmawiajZNieznajomym
+ * idzPrzedPKiN
+
+Wpisz akcję: porozmawiajZNieznajomym
+
+>>> Wykonuję: porozmawiajZNieznajomym
+
+Witasz sie z nieznajomym.
+'Dzien dobry! Co u Pana slychac?' - pyta sie ciebie nieznajomy z entuzjazmem
+Rowno entuzjastycznie odpowiadasz, ze 'dobrze'... nawet jesli pytanie nie brzmialo 'jak sie czujesz', ale kto by sie przejmowal.
+Zaczynasz rozmowe z nieznajomym, az... tracisz czucie czasu. Ile rozmawialiscie? Nie wiesz.
+'Ja musze prosze Pana jeszcze na autobus zdazyc, ale milo sie z Panem rozmawialo!' - nieznajomy zegna sie z toba: znowu entuzjastycznie!
+'I niech Pan pamieta o Wilczej 30! Warto tam zajrzec!'
+??? Moze o czyms wspomniales podczas rozmowy, co by skutkowaly w takiej prosbie, ale tego nie pamietasz
+Masz wrazenie, ze cos wyniosles z tej konwersacji, aczkolwiek nie wiesz do konca co.
+Wpisz akcję: idzPrzedZPKiN
+Nie rozpoznano akcji!
+Wpisz akcję: idzPrzedPKiN
+
+>>> Wykonuję: idzPrzedPKiN
+
+Wracasz przed PKiN
+===== LOKALIZACJA =====
+
+Jestes przed PKiN. Widok na miasto jest zapierajacy, mozesz ruszyc w rozne strony.
+
+DOSTĘPNE AKCJE:
+
+ * idzWStroneParku
+ * idzWStroneTaksowki
+ * spojrzNaUlotke
+ * idzDoHaliKoszyki
+ * idzNaWilcza30
+
+Wpisz akcję: idzNaWilcza30
+
+>>> Wykonuję: idzNaWilcza30
+
+Postanawiasz pojsc na Wilcza 30 spacerujac, aby moc podziwiac budzaca sie Warszawe.
+===== LOKALIZACJA =====
+
+Stoisz przed drzwiami mieszkania na Wilczej 30.
+
+DOSTĘPNE AKCJE:
+
+ * zapukajDoDrzwi
+ * rozejrzyjSie
+ * idzDoHaliKoszyki
+
+Wpisz akcję: zapukajDoDrzwi
+
+>>> Wykonuję: zapukajDoDrzwi
+
+Otwiera ci nieznana osoba. 'Czekalem na ciebie.'
+===== LOKALIZACJA =====
+
+Wchodzisz do srodka, w pokoju unosi sie zapach papierosow i starego drewna. Mezczyzna wskazuje na krzeslo, kazac ci usiasc. Nagle bierze jakas kartke ze stolu. Mowi: 'Potrzebujesz tego, ale za darmo ci tego nie oddam (-10zl).'
+
+DOSTĘPNE AKCJE:
+
+ * wykupNotatke
+ * opuscDom
+
+Wpisz akcję: wykupNotatke
+
+>>> Wykonuję: wykupNotatke
+
+Ciekawosc wziela gore i wykupiles ten kawalek papieru.
+Twoje fundusze to: 21 zl
+===== LOKALIZACJA =====
+
+Stoisz przed drzwiami mieszkania na Wilczej 30.
+
+DOSTĘPNE AKCJE:
+
+ * zapukajDoDrzwi
+ * rozejrzyjSie
+ * idzDoHaliKoszyki
+
+Wpisz akcję: idzDoHaliKoszyki
+
+>>> Wykonuję: idzDoHaliKoszyki
+
+Opuszczasz Wilcza 30 i idziesz w strone Hali Koszyki.
+===== LOKALIZACJA =====
+
+Hala Koszyki tetni zyciem nawet o tej godzinie. Zapach kawy i swiezego pieczywa unosi sie w powietrzu, a ludzie smieja sie przy stolikach. Czujesz, ze byles tu wczoraj, ale wciaz nie pamietasz, co sie stalo.
+
+DOSTĘPNE AKCJE:
+
+ * podejdzDoBaru
+ * porozmawiajZGosciem
+ * wyjdzWStroneChinczyka
+
+Wpisz akcję: podejdzDoBaru
+
+>>> Wykonuję: podejdzDoBaru
+
+Barman rozpoznaje cie i mowi, ze wczoraj zostawiles cos waznego.
+Wrecza ci kolejna czesc notatki i wspomina o chinskiej restauracji, do ktorej sie wybierales.
+Wpisz akcję: wyjdzWStroneChinczyka
+
+>>> Wykonuję: wyjdzWStroneChinczyka
+
+Idziesz do chinskiej restauracji.
+===== LOKALIZACJA =====
+
+Lokal jest niewielki, ale przytulny. Na scianach wisza chinskie lampiony, a w tle cicho gra azjatycka muzyka. Wlasciciel patrzy na ciebie z zainteresowaniem, jakby cie juz widzial.
+
+DOSTĘPNE AKCJE:
+
+ * porozmawiajZWlascicielem
+ * kupCos
+ * idzDoGgPw
+ * idzNaWeiti
+
+Wpisz akcję: idzNaWeiti
+
+>>> Wykonuję: idzNaWeiti
+
+Idziesz na wydzial EITI.
+===== LOKALIZACJA =====
+
+Jestes na Wydziale EITI. Laboratoria i studenci dookola.
+
+DOSTĘPNE AKCJE:
+
+ * zajrzyjDoLaboratorium
+ * zajrzyjDoSzatni
+ * idzDoGgPw
+
+Wpisz akcję: zajrzyjDoLaboratoruym
+Nie rozpoznano akcji!
+Wpisz akcję: zajrzyjDoLaboratorium
+
+>>> Wykonuję: zajrzyjDoLaboratorium
+
+Wchodzisz do laboratorium i widzisz profesorow.
+Witasz sie i powoli wchodzisz do srodka. Studentow tu jeszcze nie ma, ale zapewne beda tu niedlugo jakies zajecia.
+"Szuka Pan czegos?" - pyta profesor. Odpowiadasz ze tak, cos zostawiles (dobrze wiesz ze to nieprawda)
+Chociaz... ha, ciekawe. Widzisz kawalek notatki. Bierzesz ja - moze sie tobie przydac.
+Wpisz akcję: idzDoGgPw
+
+>>> Wykonuję: idzDoGgPw
+
+Idziesz do Gmachu Glownego PW.
+===== LOKALIZACJA =====
+
+Jesteś w Gmachu Głównym Politechniki Warszawskiej. Wszędzie pełno studentów i nauczycieli.
+
+DOSTĘPNE AKCJE:
+
+ * pogadajZKims
+ * sprawdzTabliceOgloszen
+ * sprawdzPortiernie
+ * przeszukajTeren
+ * otworzSaleGlowna
+
+Wpisz akcję: sprawdzTabliceOgloszen
+
+>>> Wykonuję: sprawdzTabliceOgloszen
+
+Na tablicy ogłoszeń widzisz informację o terminie oddania pracy. Oprócz tego, widzisz nowo powieszoną kartkę z napisem 'Zgubiono klucz do sali ...'
+Więc chodzi o klucz... no tak.
+Wpisz akcję: sprawdzPortiernie
+
+>>> Wykonuję: sprawdzPortiernie
+
+Podchodzisz do pustej portierni. Zauważasz kubek z kawą, taśmę, i kilka innych przedmiotów.
+Odchodzisz
+Wpisz akcję: przeszukajTeren
+
+>>> Wykonuję: przeszukajTeren
+
+Przeszukujesz teren... musisz jakoś otworzyć te drzwi do sali głównej.
+Chodzisz dookoła z myślą że coś znajdziesz, ale bez skutku... Może trzeba do tego podejść na spokojnie?
+Co robisz? Wybierz [1] Idź do dziekanatu [2] Przeszukaj korytarze [3] Sprawdź różne sale, [4] Sprawdź klatkę schodową [5] Skończ szukać
+Wpisz akcję: 4
+Idziesz sprawdzić najbliższą klatkę schodową. Przechodzisz się po niej w górę, i wracasz. Nic nie zauważasz.
+Znajdujesz klucz! Wygląda dość staro, ale może będzie gdzieś pasować.
+Wracasz do punktu, z którego zacząłeś przeszukiwanie.
+Przeszukujesz teren... musisz jakoś otworzyć te drzwi do sali głównej.
+Chodzisz dookoła z myślą że coś znajdziesz, ale bez skutku... Może trzeba do tego podejść na spokojnie?
+Co robisz? Wybierz [1] Idź do dziekanatu [2] Przeszukaj korytarze [3] Sprawdź różne sale, [4] Sprawdź klatkę schodową [5] Skończ szukać
+Wpisz akcję: 5
+Kończysz przeszukiwanie.
+Wpisz akcję: otworzSaleGlowna
+
+>>> Wykonuję: otworzSaleGlowna
+
+Używasz klucza aby otworzyć salę...
+===== LOKALIZACJA =====
+
+Jesteś w głównej sali. Czas na końcową decyzję i oddanie pracy semestralnej.
+
+DOSTĘPNE AKCJE:
+
+ * sprawdzKieszenie
+ * wyjdzZSali
+ * podejdzDoProfesora
+
+Wpisz akcję: sprawdzKieszenie
+
+>>> Wykonuję: sprawdzKieszenie
+
+Sprawdzasz swoje kieszenie... znajdujesz 4 części notatek, oraz 21 zł.
+Teraz jesteś pewien - trzymasz części twojej pracy semestralnej.
+W panice składasz części twojej pracy semestralnej... jest pełna...
+30 sekund emocjonalnego rollercoastera kończy się ogromną ulgą... uśmiechasz się!
+Wpisz akcję: podejdzDoProfesora
+
+>>> Wykonuję: podejdzDoProfesora
+
+Podchodzisz do profesora siedzącego na wprost ciebie. Czeka na ciebie, i rozpoznaje cię. Witasz się.
+'I kto to przyszedł? Dzień dobry Panu.' - mówi profesor w nieco onieśmielającym tonie.
+'Będzie Pan tak tu stać? Czegoś Pan potrzebuje?'
+Mówisz, że chcesz oddać pracę semestralną
+
+Bierzesz swoje notatki z kieszeni, i skladasz je w jedna czesc. Profesor patrzy sie na ciebie z lekkim zdziwieniem.
+Twoim oczom ukazuje sie... twoja praca semestralna w pelnej postaci.
+"Wow... doceniam Pana determinacje. Powiedzialbym ze jest to niedorzeczne oddawac prace w takim stanie, ale wyglada Pan na zmeczonego..."
+Wiec jest szansa?! Oplacilo sie zbierac te notatki? Nie wiesz co myslec, ale czekasz az profesor skonczy czytac prace.
+Wpisz "true" i nacisnij Enter.
+
+Profesor wyglada raz na zazenowanego, raz na zaskoczonego, a nawet na zadowolonego.
+"Musze Panu przyznac, ze moze praca idealna nie jest... ale zaliczyc, to Pan zaliczy."
+"A swoja droga... no i jak Panska wiedza? Powalczy Pan o lepsza ocene?"
+Starasz sobie przypomniec co sie dowiedziales... mowisz co wiesz, troche tez zmyslasz, ale...
+Wpisz "true" i nacisnij Enter.
+
+ZALICZASZ przedmiot z ocena 3.5
+Zebrano wszystkie 4 czesci notatki. Skompletowano prace semestralna!
+Znaleziono 1 z czterech dostepnych sekretnych interakcji.
+Koniec gry!
+algo@ole:~/SEM4/PARP/parp_25l/smalltalk/src$
