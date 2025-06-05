@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains simple text-based games developed as part of the _Programming Paradigms_ course. The aim of the project is to explore different programming paradigms through hands-on implementation in the following languages:
+This repository contains simple text-based games developed as part of the _Programming Paradigms_ course. The aim of the project is to explore different programming paradigms through implementation in the following languages:
 
 - **Smalltalk** (Object-Oriented Paradigm)
 - **Haskell** (Functional Paradigm)
